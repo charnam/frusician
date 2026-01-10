@@ -9,6 +9,10 @@
         <div id="editor-wrapper">
             <canvas id="editor"></canvas>
         </div>
-        <script type="module" src="./editor/main.js"></script>
+        <script type="module">
+            import App from "./editor/App.js";
+            
+            const app = new App(document.querySelector("canvas"));
+        </script>
     </body>
 </html>
