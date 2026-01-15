@@ -1,0 +1,55 @@
+
+.contextmenu {
+	position: fixed;
+}
+
+.contextmenu-item-submenu {
+	position: relative;
+}
+
+.contextmenu-submenu {
+	position: absolute;
+	left: 100%;
+	top: 0;
+}
+
+.contextmenu,
+.contextmenu-submenu {
+	cursor: default;
+	min-width: 125px;
+	display: flex;
+	flex-direction: column;
+	background: var(--background-color-level0);
+	border-radius: 10px;
+	box-shadow: var(--drop-shadow);
+}
+.contextmenu-item-clickable {
+	cursor: pointer;
+}
+.contextmenu-item-clickable:hover {
+	background: var(--background-color-level1);
+}
+
+.contextmenu-item-submenu > .contextmenu-submenu {
+	transition: visibility 0.2s linear;
+}
+.contextmenu-item-submenu:hover > .contextmenu-submenu {
+	z-index: 100;
+}
+.contextmenu-item-submenu:not(:hover) > .contextmenu-submenu {
+	visibility: hidden;
+	opacity: 0;
+	transition-property: visibility, opacity;
+}
+
+.contextmenu-item {
+	padding: 0 10px;
+	border-radius: 5px;
+	margin: 2px;
+	
+	display: inline-flex;
+	align-items: center;
+	
+	user-select: none;
+	box-sizing: border-box;
+}

@@ -4,15 +4,38 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Frusician Editor</title>
+        <script type="importmap">
+            {
+                "imports": {
+                    "imperative-html": "./node_modules/imperative-html/dist/esm/elements.js"
+                }
+            }
+        </script>
+        <link rel="stylesheet" href="./css/all.css" />
     </head>
     <body>
-        <div id="editor-wrapper">
-            <canvas id="editor"></canvas>
-        </div>
-        <script type="module">
-            import App from "./editor/App.js";
+        <div id="app">
+            <div id="header">
+                <div class="header-logo-square-wrapper">
+                    ~
+                </div>
+                <div class="header-button">File</div>
+                <div class="header-button">Edit</div>
+                <div class="header-button">Preferences</div>
+            </div>
+            <div id="sidebar" style="display: none;"></div>
+            <div id="tracks">
+                <div id="user-tracks">
+                    <div class="track temp"></div>
+                    <div class="track temp"></div>
+                    <div class="track temp"></div>
+                </div>
+            </div>
             
-            const app = new App(document.querySelector("canvas"));
+        </div>
+        
+        <script type="module">
+            import app from "./all/globalApp.js";
         </script>
     </body>
 </html>

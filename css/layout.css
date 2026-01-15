@@ -1,0 +1,29 @@
+
+:root {
+	--view-width: 100vw;
+	--view-height: 100vh;
+	
+	--track-detail-width: 160px;
+}
+
+#app {
+	position: absolute;
+	inset: 0px;
+	display: grid;
+	
+	grid-template-areas:
+		"header 	header"
+		"sidebar	tracks";
+}
+
+#header {
+	grid-area: header;
+}
+#sidebar {
+	grid-area: sidebar;
+}
+#tracks {
+	grid-area: tracks;
+}
+
+

@@ -1,0 +1,15 @@
+
+/* Colors */
+:root {
+	--accent-hue: 190deg;
+	--background-color-level0: hsl(var(--accent-hue), 15%, 8%);
+	--background-color-level1: hsl(var(--accent-hue), 15%, 12%);
+	--background-color-level2: hsl(var(--accent-hue), 15%, 15%);
+	--background-color-level3: hsl(var(--accent-hue), 15%, 20%);
+	--text-color-level1: hsl(var(--accent-hue), 40%, 90%);
+	--text-color-level2: hsl(var(--accent-hue), 30%, 37%);
+	--rounding-1: 10px;
+	--rounding-2: 5px;
+	--rounding-3: 2px;
+	--drop-shadow: 0 2px 10px #0004;
+}

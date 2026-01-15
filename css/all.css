@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
+@import url("./layout.css");
+@import url("./tracks.css");
+@import url("./header.css");
+@import url("./contextmenu.css");
+@import url("./themes/entrance.css");
+
+body {
+	font-family: "Nunito Sans", Helvetica, Arial, sans-serif;
+	background: var(--background-color-level1);
+	color: var(--text-color-level1);
+	font-size: 18px;
+}
+
+.overlay {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100vw;
+	height: 100vh;
+	z-index: 10000;
+}
