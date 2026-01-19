@@ -14,8 +14,6 @@ window.addEventListener("mouseup", updateCursor);
 window.addEventListener("mousemove", updateCursor);
 window.addEventListener("contextmenu", updateCursor);
 
-
-
 class ContextMenu {
 	static ClickableItem = ContextMenuClickableItem;
 	static Submenu = ContextMenuSubmenu;
@@ -55,6 +53,7 @@ class ContextMenu {
 		}
 		overlay.appendChild(menu);
 		parentNode.appendChild(overlay);
+		return menu;
 	}
 	
 	openAt(x, y) {

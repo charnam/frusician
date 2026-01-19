@@ -19,9 +19,6 @@
 	min-width: 125px;
 	display: flex;
 	flex-direction: column;
-	background: var(--background-color-level0);
-	border-radius: 10px;
-	box-shadow: var(--drop-shadow);
 }
 .contextmenu-item-clickable {
 	cursor: pointer;

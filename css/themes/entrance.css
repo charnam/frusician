@@ -1,3 +1,4 @@
+@import url("/node_modules/bootstrap-icons/font/bootstrap-icons.css");
 
 /* Colors */
 :root {
@@ -12,4 +13,21 @@
 	--rounding-2: 5px;
 	--rounding-3: 2px;
 	--drop-shadow: 0 2px 10px #0004;
+}
+
+/* page styles */
+#header {
+	background: var(--background-color-level2);
+}
+
+.contextmenu,
+.contextmenu-submenu {
+	background: var(--background-color-level0);
+	border-radius: 10px;
+	box-shadow: var(--drop-shadow);
+}
+
+.header-logo-square-wrapper:after {
+	font-family: bootstrap-icons;
+	content: "\F5D3"; /* three-dots icon */
 }

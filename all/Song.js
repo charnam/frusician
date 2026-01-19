@@ -4,21 +4,21 @@
 // - below, in the "catalog" section
 // This is to ensure songs with a new track type may be properly
 // saved and loaded later.
-import Track from "./tracks/Track.js";
 import NoteTrack from "./tracks/NoteTrack.js";
 import SampleTrack from "./tracks/SampleTrack.js";
+import { HTML } from "imperative-html";
 
 const loadableTrackCatalog = {};
-for(let Track of [
+for(let track of [
 	NoteTrack,
 	SampleTrack,
 ]) {
-	loadableTrackCatalog[Track.typeID] = Track;
+	loadableTrackCatalog[track.serializedID] = track;
 }
 
 class Song {
-	title = "";
-	tracks = [];
+	title = "Untitled Song";
+	tracks = {};
 	trackAssortment = [];
 	sessionStartTime = null;
 	timeWorkingAtSongLoad = 0;
@@ -33,35 +33,50 @@ class Song {
 		return Date.now() - this.sessionStartTime + this.timeWorkingAtSongLoad
 	}
 	
-	constructor(base) {
+	constructor(serialized = null) {
 		this.sessionStartTime = Date.now();
 		
-		if(base) {
-			this.title = base.title;
-			if(typeof base.timeSpent == "number") {
+		if(serialized) {
+			this.title = serialized.title;
+			if(typeof serialized.timeSpent == "number") {
 				this.timeWorkingAtSongLoad = base.timeSpentA
 			}
-			if(Array.isArray(base.tracks)) {
-				this.tracks = base.tracks;
+			if(Array.isArray(serialized.tracks)) {
+				this.tracks = serialized.tracks;
 			}
-			this.trackAssortment = base.trackAssortment;
+			this.trackAssortment = serialized.trackAssortment;
 		}
 	}
 	
-	toSavedCopy() {
+	save() {
+		const link = new HTML.a;
+		try {
+			link.href = "data:text/plain;base64,"+btoa(this.serialize());
+		} catch(err) {
+			return alert("Sorry, seems like an error occurred during saving. Make sure you don't have any special symbols (e.g: no Japanese, accented, or other odd characters) in any of your project's text inputs (e.g track names, song name, editor inputs). This slight saving issue will be fixed in a future version.");
+		}
+		link.download = this.title.replace(/[^0-9a-zA-Z\- ]/g, "_")+".fru";
+		document.body.appendChild(link);
+		link.click();
+		link.remove();
+	}
+	
+	serialize() {
 		return {
 			title: this.title,
-			tracks: this.tracks,
+			tracks: Object.fromEntries(
+				Object.entries(this.tracks)
+					.map(([id, track]) => [id, track.serialize()])
+			),
 			savedAt: Date.now(),
 			timeSpent: this.timeSpent
 		}
 	}
 	
-	renderTracks() {
+	renderEditor(parentNode) {
 		for(let track of this.sortedTracks) {
-			track.renderTrackInList();
+			this.tracks[track].bindRenderTo(parentNode);
 		}
-		
 	}
 }
 

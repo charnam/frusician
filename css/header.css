@@ -1,20 +1,18 @@
 
 :root {
 	--header-logo-size: 32px;
-	
-	--header-height: 256px;
+	--header-height: 32px;
 }
 
 #header {
+	grid-area: header;
+	
 	height: var(--header-height);
 	display: grid;
-	background: var(--background-color-level2);
 	grid-template:
-		"logo	wordmark	volume	.	.	.		vu" 32px
-		".		.			slider	.	.	.		vu" 32px
-		"buttons buttons	buttons	.	.	tempo	vu" var(--header-logo-size) / var(--header-logo-size) auto 128px auto auto 128px 32px;
+		"logo wordmark"
+		/32px 1fr;
 	
-	grid-template-columns: 32px auto
 }
 
 #header > .contextmenu-item-submenu .contextmenu-submenu {
@@ -35,9 +33,11 @@
 	user-select: none;
 	font-weight: bold;
 	grid-area: logo;
+	background: var(--header-logo);
 }
 #header .wordmark {
 	display: flex;
 	align-items: center;
 	user-select: none;
+	grid-area: wordmark;
 }

@@ -13,17 +13,10 @@ class Header {
 		});
 		
 		const wordmark = new HTML.div({class: "wordmark"});
-		wordmark.innerText = "Frusician";
-		
-		const volumeSliderContainer = new HTML.label({class: "slider-wrapper volume-slider-wrapper"});
-		const volumeSliderText = new HTML.div({class: "slider-text"});
-		const volumeSlider = new HTML.input({type: "range", class: "volume slider"});
-		volumeSliderContainer.appendChild(volumeSliderText);
-		volumeSliderContainer.appendChild(volumeSlider);
+		wordmark.innerText = "Frusician 0.0.1";
 		
 		parentNode.appendChild(contextMenuButton);
 		parentNode.appendChild(wordmark);
-		parentNode.appendChild(volumeSliderContainer);
 	}
 }
 
