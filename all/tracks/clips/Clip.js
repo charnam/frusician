@@ -1,6 +1,6 @@
 
 class Clip {
-	static serializedID = null;
+	static typeID = null;
 	
 	
 	serialize() {

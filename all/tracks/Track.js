@@ -1,10 +1,7 @@
 import { HTML } from "imperative-html";
 
-
-
-
 class Track {
-	static serializedID = null;
+	static typeID = null;
 	static typeName = "Default base track, do not use";
 	
 	clips = {};

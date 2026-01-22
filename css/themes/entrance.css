@@ -1,4 +1,4 @@
-@import url("/node_modules/bootstrap-icons/font/bootstrap-icons.css");
+@import url("../../node_modules/bootstrap-icons/font/bootstrap-icons.css");
 
 /* Colors */
 :root {
@@ -30,4 +30,16 @@
 .header-logo-square-wrapper:after {
 	font-family: bootstrap-icons;
 	content: "\F5D3"; /* three-dots icon */
+}
+
+.contextmenu-item-submenu {
+	padding-right: 30px;
+}
+
+.contextmenu-item-submenu:after {
+	font-family: bootstrap-icons;
+	content: "\F231";
+	font-size: 12px;
+	position: absolute;
+	right: 5px;
 }

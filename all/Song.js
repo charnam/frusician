@@ -13,7 +13,7 @@ for(let track of [
 	NoteTrack,
 	SampleTrack,
 ]) {
-	loadableTrackCatalog[track.serializedID] = track;
+	loadableTrackCatalog[track.typeID] = track;
 }
 
 class Song {
@@ -33,25 +33,14 @@ class Song {
 		return Date.now() - this.sessionStartTime + this.timeWorkingAtSongLoad
 	}
 	
-	constructor(serialized = null) {
+	constructor() {
 		this.sessionStartTime = Date.now();
-		
-		if(serialized) {
-			this.title = serialized.title;
-			if(typeof serialized.timeSpent == "number") {
-				this.timeWorkingAtSongLoad = base.timeSpentA
-			}
-			if(Array.isArray(serialized.tracks)) {
-				this.tracks = serialized.tracks;
-			}
-			this.trackAssortment = serialized.trackAssortment;
-		}
 	}
 	
 	save() {
 		const link = new HTML.a;
 		try {
-			link.href = "data:text/plain;base64,"+btoa(this.serialize());
+			link.href = "data:text/plain;base64,"+btoa(JSON.stringify(this.serialize(), null, 4));
 		} catch(err) {
 			return alert("Sorry, seems like an error occurred during saving. Make sure you don't have any special symbols (e.g: no Japanese, accented, or other odd characters) in any of your project's text inputs (e.g track names, song name, editor inputs). This slight saving issue will be fixed in a future version.");
 		}
@@ -68,9 +57,44 @@ class Song {
 				Object.entries(this.tracks)
 					.map(([id, track]) => [id, track.serialize()])
 			),
+			trackAssortment: this.trackAssortment,
 			savedAt: Date.now(),
 			timeSpent: this.timeSpent
 		}
+	}
+	
+	static load() {
+		return new Promise((res, rej) => {
+			const fileInput = new HTML.input({type: "file", style: "display: none;"});
+			fileInput.onchange = () => {
+				const reader = new FileReader();
+				reader.readAsText(fileInput.files[0]);
+				reader.onload = () => {
+					res(Song.fromSerialized(JSON.parse(reader.result)));
+				}
+				fileInput.remove();
+			}
+			fileInput.oncancel = () => {
+				fileInput.remove();
+				rej("Song load cancelled.");
+			}
+			document.documentElement.appendChild(fileInput);
+			fileInput.click();
+		});
+	}
+	
+	static fromSerialized(serialized) {
+		let song = new Song(serialized);
+		song.title = serialized.title;
+		
+		if(typeof serialized.timeSpent == "number") {
+			song.timeWorkingAtSongLoad = serialized.timeSpentA
+		}
+		if(Array.isArray(serialized.tracks)) {
+			song.tracks = serialized.tracks.map(track => loadableTrackCatalog[track.typeID].fromSerialized(track));
+		}
+		song.trackAssortment = serialized.trackAssortment;
+		return song;
 	}
 	
 	renderEditor(parentNode) {

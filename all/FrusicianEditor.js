@@ -19,8 +19,12 @@ class FrusicianEditor {
 				new ContextMenu.ClickableItem("New", () => {
 					this.song = new Song();
 				}),
-				new ContextMenu.ClickableItem("Save"),
-				new ContextMenu.ClickableItem("Open"),
+				new ContextMenu.ClickableItem("Save", () => {
+					this.song.save();
+				}),
+				new ContextMenu.ClickableItem("Open", async () => {
+					this.song = await Song.load();
+				}),
 			]),
 			new ContextMenu.Submenu("Edit", [
 				new ContextMenu.ClickableItem("Hello World")
