@@ -8,15 +8,10 @@ import NoteTrack from "./tracks/NoteTrack.js";
 import SampleTrack from "./tracks/SampleTrack.js";
 import { HTML } from "imperative-html";
 
-const loadableTrackCatalog = {};
-for(let track of [
-	NoteTrack,
-	SampleTrack,
-]) {
-	loadableTrackCatalog[track.typeID] = track;
-}
 
 class Song {
+	static FILE_HEADER = "FRUSICIAN%";
+	
 	title = "Untitled Song";
 	tracks = {};
 	trackAssortment = [];
@@ -37,10 +32,18 @@ class Song {
 		this.sessionStartTime = Date.now();
 	}
 	
-	save() {
+	save(debug = false) {
 		const link = new HTML.a;
 		try {
-			link.href = "data:text/plain;base64,"+btoa(JSON.stringify(this.serialize(), null, 4));
+			let outputData = "";
+			const serialized = this.serialize();
+			if(debug) {
+				outputData = Song.FILE_HEADER+JSON.stringify(serialized, null, 4);
+			} else {
+				outputData = Song.FILE_HEADER+JSON.stringify(serialized);
+			}
+			
+			link.href = "data:text/plain;base64,"+btoa(outputData);
 		} catch(err) {
 			return alert("Sorry, seems like an error occurred during saving. Make sure you don't have any special symbols (e.g: no Japanese, accented, or other odd characters) in any of your project's text inputs (e.g track names, song name, editor inputs). This slight saving issue will be fixed in a future version.");
 		}
@@ -70,7 +73,11 @@ class Song {
 				const reader = new FileReader();
 				reader.readAsText(fileInput.files[0]);
 				reader.onload = () => {
-					res(Song.fromSerialized(JSON.parse(reader.result)));
+					let content = reader.result;
+					if(content.startsWith(Song.FILE_HEADER)) {
+						content = content.replace(Song.FILE_HEADER, "");
+					}
+					res(Song.fromSerialized(JSON.parse(content)));
 				}
 				fileInput.remove();
 			}
@@ -97,9 +104,9 @@ class Song {
 		return song;
 	}
 	
-	renderEditor(parentNode) {
+	render(parentNode) {
 		for(let track of this.sortedTracks) {
-			this.tracks[track].bindRenderTo(parentNode);
+			this.tracks[track].render(parentNode);
 		}
 	}
 }

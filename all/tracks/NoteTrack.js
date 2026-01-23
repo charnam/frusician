@@ -1,3 +1,7 @@
 import Track from "./Track.js";
 
-export default Track;
+class NoteTrack extends Track {
+	static typeID = "noteTrack";
+}
+
+export default NoteTrack;

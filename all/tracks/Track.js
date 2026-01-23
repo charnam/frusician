@@ -1,11 +1,14 @@
 import { HTML } from "imperative-html";
 
 class Track {
-	static typeID = null;
-	static typeName = "Default base track, do not use";
+	static typeID = "none"; // Used for importing
+	static typeName = "Default base track, do not use"; // Human-readable name
+	static acceptsTypes = [];
 	
 	clips = {};
 	clipPlacement = [];
+	
+	boundTo = [];
 	
 	constructor(song, clips) {
 		this.song = song;
@@ -29,13 +32,14 @@ class Track {
 	
 	render(parentNode) {
 		const track = HTML.div({class: "track"});
-		this.boundTo = track;
+		this.boundTo.push(track);
 		
-		// Clear the parent
-		parentNode.textContent = "";
 		parentNode.appendChild(track);
 	}
 	
+	static fromSerialized(object, song) {
+		
+	}
 }
 
 export default Track;

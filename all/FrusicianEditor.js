@@ -23,7 +23,7 @@ class FrusicianEditor {
 					this.song.save();
 				}),
 				new ContextMenu.ClickableItem("Open", async () => {
-					this.song = await Song.load();
+					this.setSong(await Song.load());
 				}),
 			]),
 			new ContextMenu.Submenu("Edit", [
@@ -58,7 +58,7 @@ class FrusicianEditor {
 	
 	setSong(song) {
 		this.song = song;
-		this.song.renderEditor(this.songContainer);
+		this.song.render(this.songContainer);
 	}
 }
 

@@ -1,6 +1,7 @@
 import { HTML } from "imperative-html";
 import ContextMenuClickableItem from "./ContextMenuClickableItem.js";
 import ContextMenuSubmenu from "./ContextMenuSubmenu.js";
+import Overlay from "../Overlay.js";
 
 const cursorPosition = {x: 0, y: 0};
 
@@ -35,14 +36,14 @@ class ContextMenu {
 		this.items = items;
 	}
 	
-	render(parentNode) {
-		const overlay = new HTML.div({class: "overlay"});
+	render() {
+		const overlay = new Overlay();
 		
 		overlay.addEventListener("click", (event) => {
 			if(event.target == overlay) {
 				ContextMenu.hide();
 			}
-		})
+		});
 		
 		const menu = new HTML.div({class: "contextmenu"});
 		menu.style.left = this.x+"px";
@@ -52,14 +53,13 @@ class ContextMenu {
 			item.render(menu);
 		}
 		overlay.appendChild(menu);
-		parentNode.appendChild(overlay);
 		return menu;
 	}
 	
 	openAt(x, y) {
 		this.x = x;
 		this.y = y;
-		this.render(document.body);
+		this.render();
 	}
 	
 	open() {
