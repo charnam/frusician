@@ -33,11 +33,12 @@
 	user-select: none;
 	font-weight: bold;
 	grid-area: logo;
-	background: var(--header-logo);
+	cursor: pointer;
 }
 #header .wordmark {
 	display: flex;
 	align-items: center;
 	user-select: none;
 	grid-area: wordmark;
+	margin-left: 8px;
 }

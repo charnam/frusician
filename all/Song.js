@@ -4,19 +4,39 @@
 // - below, in the "catalog" section
 // This is to ensure songs with a new track type may be properly
 // saved and loaded later.
-import NoteTrack from "./tracks/NoteTrack.js";
-import SampleTrack from "./tracks/SampleTrack.js";
+import trackCatalog from "./tracks/trackCatalog.js";
 import { HTML } from "imperative-html";
+import ContextMenu from "./ui/contextmenu/ContextMenu.js";
+import ContextMenuClickableItem from "./ui/contextmenu/ContextMenuClickableItem.js";
+import Identifier from "./lib/Identifier.js";
 
 
 class Song {
 	static FILE_HEADER = "FRUSICIAN%";
 	
 	title = "Untitled Song";
+	editable = true;
 	tracks = {};
 	trackAssortment = [];
 	sessionStartTime = null;
 	timeWorkingAtSongLoad = 0;
+	
+	boundTo = [];
+	zoomLevel = 1;
+	
+	addTrackMenu = new ContextMenu(
+		trackCatalog.all.map(trackType =>
+			new ContextMenuClickableItem(trackType.typeName, () => {
+				this.addTrack(new trackType(this));
+			})
+		)
+	);
+	
+	addTrack(track) {
+		this.tracks[track.id] = track;
+		this.trackAssortment.push(track.id);
+		this.updateTrackList();
+	}
 	
 	get sortedTracks() {
 		return Object.entries(this.tracks)
@@ -60,7 +80,7 @@ class Song {
 				Object.entries(this.tracks)
 					.map(([id, track]) => [id, track.serialize()])
 			),
-			trackAssortment: this.trackAssortment,
+			trackAssortment: this.trackAssortment.slice(),
 			savedAt: Date.now(),
 			timeSpent: this.timeSpent
 		}
@@ -74,10 +94,12 @@ class Song {
 				reader.readAsText(fileInput.files[0]);
 				reader.onload = () => {
 					let content = reader.result;
-					if(content.startsWith(Song.FILE_HEADER)) {
-						content = content.replace(Song.FILE_HEADER, "");
+					try {
+						res(Song.fromFile(content));
+					} catch(err) {
+						alert("This is not a valid or loadable song file.");
+						rej("Invalid or not unloadable song file uploaded");
 					}
-					res(Song.fromSerialized(JSON.parse(content)));
 				}
 				fileInput.remove();
 			}
@@ -90,25 +112,83 @@ class Song {
 		});
 	}
 	
+	static fromFile(content) {
+		
+		if(content.startsWith(Song.FILE_HEADER)) {
+			content = content.replace(Song.FILE_HEADER, "");
+		}
+		try {
+			return Song.fromSerialized(JSON.parse(content));
+		} catch(err) {
+			throw new Error("Invalid song file.");
+		}
+	}
+	
 	static fromSerialized(serialized) {
-		let song = new Song(serialized);
+		let song = new Song();
 		song.title = serialized.title;
 		
 		if(typeof serialized.timeSpent == "number") {
-			song.timeWorkingAtSongLoad = serialized.timeSpentA
+			song.timeWorkingAtSongLoad = serialized.timeSpent;
 		}
 		if(Array.isArray(serialized.tracks)) {
-			song.tracks = serialized.tracks.map(track => loadableTrackCatalog[track.typeID].fromSerialized(track));
+			song.tracks = serialized.tracks.map(track => trackCatalog.byTypeID[track.typeID].fromSerialized(track));
 		}
 		song.trackAssortment = serialized.trackAssortment;
 		return song;
 	}
 	
-	render(parentNode) {
-		for(let track of this.sortedTracks) {
-			this.tracks[track].render(parentNode);
+	render(targetNode) {
+		this.boundTo.push(targetNode);
+		
+		const tracks = new HTML.div({class: "tracks"});
+		const userTracks = new HTML.div({class: "user-tracks"});
+		
+		tracks.appendChild(userTracks);
+		
+		if(this.editable) {
+			const track_add = new HTML.div({class: "track track-add"});
+			track_add.onmousedown = () => {
+				this.addTrackMenu.open();
+			}
+			tracks.appendChild(track_add);
+		}
+		
+		targetNode.appendChild(tracks);
+		
+		this.updateTrackList();
+	}
+	
+	updateTrackList() {
+		for(let target of this.boundTo) {
+			const renderedTracksEl = target.querySelector(".user-tracks");
+			for(let index = 0; index < this.trackAssortment.length; index++) {
+				const trackid = this.trackAssortment[index];
+				let track = renderedTracksEl.querySelector(`[trackid="${trackid}"]`);
+				if(track == null) {
+					track = this.tracks[trackid].render(renderedTracksEl);
+				}
+				
+				const renderedTracksArray = [...renderedTracksEl.children];
+				const currentDOMPosition = renderedTracksArray.indexOf(track);
+				if(currentDOMPosition != index) {
+					let elAfterTrack = renderedTracksEl.children[index];
+					if(elAfterTrack) {
+						renderedTracksEl.insertBefore(track, elAfterTrack);
+					} else {
+						renderedTracksEl.appendChild(track);
+					}
+					
+					index--;
+				}
+			}
+		}
+		
+		for(let track of Object.values(this.tracks)) {
+			track.update();
 		}
 	}
+	
 }
 
 export default Song;

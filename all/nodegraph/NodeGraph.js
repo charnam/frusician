@@ -10,17 +10,9 @@ class NodeGraph {
 	constructor(nodes = []) {
 	}
 	
-	createNodeID() {
-		let chosenID = 1;
-		while(this.nodes[chosenID]) {
-			chosenID = Math.round(Math.random() * 10000000);
-		}
-		return chosenID;
-	}
-	
 	addNode(node) {
 		if(!node.id || this.nodes[node.id]) {
-			node.id = this.createNodeID();
+			node.id = Identifier.create();
 		}
 		this.nodes[node.id] = node;
 		return node;

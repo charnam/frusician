@@ -1,7 +1,22 @@
 
+:root {
+	--track-detail-width: 160px;
+	--track-height: 128px;
+	--beat-width: 64px;
+}
+
 /* Tracks, and track adjustment */
 .track {
-	
+	height: var(--track-height);
+}
+.track.track-add {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+}
+.track.track-add::after {
+	content: "Add track...";
 }
 
 .clip {

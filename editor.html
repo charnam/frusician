@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="background-color: black">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,30 +14,20 @@
         <link rel="stylesheet" href="./css/app.css" />
     </head>
     <body>
-        <div id="app">
-            <div id="header">
-                <div class="header-logo-square-wrapper">
-                    ~
-                </div>
-                <div class="header-button">File</div>
-                <div class="header-button">Edit</div>
-                <div class="header-button">Preferences</div>
-            </div>
-            <div id="sidebar" style="display: none;"></div>
-            <div id="tracks">
-                <div id="user-tracks">
-                    <div class="track temp"></div>
-                    <div class="track temp"></div>
-                    <div class="track temp"></div>
-                </div>
-            </div>
-            
+        <div id="main-loader">
+            <div id="main-loader-spinner"></div>
+            <div id="main-loader-text">Loading...</div>
         </div>
+        <div id="app"></div>
         
         <script type="module">
             import editor from "./all/globalEditor.js";
             import NodeGraph from "./all/nodegraph/NodeGraph.js";
             window.NodeGraph = NodeGraph;
+            
+            window.onload = () => {
+                document.body.classList.add("loaded");
+            }
         </script>
     </body>
 </html>
