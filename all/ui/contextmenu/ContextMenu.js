@@ -31,6 +31,13 @@ class ContextMenu {
 		}
 	}
 	
+	static eventOpener(contextMenu) {
+		return event => {
+			event.preventDefault();
+			contextMenu.open();
+		}
+	}
+	
 	items = [];
 	constructor(items = []) {
 		this.items = items;

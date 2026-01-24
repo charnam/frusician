@@ -1,6 +1,6 @@
 
 :root {
-	--track-detail-width: 160px;
+	--track-info-width: 240px;
 	--track-height: 128px;
 	--beat-width: 64px;
 }
@@ -8,9 +8,15 @@
 /* Tracks, and track adjustment */
 .track {
 	height: var(--track-height);
-}
-.track.track-add {
 	display: flex;
+}
+.track .track-info {
+	display: flex;
+	width: var(--track-info-width);
+	flex-direction: column;
+}
+
+.track.track-add {
 	justify-content: center;
 	align-items: center;
 	cursor: pointer;

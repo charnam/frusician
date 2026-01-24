@@ -1,5 +1,5 @@
 
-class Catalog {
+class TypeCatalog {
 	all = [];
 	byTypeID = {};
 	
@@ -21,4 +21,4 @@ class Catalog {
 	}
 }
 
-export default Catalog;
+export default TypeCatalog;

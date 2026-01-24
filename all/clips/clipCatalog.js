@@ -1,8 +1,12 @@
-import Catalog from "../lib/Catalog.js";
+
+import TypeCatalog from "../lib/TypeCatalog.js";
+
 import NoteClip from "./NoteClip.js";
 import SampleClip from "./SampleClip.js";
 
-export default new Catalog([
+const clipCatalog = new TypeCatalog([
 	NoteClip,
 	SampleClip
 ]);
+
+export default clipCatalog;

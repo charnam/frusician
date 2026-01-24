@@ -1,8 +1,12 @@
-import Catalog from "../lib/Catalog.js";
+
+import TypeCatalog from "../lib/TypeCatalog.js";
+
 import NoteTrack from "./NoteTrack.js";
 import SampleTrack from "./SampleTrack.js";
 
-export default new Catalog([
+const trackCatalog = new TypeCatalog([
 	NoteTrack,
 	SampleTrack
 ]);
+
+export default trackCatalog;

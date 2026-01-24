@@ -7,6 +7,8 @@ class NoteTrack extends Track {
 	render(parentNode) {
 		const track = super.render(parentNode);
 		
+		track.classList.add("note-track");
+		
 		return track;
 	}
 }

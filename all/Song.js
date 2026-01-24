@@ -4,16 +4,18 @@
 // - below, in the "catalog" section
 // This is to ensure songs with a new track type may be properly
 // saved and loaded later.
-import trackCatalog from "./tracks/trackCatalog.js";
 import { HTML } from "imperative-html";
 import ContextMenu from "./ui/contextmenu/ContextMenu.js";
 import ContextMenuClickableItem from "./ui/contextmenu/ContextMenuClickableItem.js";
 import Identifier from "./lib/Identifier.js";
+import Track from "./tracks/Track.js";
+import trackCatalog from "./tracks/trackCatalog.js";
 
 
 class Song {
 	static FILE_HEADER = "FRUSICIAN%";
 	
+	id = null;
 	title = "Untitled Song";
 	editable = true;
 	tracks = {};
@@ -21,8 +23,10 @@ class Song {
 	sessionStartTime = null;
 	timeWorkingAtSongLoad = 0;
 	
+	tempo = 120;
+	beatsPerMeasure = 4;
 	boundTo = [];
-	zoomLevel = 1;
+	pixelsPerMeasure = 100;
 	
 	addTrackMenu = new ContextMenu(
 		trackCatalog.all.map(trackType =>
@@ -33,9 +37,19 @@ class Song {
 	);
 	
 	addTrack(track) {
-		this.tracks[track.id] = track;
-		this.trackAssortment.push(track.id);
-		this.updateTrackList();
+		if(this.tracks[track.id] !== track) {
+			this.tracks[track.id] = track;
+		}
+		if(!this.trackAssortment.includes(track.id)) {
+			this.trackAssortment.push(track.id);
+		}
+		this.updateRendered();
+	}
+	
+	removeTrack(trackid) {
+		delete this.tracks[trackid];
+		this.trackAssortment = this.trackAssortment.filter(assortedid => assortedid !== trackid);
+		this.updateRendered();
 	}
 	
 	get sortedTracks() {
@@ -50,6 +64,7 @@ class Song {
 	
 	constructor() {
 		this.sessionStartTime = Date.now();
+		this.id = Identifier.create();
 	}
 	
 	save(debug = false) {
@@ -65,6 +80,7 @@ class Song {
 			
 			link.href = "data:text/plain;base64,"+btoa(outputData);
 		} catch(err) {
+			console.error("Save error:", err);
 			return alert("Sorry, seems like an error occurred during saving. Make sure you don't have any special symbols (e.g: no Japanese, accented, or other odd characters) in any of your project's text inputs (e.g track names, song name, editor inputs). This slight saving issue will be fixed in a future version.");
 		}
 		link.download = this.title.replace(/[^0-9a-zA-Z\- ]/g, "_")+".fru";
@@ -98,7 +114,7 @@ class Song {
 						res(Song.fromFile(content));
 					} catch(err) {
 						alert("This is not a valid or loadable song file.");
-						rej("Invalid or not unloadable song file uploaded");
+						rej("Invalid or unloadable song file uploaded");
 					}
 				}
 				fileInput.remove();
@@ -117,10 +133,18 @@ class Song {
 		if(content.startsWith(Song.FILE_HEADER)) {
 			content = content.replace(Song.FILE_HEADER, "");
 		}
+		let songData;
 		try {
-			return Song.fromSerialized(JSON.parse(content));
+			songData = JSON.parse(content);
 		} catch(err) {
 			throw new Error("Invalid song file.");
+		}
+		
+		try {
+			return Song.fromSerialized(songData);
+		} catch(err) {
+			console.error(err);
+			throw new Error("Failed to load song: ", err);
 		}
 	}
 	
@@ -131,15 +155,20 @@ class Song {
 		if(typeof serialized.timeSpent == "number") {
 			song.timeWorkingAtSongLoad = serialized.timeSpent;
 		}
-		if(Array.isArray(serialized.tracks)) {
-			song.tracks = serialized.tracks.map(track => trackCatalog.byTypeID[track.typeID].fromSerialized(track));
-		}
+		song.tracks = Object.fromEntries(
+			Object.values(serialized.tracks)
+				.map(track => [
+					track.id, trackCatalog.byTypeID[track.typeID].fromSerialized(track, this)
+				])
+		);
 		song.trackAssortment = serialized.trackAssortment;
 		return song;
 	}
 	
 	render(targetNode) {
 		this.boundTo.push(targetNode);
+		
+		targetNode.innerHTML = "";
 		
 		const tracks = new HTML.div({class: "tracks"});
 		const userTracks = new HTML.div({class: "user-tracks"});
@@ -156,11 +185,17 @@ class Song {
 		
 		targetNode.appendChild(tracks);
 		
-		this.updateTrackList();
+		this.updateRendered();
 	}
 	
-	updateTrackList() {
+	updateRendered() {
 		for(let target of this.boundTo) {
+			target.setAttribute("style", `--pixelsPerMeasure: ${this.pixelsPerMeasure}px; --beatsPerMeasure: ${this.beatsPerMeasure};`);
+			const playheadBar = target.querySelector(".playhead-bar");
+			if(playheadBar)
+			playheadBar.innerHTML = "";
+			playheadBar
+			
 			const renderedTracksEl = target.querySelector(".user-tracks");
 			for(let index = 0; index < this.trackAssortment.length; index++) {
 				const trackid = this.trackAssortment[index];
@@ -182,10 +217,16 @@ class Song {
 					index--;
 				}
 			}
+			
+			for(let track of renderedTracksEl.children) {
+				if(!this.tracks[track.getAttribute("trackid")]) {
+					track.remove();
+				}
+			}
 		}
 		
 		for(let track of Object.values(this.tracks)) {
-			track.update();
+			track.updateRendered();
 		}
 	}
 	

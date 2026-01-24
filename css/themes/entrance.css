@@ -9,7 +9,8 @@
 	--background-color-level2: hsl(var(--accent-hue), 15%, 15%);
 	--background-color-level3: hsl(var(--accent-hue), 15%, 20%);
 	--text-color-level1: hsl(var(--accent-hue), 40%, 90%);
-	--text-color-level2: hsl(var(--accent-hue), 30%, 37%);
+	--text-color-level2: hsl(var(--accent-hue), 25%, 70%);
+	--text-color-level3: hsl(var(--accent-hue), 10%, 50%);
 	--rounding-1: 10px;
 	--rounding-2: 5px;
 	--rounding-3: 2px;
@@ -171,4 +172,28 @@ body {
 	content: "\F4FE";
 	font-size: 32px;
 	color: var(--background-color-level3);
+}
+
+.track .track-info {
+	background: var(--background-color-level3);
+	border-top: 1px solid var(--background-color-level0);
+	box-sizing: border-box;
+	padding: 5px;
+}
+
+.track-name {
+	appearance: none;
+	border: none;
+	background: none;
+	color: inherit;
+	font-size: inherit;
+	font-family: inherit;
+	padding: 0;
+	margin: 0;
+}
+
+.track-type {
+	user-select: none;
+	font-size: 10px;
+	color: var(--text-color-level2);
 }

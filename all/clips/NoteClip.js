@@ -1,4 +1,4 @@
-import Clip from "./Clip";
+import Clip from "./Clip.js";
 
 class NoteClip extends Clip {
 	static typeID = "noteClip"

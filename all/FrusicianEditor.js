@@ -3,6 +3,8 @@ import { HTML } from "imperative-html";
 import Header from "./ui/Header.js";
 import ContextMenu from "./ui/contextmenu/ContextMenu.js";
 import Song from "./Song.js";
+import NoteTrack from "./tracks/NoteTrack.js";
+import SampleTrack from "./tracks/SampleTrack.js";
 
 class FrusicianEditor {
 	song = null;
@@ -44,7 +46,13 @@ class FrusicianEditor {
 		
 		this.songContainer = songContainer;
 		
-		this.setSong(new Song());
+		const song = new Song()
+		this.setSong(song);
+		
+		new NoteTrack(song);
+		new NoteTrack(song);
+		new NoteTrack(song);
+		new SampleTrack(song);
 		
 		window.addEventListener("keydown", (keyEvent) => {
 			if(document.querySelector(".node-graph-container")) {
