@@ -166,13 +166,15 @@ body {
 	border-bottom: 1px solid var(--background-color-level3);
 	box-sizing: border-box;
 	transition: 0.2s ease-in-out;
-	transition-property: opacity, box-shadow;
+	transition-property: opacity, box-shadow, z-index;
 }
 .track.is-dragging {
 	opacity: 0.7;
 	box-shadow: 0 10px 20px #0008;
 }
-
+.track.track-add {
+	border: 1px solid var(--background-color-level3);
+}
 .track.track-add:after {
 	font-family: bootstrap-icons;
 	content: "\F4FE";

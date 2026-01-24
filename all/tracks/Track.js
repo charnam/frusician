@@ -59,16 +59,23 @@ class Track {
 		const trackName = new HTML.input({class: "track-name", type: "text"});
 		trackName.value = this.name;
 		trackName.oninput = () => this.name = trackName.value;
+		trackName.onkeydown = event => {
+			if(event.key == "Enter") {
+				trackName.blur();
+			}
+		}
+		if(this.song && !this.song.editable) {
+			trackName.disabled = true;
+		}
 		trackInfo.appendChild(trackName);
 		
 		const trackDragHandle = new HTML.div({class: "track-handle"});
 		
 		let dragTarget = null;
 		const draggableTrack = new Draggable(position => {
-			track.classList.add("is-dragging");
-			track.style.transform = "translateY("+position.deltaY+"px)";
-			
 			dragTarget = null;
+			track.classList.add("is-dragging");
+			track.style.transform = "translateY("+position.deltaY+"px) translateX("+position.deltaX+"px) scale(0.8) translateY(-30px)";
 			const tracks = parentNode.querySelectorAll(".track");
 			for(let childTrack of tracks) {
 				if(childTrack == track) continue;
@@ -85,25 +92,16 @@ class Track {
 					dragTarget = targetIndex;
 					for(let [movedIndex, movedChild] of trackEntries) {
 						if(movedChild == track) continue;
-						
-						let targetAnimation = "";
 						if(movedIndex <= originalIndex) {
 							if(movedIndex >= targetIndex) {
-								targetAnimation = "0.1s ease-in-out track-move-down";
 								movedChild.style.transform = "translateY(100%)";
 							}
 						}
 						if(movedIndex >= originalIndex) {
 							if(movedIndex <= targetIndex) {
-								targetAnimation = "0.1s ease-in-out track-move-up";
 								movedChild.style.transform = "translateY(-100%)";
 							}
 						}
-						/*if(targetAnimation !== movedChild.style.animation) {
-							movedChild.style.animation = "";
-							movedChild.scrollWidth;
-							movedChild.style.animation = targetAnimation;
-						}*/
 					}
 					return;
 				}
@@ -124,11 +122,6 @@ class Track {
 		
 		trackInfo.appendChild(trackDragHandle);
 		
-		if(this.song && !this.song.editable) {
-			trackName.disabled = true;
-		}
-		
-		
 		
 		parentNode.appendChild(track);
 		this.boundTo.push(track);
@@ -142,8 +135,6 @@ class Track {
 	
 	static fromSerialized(object, song) {
 		const track = new this(song);
-		
-		console.log(track);
 		
 		track.id = object.id;
 		track.name = object.name;

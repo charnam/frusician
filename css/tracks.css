@@ -32,11 +32,23 @@
 .track.is-dragging {
 	z-index: 1000;
 }
+.tracks {
+	display: flex;
+	flex-direction: column;
+	width: fit-content;
+	min-width: 100vw;
+}
+.user-tracks {
+	display: contents;
+}
+
+
 .track .track-info {
 	display: flex;
 	width: var(--track-info-width);
 	flex-direction: column;
-	position: relative;
+	position: sticky;
+	left: 0;
 }
 
 .track-handle {
@@ -50,6 +62,9 @@
 	justify-content: center;
 	align-items: center;
 	cursor: pointer;
+	position: sticky;
+	left: 0;
+	width: var(--track-info-width);
 }
 .track.track-add::after {
 	content: "Add track...";

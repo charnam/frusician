@@ -162,12 +162,13 @@ class Song {
 		if(typeof serialized.timeSpent == "number") {
 			song.timeWorkingAtSongLoad = serialized.timeSpent;
 		}
-		song.tracks = Object.fromEntries(
+		const tracks = Object.fromEntries(
 			Object.values(serialized.tracks)
 				.map(track => [
-					track.id, trackCatalog.fromSerialized(track, this)
+					track.id, trackCatalog.fromSerialized(track, song)
 				])
 		);
+		song.tracks = tracks;
 		song.trackAssortment = serialized.trackAssortment;
 		return song;
 	}
@@ -177,9 +178,14 @@ class Song {
 		
 		targetNode.innerHTML = "";
 		
-		const tracks = new HTML.div({class: "tracks"});
-		const userTracks = new HTML.div({class: "user-tracks"});
+		const timeline = new HTML.div({class: "timeline"});
+		const timelineHeader = new HTML.div({class: "timeline-header"});
+		timeline.appendChild(timelineHeader);
 		
+		const tracks = new HTML.div({class: "tracks"});
+		timeline.appendChild(tracks);
+		
+		const userTracks = new HTML.div({class: "user-tracks"});
 		tracks.appendChild(userTracks);
 		
 		if(this.editable) {
@@ -190,7 +196,7 @@ class Song {
 			tracks.appendChild(track_add);
 		}
 		
-		targetNode.appendChild(tracks);
+		targetNode.appendChild(timeline);
 		
 		this.updateRendered();
 	}
