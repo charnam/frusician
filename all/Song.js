@@ -10,6 +10,8 @@ import ContextMenuClickableItem from "./ui/contextmenu/ContextMenuClickableItem.
 import Identifier from "./lib/Identifier.js";
 import Track from "./tracks/Track.js";
 import trackCatalog from "./tracks/trackCatalog.js";
+import NoteTrack from "./tracks/NoteTrack.js";
+import SampleTrack from "./tracks/SampleTrack.js";
 
 
 class Song {
@@ -65,6 +67,11 @@ class Song {
 	constructor() {
 		this.sessionStartTime = Date.now();
 		this.id = Identifier.create();
+		
+		new NoteTrack(this);
+		new NoteTrack(this);
+		new NoteTrack(this);
+		new SampleTrack(this);
 	}
 	
 	save(debug = false) {
@@ -158,7 +165,7 @@ class Song {
 		song.tracks = Object.fromEntries(
 			Object.values(serialized.tracks)
 				.map(track => [
-					track.id, trackCatalog.byTypeID[track.typeID].fromSerialized(track, this)
+					track.id, trackCatalog.fromSerialized(track, this)
 				])
 		);
 		song.trackAssortment = serialized.trackAssortment;

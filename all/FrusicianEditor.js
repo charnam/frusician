@@ -19,7 +19,7 @@ class FrusicianEditor {
 		const header = new Header(new ContextMenu([
 			new ContextMenu.Submenu("File", [
 				new ContextMenu.ClickableItem("New", () => {
-					this.song = new Song();
+					this.setSong(new Song());
 				}),
 				new ContextMenu.ClickableItem("Save", () => {
 					this.song.save();
@@ -48,11 +48,6 @@ class FrusicianEditor {
 		
 		const song = new Song()
 		this.setSong(song);
-		
-		new NoteTrack(song);
-		new NoteTrack(song);
-		new NoteTrack(song);
-		new SampleTrack(song);
 		
 		window.addEventListener("keydown", (keyEvent) => {
 			if(document.querySelector(".node-graph-container")) {

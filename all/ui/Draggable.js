@@ -9,7 +9,7 @@ class Draggable {
 	startDrag(event) {
 		const overlay = new Overlay();
 		
-		overlay.style.cursor = "move";
+		overlay.style.cursor = "all-scroll";
 		
 		let startX = event.clientX;
 		let startY = event.clientY;
@@ -37,6 +37,8 @@ class Draggable {
 				deltaY: y - startY
 			});
 			overlay.remove();
+			window.removeEventListener("mousemove", moveMouse);
+			window.removeEventListener("mouseup", releaseMouse);
 		}
 		
 		window.addEventListener("mousemove", moveMouse);

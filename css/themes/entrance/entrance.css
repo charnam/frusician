@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
-@import url("../../node_modules/bootstrap-icons/font/bootstrap-icons.css");
+@import url("../../../node_modules/bootstrap-icons/font/bootstrap-icons.css");
 
 /* Colors */
 :root {
@@ -165,6 +165,12 @@ body {
 	background: var(--background-color-level0);
 	border-bottom: 1px solid var(--background-color-level3);
 	box-sizing: border-box;
+	transition: 0.2s ease-in-out;
+	transition-property: opacity, box-shadow;
+}
+.track.is-dragging {
+	opacity: 0.7;
+	box-shadow: 0 10px 20px #0008;
 }
 
 .track.track-add:after {
@@ -195,5 +201,13 @@ body {
 .track-type {
 	user-select: none;
 	font-size: 10px;
+	color: var(--text-color-level2);
+}
+
+
+.track-handle:after {
+	font-family: bootstrap-icons;
+	content: "\F3FD";
+	cursor: grab;
 	color: var(--text-color-level2);
 }

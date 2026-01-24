@@ -5,15 +5,45 @@
 	--beat-width: 64px;
 }
 
+@keyframes track-move-up {
+	0% {
+		transform: translateY(0);
+	}
+	100% {
+		transform: translateY(-100%);
+	}
+}
+
+@keyframes track-move-down {
+	0% {
+		transform: translateY(0);
+	}
+	100% {
+		transform: translateY(100%);
+	}
+}
+
 /* Tracks, and track adjustment */
 .track {
 	height: var(--track-height);
 	display: flex;
+	position: relative;
+}
+.track.is-dragging {
+	z-index: 1000;
 }
 .track .track-info {
 	display: flex;
 	width: var(--track-info-width);
 	flex-direction: column;
+	position: relative;
+}
+
+.track-handle {
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding-right: 5px;
 }
 
 .track.track-add {

@@ -3,6 +3,7 @@ import Identifier from "../lib/Identifier.js";
 import Clip from "../clips/Clip.js";
 import ContextMenu from "../ui/contextmenu/ContextMenu.js";
 import ContextMenuClickableItem from "../ui/contextmenu/ContextMenuClickableItem.js";
+import Draggable from "../ui/Draggable.js";
 
 class Track {
 	static typeID = "none"; // Used for importing
@@ -49,20 +50,85 @@ class Track {
 		const track = HTML.div({class: "track", trackid: this.id});
 		
 		const trackInfo = HTML.div({class: "track-info"});
-		track.appendChild(trackInfo);
-		
 		trackInfo.oncontextmenu = ContextMenu.eventOpener(this.contextMenu);
+		track.appendChild(trackInfo);
 		
 		const trackType = new HTML.div({class: "track-type"}, this.constructor.typeName);
 		trackInfo.appendChild(trackType);
 		
 		const trackName = new HTML.input({class: "track-name", type: "text"});
 		trackName.value = this.name;
+		trackName.oninput = () => this.name = trackName.value;
 		trackInfo.appendChild(trackName);
+		
+		const trackDragHandle = new HTML.div({class: "track-handle"});
+		
+		let dragTarget = null;
+		const draggableTrack = new Draggable(position => {
+			track.classList.add("is-dragging");
+			track.style.transform = "translateY("+position.deltaY+"px)";
+			
+			dragTarget = null;
+			const tracks = parentNode.querySelectorAll(".track");
+			for(let childTrack of tracks) {
+				if(childTrack == track) continue;
+				childTrack.style.transform = "translateY(0)";
+			}
+			
+			const trackEntries = Object.entries(tracks);
+			const originalIndex = trackEntries.findIndex(entry => entry[1] == track);
+			for(let [targetIndex, targetTrack] of trackEntries) {
+				const rect = targetTrack.getBoundingClientRect();
+				
+				if( position.x > rect.left &&  position.y > rect.top &&
+					position.x < rect.right && position.y < rect.bottom && targetTrack !== track) {
+					dragTarget = targetIndex;
+					for(let [movedIndex, movedChild] of trackEntries) {
+						if(movedChild == track) continue;
+						
+						let targetAnimation = "";
+						if(movedIndex <= originalIndex) {
+							if(movedIndex >= targetIndex) {
+								targetAnimation = "0.1s ease-in-out track-move-down";
+								movedChild.style.transform = "translateY(100%)";
+							}
+						}
+						if(movedIndex >= originalIndex) {
+							if(movedIndex <= targetIndex) {
+								targetAnimation = "0.1s ease-in-out track-move-up";
+								movedChild.style.transform = "translateY(-100%)";
+							}
+						}
+						/*if(targetAnimation !== movedChild.style.animation) {
+							movedChild.style.animation = "";
+							movedChild.scrollWidth;
+							movedChild.style.animation = targetAnimation;
+						}*/
+					}
+					return;
+				}
+			}
+		}, event => {
+			track.classList.remove("is-dragging");
+			for(let track of parentNode.querySelectorAll(".track")) {
+				track.style.transform = "";
+			}
+			if(dragTarget) {
+				const oldIndex = this.song.trackAssortment.indexOf(this.id);
+				this.song.trackAssortment.splice(oldIndex, 1);
+				this.song.trackAssortment.splice(dragTarget, 0, this.id);
+				this.song.updateRendered();
+			}
+		});
+		trackDragHandle.onmousedown = draggableTrack.createDragEventHandler();
+		
+		trackInfo.appendChild(trackDragHandle);
 		
 		if(this.song && !this.song.editable) {
 			trackName.disabled = true;
 		}
+		
+		
 		
 		parentNode.appendChild(track);
 		this.boundTo.push(track);
@@ -75,7 +141,9 @@ class Track {
 	}
 	
 	static fromSerialized(object, song) {
-		const track = new this.constructor(song);
+		const track = new this(song);
+		
+		console.log(track);
 		
 		track.id = object.id;
 		track.name = object.name;

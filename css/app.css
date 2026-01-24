@@ -3,7 +3,7 @@
 @import url("./header.css");
 @import url("./contextmenu.css");
 @import url("./loader-default.css");
-@import url("./themes/entrance.css");
+@import url("./themes/entrance/entrance.css");
 
 html {
 	background-color: unset !important;
