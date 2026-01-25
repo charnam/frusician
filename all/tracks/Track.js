@@ -16,6 +16,8 @@ class Track {
 	clipPlacement = [];
 	zoomLevel = 1;
 	
+	muted = false;
+	
 	boundTo = [];
 	
 	contextMenu = null;
@@ -75,7 +77,7 @@ class Track {
 		const draggableTrack = new Draggable(position => {
 			dragTarget = null;
 			track.classList.add("is-dragging");
-			track.style.transform = "translateY("+position.deltaY+"px) translateX("+position.deltaX+"px) scale(0.8) translateY(-30px)";
+			track.style.transform = "translateY("+position.deltaY+"px)";
 			const tracks = parentNode.querySelectorAll(".track");
 			for(let childTrack of tracks) {
 				if(childTrack == track) continue;
@@ -106,17 +108,24 @@ class Track {
 					return;
 				}
 			}
-		}, event => {
-			track.classList.remove("is-dragging");
+		}, position => {
+			const originalRect = track.getBoundingClientRect();
 			for(let track of parentNode.querySelectorAll(".track")) {
 				track.style.transform = "";
 			}
+			track.scrollWidth;
 			if(dragTarget) {
 				const oldIndex = this.song.trackAssortment.indexOf(this.id);
 				this.song.trackAssortment.splice(oldIndex, 1);
 				this.song.trackAssortment.splice(dragTarget, 0, this.id);
 				this.song.updateRendered();
 			}
+			const rect = track.getBoundingClientRect();
+			track.style.transform = "translateY("+(originalRect.y - rect.y)+"px)";
+			track.scrollWidth;
+			track.classList.remove("is-dragging");
+			track.scrollWidth;
+			track.style.transform = "";
 		});
 		trackDragHandle.onmousedown = draggableTrack.createDragEventHandler();
 		
@@ -131,6 +140,19 @@ class Track {
 	}
 	
 	updateRendered() {
+		for(let target of this.boundTo) {
+			if(this.muted) {
+				target.classList.add("muted");
+			} else {
+				if(this.song && this.song.solo) {
+					if(this.song.solo == this.id) {
+						target.classList.add("solo");
+					} else {
+						target.classList.add("muted");
+					}
+				}
+			}
+		}
 	}
 	
 	static fromSerialized(object, song) {

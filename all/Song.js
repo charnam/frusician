@@ -4,7 +4,7 @@
 // - below, in the "catalog" section
 // This is to ensure songs with a new track type may be properly
 // saved and loaded later.
-import { HTML } from "imperative-html";
+import { HTML, SVG, applyToElement } from "imperative-html";
 import ContextMenu from "./ui/contextmenu/ContextMenu.js";
 import ContextMenuClickableItem from "./ui/contextmenu/ContextMenuClickableItem.js";
 import Identifier from "./lib/Identifier.js";
@@ -26,9 +26,17 @@ class Song {
 	timeWorkingAtSongLoad = 0;
 	
 	tempo = 120;
+	songLengthMeasures = 16;
 	beatsPerMeasure = 4;
 	boundTo = [];
-	pixelsPerMeasure = 100;
+	_pixelsPerMeasure = 200;
+	
+	set pixelsPerMeasure(value) {
+		this._pixelsPerMeasure = Math.min(Math.max(50, value), 500);
+	}
+	get pixelsPerMeasure() {
+		return this._pixelsPerMeasure;
+	}
 	
 	addTrackMenu = new ContextMenu(
 		trackCatalog.all.map(trackType =>
@@ -111,7 +119,11 @@ class Song {
 	
 	static load() {
 		return new Promise((res, rej) => {
-			const fileInput = new HTML.input({type: "file", style: "display: none;"});
+			const fileInput = new HTML.input({
+				type: "file",
+				style: "display: none;",
+				accept: ".fru, .frudbg, application/frusician"
+			});
 			fileInput.onchange = () => {
 				const reader = new FileReader();
 				reader.readAsText(fileInput.files[0]);
@@ -169,6 +181,9 @@ class Song {
 				])
 		);
 		song.tracks = tracks;
+		song.songLengthMeasures = serialized.songLengthMeasures;
+		song.beatsPerMeasure = serialized.beatsPerMeasure;
+		song.pixelsPerMeasure = serialized.pixelsPerMeasure;
 		song.trackAssortment = serialized.trackAssortment;
 		return song;
 	}
@@ -179,15 +194,43 @@ class Song {
 		targetNode.innerHTML = "";
 		
 		const timeline = new HTML.div({class: "timeline"});
+		
+		const timelineInternal = new HTML.div({class: "timeline-internal"});
 		const timelineHeader = new HTML.div({class: "timeline-header"});
-		timeline.appendChild(timelineHeader);
+		const timelineHeaderButtons = new HTML.div({class: "timeline-header-buttons"});
+		
+		const timelineHeaderPlayButton = new HTML.div({class: "timeline-header-button timeline-header-button-play"});
+		timelineHeaderButtons.appendChild(timelineHeaderPlayButton);
+		
+		const timelineHeaderPauseButton = new HTML.div({class: "timeline-header-button timeline-header-button-pause"});
+		timelineHeaderButtons.appendChild(timelineHeaderPauseButton);
+		
+		timelineHeader.appendChild(timelineHeaderButtons);
+		const timelineHeaderTicks = new SVG.svg({class: "timeline-header-ticks"});
+		timelineHeader.appendChild(timelineHeaderTicks);
+		timelineInternal.appendChild(timelineHeader);
 		
 		const tracks = new HTML.div({class: "tracks"});
-		timeline.appendChild(tracks);
+		timelineInternal.appendChild(tracks);
 		
 		const userTracks = new HTML.div({class: "user-tracks"});
 		tracks.appendChild(userTracks);
 		
+		
+		timeline.addEventListener("wheel", event => {
+			if(event.ctrlKey) {
+				event.preventDefault();
+				const songTimelineRect = timelineHeaderTicks.getBoundingClientRect();
+				const infoWidth = timelineHeaderButtons.getBoundingClientRect().width;
+				const mouseTimeX = ((event.clientX - songTimelineRect.left) / songTimelineRect.width);
+				
+				this.pixelsPerMeasure /= 1 + Math.min(40, Math.max(event.deltaY, -40)) / 200;
+				this.updateRendered();
+				const newSongTimelineWidth = timelineHeaderTicks.getBoundingClientRect().width;
+				
+				timeline.scrollLeft = mouseTimeX * newSongTimelineWidth + infoWidth - event.clientX;
+			}
+		}, {passive: false})
 		if(this.editable) {
 			const track_add = new HTML.div({class: "track track-add"});
 			track_add.onmousedown = () => {
@@ -196,6 +239,7 @@ class Song {
 			tracks.appendChild(track_add);
 		}
 		
+		timeline.appendChild(timelineInternal);
 		targetNode.appendChild(timeline);
 		
 		this.updateRendered();
@@ -204,10 +248,51 @@ class Song {
 	updateRendered() {
 		for(let target of this.boundTo) {
 			target.setAttribute("style", `--pixelsPerMeasure: ${this.pixelsPerMeasure}px; --beatsPerMeasure: ${this.beatsPerMeasure};`);
-			const playheadBar = target.querySelector(".playhead-bar");
-			if(playheadBar)
-			playheadBar.innerHTML = "";
-			playheadBar
+			const timelineHeader = target.querySelector(".timeline-header");
+			
+			
+			const timelineHeaderTicks = timelineHeader.querySelector(".timeline-header-ticks");
+			const serializedSongInfo = `${this.pixelsPerMeasure}-${this.beatsPerMeasure}-${this.songLengthMeasures}`;
+			if(timelineHeaderTicks.getAttribute("serialized-song-info") !== serializedSongInfo) {
+				timelineHeaderTicks.setAttribute("serialized-song-info", serializedSongInfo);
+				
+				timelineHeaderTicks.innerHTML = "";
+				applyToElement(timelineHeaderTicks, {
+					width: this.songLengthMeasures * this.pixelsPerMeasure,
+					height: 32,
+					viewBox: "0 0 "+this.songLengthMeasures*this.pixelsPerMeasure+" 32"
+				});
+				
+				for(let i = 0; i < this.songLengthMeasures; i++) {
+					let bigTickX = this.pixelsPerMeasure * i;
+					const bigTick = SVG.rect({
+						class: "big-tick",
+						x: bigTickX,
+						y: 0,
+						width: 1,
+						height: 20
+					});
+					const beatText = SVG.text({
+						class: "beat-number",
+						x: bigTickX + 5,
+						y: 18,
+						fill: "currentColor"
+					}, i + 1);
+					timelineHeaderTicks.appendChild(bigTick);
+					timelineHeaderTicks.appendChild(beatText);
+					for(let j = 1; j < this.beatsPerMeasure; j++) {
+						const littleTick = SVG.rect({
+							class: "little-tick",
+							x: bigTickX + (this.pixelsPerMeasure / this.beatsPerMeasure) * j,
+							y: 0,
+							width: 1,
+							height: 10
+						})
+						timelineHeaderTicks.appendChild(littleTick);
+					}
+				}
+			}
+			
 			
 			const renderedTracksEl = target.querySelector(".user-tracks");
 			for(let index = 0; index < this.trackAssortment.length; index++) {

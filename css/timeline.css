@@ -3,6 +3,7 @@
 	--track-info-width: 240px;
 	--track-height: 128px;
 	--beat-width: 64px;
+	--timeline-height: 32px;
 }
 
 @keyframes track-move-up {
@@ -23,20 +24,58 @@
 	}
 }
 
+.timeline-header {
+	height: 32px;
+	display: flex;
+	z-index: 100;
+	position: sticky;
+	top: 0;
+}
+
+.timeline-header-buttons {
+	display: flex;
+	position: sticky;
+	left: 0;
+	width: var(--track-info-width);
+}
+
+.timeline-header-button {
+	aspect-ratio: 1 / 1;
+	cursor: pointer;
+}
+
+.timeline-header .big-tick, .timeline-header .little-tick {
+	fill: black;
+}
+
 /* Tracks, and track adjustment */
 .track {
 	height: var(--track-height);
 	display: flex;
 	position: relative;
 }
+@keyframes track-drag-end {
+	0% {
+		z-index: 1000;
+	}
+	99% {
+		z-index: 1000;
+	}
+	100% {
+		z-index: unset;
+	}
+}
 .track.is-dragging {
 	z-index: 1000;
+}
+.track:not(.is-dragging) {
+	animation: track-drag-end 0.2s linear;
 }
 .tracks {
 	display: flex;
 	flex-direction: column;
 	width: fit-content;
-	min-width: 100vw;
+	min-width: max(100%, 100vw);
 }
 .user-tracks {
 	display: contents;

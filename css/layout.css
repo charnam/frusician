@@ -12,7 +12,7 @@
 
 #song {
 	grid-area: song;
-	height: 100%;
+	height: calc(100% - var(--header-height));
 }
 
 .box-animation {
@@ -21,6 +21,11 @@
 	box-sizing: border-box;
 }
 
+.timeline-internal {
+	display: flex;
+	flex-direction: column;
+	width: fit-content;
+}
 .timeline {
 	overflow-x: auto;
 	height: 100%;

@@ -1,5 +1,5 @@
 @import url("./layout.css");
-@import url("./tracks.css");
+@import url("./timeline.css");
 @import url("./header.css");
 @import url("./contextmenu.css");
 @import url("./loader-default.css");
@@ -7,6 +7,7 @@
 
 html {
 	background-color: unset !important;
+	user-select: none;
 }
 
 .overlay {

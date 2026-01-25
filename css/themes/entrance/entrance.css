@@ -160,13 +160,58 @@ body {
 }
 
 
+/** Timeline **/
+.timeline-header {
+	background: var(--background-color-level1);
+	border-bottom: 1px solid var(--background-color-level3);
+}
+
+.timeline-header-buttons {
+	box-sizing: border-box;
+	padding: 5px;
+	background: linear-gradient(to right, var(--background-color-level1) 50%, transparent);
+}
+
+.timeline-header-button:after {
+	font-family: 'bootstrap-icons';
+	color: var(--text-color-level3);
+}
+.timeline-header-button:hover:after {
+	color: var(--text-color-level1);
+}
+.timeline-header-button:active:after {
+	opacity: 0.8;
+}
+.timeline-header-button-play:after {
+	content: "\F4F5";
+}
+.timeline-header-button-pause:after {
+	content: "\F4C4";
+}
+
+.timeline-header-ticks {
+	color: var(--text-color-level3);
+	font-size: 13px;
+	user-select: none;
+}
+.timeline-header .big-tick {
+	fill: var(--background-color-level3);
+}
+.timeline-header .little-tick {
+	fill: var(--background-color-level2);
+}
+
 /** Tracks **/
+
 .track {
 	background: var(--background-color-level0);
 	border-bottom: 1px solid var(--background-color-level3);
 	box-sizing: border-box;
 	transition: 0.2s ease-in-out;
-	transition-property: opacity, box-shadow, z-index;
+	transition-property: opacity, box-shadow;
+}
+.user-tracks:not(:has(.track.is-dragging)) .track {
+	transition-property: opacity, box-shadow, transform;
 }
 .track.is-dragging {
 	opacity: 0.7;
@@ -213,3 +258,5 @@ body {
 	cursor: grab;
 	color: var(--text-color-level2);
 }
+
+/** Clips **/

@@ -25,8 +25,11 @@
             import NodeGraph from "./all/nodegraph/NodeGraph.js";
             window.NodeGraph = NodeGraph;
             
+            const loadingStartedAt = Date.now();
             window.onload = () => {
-                document.body.classList.add("loaded");
+                setTimeout(() => {
+                    document.body.classList.add("loaded");
+                }, 1000 - (Date.now() - loadingStartedAt))
             }
         </script>
     </body>

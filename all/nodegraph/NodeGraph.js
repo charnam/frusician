@@ -31,6 +31,9 @@ class NodeGraph {
 	
 	serialize() {
 		return {
+			viewX: this.viewX,
+			viewY: this.viewY,
+			viewZoom: this.viewZoom,
 			nodes: Object.fromEntries(
 				Object.entries(this.nodes).map(([id, node]) => {
 					return [id, node.serialize()];
