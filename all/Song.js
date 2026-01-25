@@ -12,6 +12,7 @@ import Track from "./tracks/Track.js";
 import trackCatalog from "./tracks/trackCatalog.js";
 import NoteTrack from "./tracks/NoteTrack.js";
 import SampleTrack from "./tracks/SampleTrack.js";
+import SongPlaybackInstance from "./playback/SongPlaybackInstance.js";
 
 
 class Song {
@@ -26,7 +27,7 @@ class Song {
 	timeWorkingAtSongLoad = 0;
 	
 	tempo = 120;
-	songLengthMeasures = 16;
+	durationMeasures = 16;
 	beatsPerMeasure = 4;
 	boundTo = [];
 	_pixelsPerMeasure = 200;
@@ -75,6 +76,7 @@ class Song {
 	constructor() {
 		this.sessionStartTime = Date.now();
 		this.id = Identifier.create();
+		this.playbackInstance = new SongPlaybackInstance(this);
 		
 		new NoteTrack(this);
 		new NoteTrack(this);
@@ -181,7 +183,7 @@ class Song {
 				])
 		);
 		song.tracks = tracks;
-		song.songLengthMeasures = serialized.songLengthMeasures;
+		song.durationMeasures = serialized.durationMeasures;
 		song.beatsPerMeasure = serialized.beatsPerMeasure;
 		song.pixelsPerMeasure = serialized.pixelsPerMeasure;
 		song.trackAssortment = serialized.trackAssortment;
@@ -218,7 +220,7 @@ class Song {
 		
 		
 		timeline.addEventListener("wheel", event => {
-			if(event.ctrlKey) {
+			if((event.ctrlKey || event.target == timelineHeaderTicks) && !event.shiftKey) {
 				event.preventDefault();
 				const songTimelineRect = timelineHeaderTicks.getBoundingClientRect();
 				const infoWidth = timelineHeaderButtons.getBoundingClientRect().width;
@@ -252,46 +254,50 @@ class Song {
 			
 			
 			const timelineHeaderTicks = timelineHeader.querySelector(".timeline-header-ticks");
-			const serializedSongInfo = `${this.pixelsPerMeasure}-${this.beatsPerMeasure}-${this.songLengthMeasures}`;
+			const serializedSongInfo = `${this.pixelsPerMeasure}-${this.beatsPerMeasure}-${this.durationMeasures}`;
 			if(timelineHeaderTicks.getAttribute("serialized-song-info") !== serializedSongInfo) {
 				timelineHeaderTicks.setAttribute("serialized-song-info", serializedSongInfo);
 				
 				timelineHeaderTicks.innerHTML = "";
 				applyToElement(timelineHeaderTicks, {
-					width: this.songLengthMeasures * this.pixelsPerMeasure,
+					width: this.durationMeasures * this.pixelsPerMeasure,
 					height: 32,
-					viewBox: "0 0 "+this.songLengthMeasures*this.pixelsPerMeasure+" 32"
+					viewBox: "0 0 "+this.durationMeasures*this.pixelsPerMeasure+" 32"
 				});
 				
-				for(let i = 0; i < this.songLengthMeasures; i++) {
+				for(let i = 0; i < this.durationMeasures; i++) {
 					let bigTickX = this.pixelsPerMeasure * i;
 					const bigTick = SVG.rect({
 						class: "big-tick",
 						x: bigTickX,
 						y: 0,
-						width: 1,
-						height: 20
+						width: 2,
+						height: 24
 					});
+					timelineHeaderTicks.appendChild(bigTick);
+					for(let j = 1; j < this.beatsPerMeasure; j++) {
+						const littleTick = SVG.rect({
+							class: "little-tick",
+							x: bigTickX + (this.pixelsPerMeasure / this.beatsPerMeasure) * j,
+							y: 0,
+							width: 2,
+							height: 15
+						})
+						timelineHeaderTicks.appendChild(littleTick);
+					}
+				}
+				for(let i = 0; i < this.durationMeasures; i++) {
+					let bigTickX = this.pixelsPerMeasure * i;
 					const beatText = SVG.text({
 						class: "beat-number",
 						x: bigTickX + 5,
 						y: 18,
 						fill: "currentColor"
 					}, i + 1);
-					timelineHeaderTicks.appendChild(bigTick);
 					timelineHeaderTicks.appendChild(beatText);
-					for(let j = 1; j < this.beatsPerMeasure; j++) {
-						const littleTick = SVG.rect({
-							class: "little-tick",
-							x: bigTickX + (this.pixelsPerMeasure / this.beatsPerMeasure) * j,
-							y: 0,
-							width: 1,
-							height: 10
-						})
-						timelineHeaderTicks.appendChild(littleTick);
-					}
 				}
 			}
+			
 			
 			
 			const renderedTracksEl = target.querySelector(".user-tracks");

@@ -131,7 +131,6 @@ class Track {
 		
 		trackInfo.appendChild(trackDragHandle);
 		
-		
 		parentNode.appendChild(track);
 		this.boundTo.push(track);
 		

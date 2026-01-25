@@ -2,11 +2,16 @@ import PlaybackInstance from "./PlaybackInstance.js";
 
 class SongPlaybackInstance extends PlaybackInstance {
 	constructor(song) {
+		super();
 		this.song = song;
 	}
 	
 	getSampleAt(time) {
-		this.song.getSampleAt(time);
+		let output = 0;
+		for(let track of Object.values(this.song.tracks)) {
+			output += track.playbackInstance.getSampleAt(time);
+		}
+		return output;
 	}
 }
 

@@ -44,6 +44,12 @@
 	cursor: pointer;
 }
 
+.timeline-header-ticks {
+	cursor: pointer;
+}
+.timeline-header-ticks > * {
+	pointer-events: none;
+}
 .timeline-header .big-tick, .timeline-header .little-tick {
 	fill: black;
 }

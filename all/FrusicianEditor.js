@@ -48,6 +48,7 @@ class FrusicianEditor {
 		
 		const song = new Song()
 		this.setSong(song);
+		window.song = song;
 		
 		window.addEventListener("keydown", (keyEvent) => {
 			if(document.querySelector(".node-graph-container")) {

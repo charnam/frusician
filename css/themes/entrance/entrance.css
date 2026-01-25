@@ -234,6 +234,9 @@ body {
 	padding: 5px;
 }
 
+.track-name:not(:focus) {
+	cursor: pointer;
+}
 .track-name {
 	appearance: none;
 	border: none;
