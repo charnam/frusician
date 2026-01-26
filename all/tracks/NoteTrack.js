@@ -1,4 +1,3 @@
-import ClipPlacement from "../clips/ClipPlacement.js";
 import NoteClip from "../clips/NoteClip.js";
 import ClipTrack from "./ClipTrack.js";
 
@@ -16,7 +15,7 @@ class NoteTrack extends ClipTrack {
 		clipPlacements.addEventListener("dblclick", event => {
 			if(event.target == clipPlacements) {
 				const clip = new NoteClip(this);
-				const clipPlacement = new ClipPlacement(clip);
+				const clipPlacement = new NoteClip.Placement(clip);
 				clipPlacement.duration = 1;
 				
 				const clipPlacementsRect = clipPlacements.getBoundingClientRect();

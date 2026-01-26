@@ -277,9 +277,18 @@ body {
 
 /** Clips **/
 .clip-placement {
-	background: linear-gradient(to bottom, #f00, #c00, #400);
+	background: linear-gradient(to bottom, hsl(var(--clip-hue), 100%, 50%), hsl(var(--clip-hue), 100%, 40%), hsl(var(--clip-hue), 100%, 20%));
 	border-radius: 5px;
 	overflow: hidden;
+	z-index: 0;
+}
+.clip-placement canvas {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	z-index: -1;
 }
 .clip-placement:after {
 	content: "";
@@ -294,7 +303,7 @@ body {
 	pointer-events: none;
 }
 .clip-placement-header {
-	background: linear-gradient(to bottom, #fcc, #f88);
+	background: linear-gradient(to bottom, hsl(var(--clip-hue), 100%, 90%), hsl(var(--clip-hue), 100%, 80%));
 	font-size: 11px;
 	color: black;
 	font-weight: 600;
