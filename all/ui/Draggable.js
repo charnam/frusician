@@ -8,7 +8,6 @@ class Draggable {
 	
 	startDrag(event) {
 		const overlay = new Overlay();
-		
 		overlay.style.cursor = "all-scroll";
 		
 		let startX = event.clientX;

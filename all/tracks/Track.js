@@ -8,12 +8,10 @@ import Draggable from "../ui/Draggable.js";
 class Track {
 	static typeID = "none"; // Used for importing
 	static typeName = "Default base track, do not use"; // Human-readable name
-	static acceptsTypes = [];
+	static acceptsClipTypes = [];
 	
 	id = null;
 	name = "Track";
-	clips = {};
-	clipPlacement = [];
 	zoomLevel = 1;
 	
 	muted = false;
@@ -43,8 +41,6 @@ class Track {
 			typeID: this.constructor.typeID,
 			name: this.name,
 			id: this.id,
-			clips: Object.entries(this.clips).map(([clipid, clip]) => [clipid, clip.serialize()]),
-			clipPlacement: this.clipPlacement.map(clipPosition => clipPosition.serialize())
 		}
 	}
 	
@@ -75,46 +71,42 @@ class Track {
 		
 		let dragTarget = null;
 		const draggableTrack = new Draggable(position => {
-			dragTarget = null;
 			track.classList.add("is-dragging");
 			track.style.transform = "translateY("+position.deltaY+"px)";
-			const tracks = parentNode.querySelectorAll(".track");
-			for(let childTrack of tracks) {
-				if(childTrack == track) continue;
-				childTrack.style.transform = "translateY(0)";
-			}
 			
-			const trackEntries = Object.entries(tracks);
-			const originalIndex = trackEntries.findIndex(entry => entry[1] == track);
-			for(let [targetIndex, targetTrack] of trackEntries) {
-				const rect = targetTrack.getBoundingClientRect();
-				
-				if( position.x > rect.left &&  position.y > rect.top &&
-					position.x < rect.right && position.y < rect.bottom && targetTrack !== track) {
-					dragTarget = targetIndex;
-					for(let [movedIndex, movedChild] of trackEntries) {
-						if(movedChild == track) continue;
-						if(movedIndex <= originalIndex) {
-							if(movedIndex >= targetIndex) {
-								movedChild.style.transform = "translateY(100%)";
-							}
-						}
-						if(movedIndex >= originalIndex) {
-							if(movedIndex <= targetIndex) {
-								movedChild.style.transform = "translateY(-100%)";
-							}
-						}
+			const trackRect = track.getBoundingClientRect();
+			const trackHeight = trackRect.height;
+			const trackYOffset = position.y - trackRect.y
+			const trackIndex = this.song.trackAssortment.indexOf(this.id);
+			const tracks = this.song.trackAssortment.map(id => this.song.tracks[id]);
+			const targetIndex = trackIndex + Math.floor((position.deltaY + trackYOffset) / trackHeight);
+			
+			if(tracks[targetIndex]) {
+				const trackEntries = Object.entries(track.parentElement.querySelectorAll(".track"));
+				dragTarget = targetIndex;
+				for(let [movedIndex, movedChild] of trackEntries) {
+					if(movedChild == track) continue;
+					if(movedIndex <= trackIndex && movedIndex >= targetIndex) {
+						movedChild.style.transform = "translateY(100%)";
+					} else if(movedIndex >= trackIndex && movedIndex <= targetIndex) {
+						movedChild.style.transform = "translateY(-100%)";
+					} else {
+						movedChild.style.transform = "translateY(0)";
 					}
-					return;
 				}
+				return;
 			}
 		}, position => {
 			const originalRect = track.getBoundingClientRect();
 			for(let track of parentNode.querySelectorAll(".track")) {
+				track.style.transition = "unset";
+				track.scrollWidth;
 				track.style.transform = "";
+				track.scrollWidth;
+				track.style.transition = "";
 			}
 			track.scrollWidth;
-			if(dragTarget) {
+			if(dragTarget !== null) {
 				const oldIndex = this.song.trackAssortment.indexOf(this.id);
 				this.song.trackAssortment.splice(oldIndex, 1);
 				this.song.trackAssortment.splice(dragTarget, 0, this.id);
@@ -126,6 +118,7 @@ class Track {
 			track.classList.remove("is-dragging");
 			track.scrollWidth;
 			track.style.transform = "";
+			dragTarget = null;
 		});
 		trackDragHandle.onmousedown = draggableTrack.createDragEventHandler();
 		
@@ -159,10 +152,6 @@ class Track {
 		
 		track.id = object.id;
 		track.name = object.name;
-		track.clips = Object.fromEntries(
-			Object.entries(object.clips)
-				.map(([clipid, serializedClip]) => [clipid, Clip.fromSerialized(serializedClip)])
-		);
 		
 		return track;
 	}

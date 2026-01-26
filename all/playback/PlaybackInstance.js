@@ -2,8 +2,12 @@
 class PlaybackInstance {
 	beatsPerMinute = 120;
 	
-	getSampleAt(time) {
-		return 0;
+	get duration() { // Total playback time, in seconds
+		return 4;
+	}
+	
+	getSampleAt(time) { // Time in seconds
+		return Math.sin(time * Math.PI * 100); // Resulting sample (-1 to 1) - 100Hz?
 	}
 	
 	getSampleRange(startTime, duration, samplesPerSecond) {
@@ -16,6 +20,10 @@ class PlaybackInstance {
 		}
 		
 		return samples;
+	}
+	
+	createDOMPlayer() {
+		
 	}
 }
 

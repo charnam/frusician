@@ -1,8 +1,11 @@
-import Track from "./Track.js";
+import ClipPlacement from "../clips/ClipPlacement.js";
+import NoteClip from "../clips/NoteClip.js";
+import ClipTrack from "./ClipTrack.js";
 
-class NoteTrack extends Track {
+class NoteTrack extends ClipTrack {
 	static typeID = "noteTrack";
 	static typeName = "Note Track";
+	static acceptsClipTypes = [NoteClip];
 	
 	render(parentNode) {
 		const track = super.render(parentNode);
@@ -10,18 +13,16 @@ class NoteTrack extends Track {
 		
 		track.addEventListener("dblclick", event => {
 			if(event.target == track) {
-				this.clips
+				const clip = new NoteClip(this);
+				const clipPlacement = new ClipPlacement(clip);
+				this.addClip(clip);
+				this.addClipPlacement(clipPlacement);
 			}
 		});
 		
 		return track;
 	}
 	
-	updateRendered() {
-		/*for(let clip)
-		for(let clip of this.clips) {
-		}*/
-	}
 }
 
 export default NoteTrack;

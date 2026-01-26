@@ -21,6 +21,7 @@ class Song {
 	id = null;
 	title = "Untitled Song";
 	editable = true;
+	outputChannels = 2;
 	tracks = {};
 	trackAssortment = [];
 	sessionStartTime = null;
@@ -195,45 +196,52 @@ class Song {
 		
 		targetNode.innerHTML = "";
 		
-		const timeline = new HTML.div({class: "timeline"});
+		let timeline,
+			timelineInternal,
+			timelineHeader,
+			timelineHeaderButtons,
+			timelineHeaderPauseButton,
+			timelineHeaderPlayButton,
+			timelineHeaderTicks,
+			tracks,
+			userTracks;
 		
-		const timelineInternal = new HTML.div({class: "timeline-internal"});
-		const timelineHeader = new HTML.div({class: "timeline-header"});
-		const timelineHeaderButtons = new HTML.div({class: "timeline-header-buttons"});
+		timeline = new HTML.div({class: "timeline"},
+			timelineInternal = new HTML.div({class: "timeline-internal"},
+				timelineHeader = new HTML.div({class: "timeline-header"},
+					timelineHeaderButtons = new HTML.div({class: "timeline-header-buttons"},
+						timelineHeaderPlayButton = new HTML.div({class: "timeline-header-button timeline-header-button-play"}),
+						timelineHeaderPauseButton = new HTML.div({class: "timeline-header-button timeline-header-button-pause"}),
+					),
+					timelineHeaderTicks = new SVG.svg({class: "timeline-header-ticks"})
+				),
+				tracks = new HTML.div({class: "tracks"},
+					userTracks = new HTML.div({class: "user-tracks"})
+				)
+			),
+		);
 		
-		const timelineHeaderPlayButton = new HTML.div({class: "timeline-header-button timeline-header-button-play"});
-		timelineHeaderButtons.appendChild(timelineHeaderPlayButton);
-		
-		const timelineHeaderPauseButton = new HTML.div({class: "timeline-header-button timeline-header-button-pause"});
-		timelineHeaderButtons.appendChild(timelineHeaderPauseButton);
-		
-		timelineHeader.appendChild(timelineHeaderButtons);
-		const timelineHeaderTicks = new SVG.svg({class: "timeline-header-ticks"});
-		timelineHeader.appendChild(timelineHeaderTicks);
-		timelineInternal.appendChild(timelineHeader);
-		
-		const tracks = new HTML.div({class: "tracks"});
-		timelineInternal.appendChild(tracks);
-		
-		const userTracks = new HTML.div({class: "user-tracks"});
-		tracks.appendChild(userTracks);
-		
-		
-		timeline.addEventListener("wheel", event => {
-			if((event.ctrlKey || event.target == timelineHeaderTicks) && !event.shiftKey) {
-				event.preventDefault();
-				const songTimelineRect = timelineHeaderTicks.getBoundingClientRect();
-				const infoWidth = timelineHeaderButtons.getBoundingClientRect().width;
-				const mouseTimeX = ((event.clientX - songTimelineRect.left) / songTimelineRect.width);
-				
-				this.pixelsPerMeasure /= 1 + Math.min(40, Math.max(event.deltaY, -40)) / 200;
-				this.updateRendered();
-				const newSongTimelineWidth = timelineHeaderTicks.getBoundingClientRect().width;
-				
-				timeline.scrollLeft = mouseTimeX * newSongTimelineWidth + infoWidth - event.clientX;
-			}
-		}, {passive: false})
 		if(this.editable) {
+			timeline.addEventListener("wheel", event => {
+				if((event.ctrlKey || event.target == timelineHeaderTicks) && !event.shiftKey) {
+					event.preventDefault();
+					const songTimelineRect = timelineHeaderTicks.getBoundingClientRect();
+					const infoWidth = timelineHeaderButtons.getBoundingClientRect().width;
+					const mouseTimeX = ((event.clientX - songTimelineRect.left) / songTimelineRect.width);
+					
+					this.pixelsPerMeasure = 
+						Math.max(
+							this.pixelsPerMeasure / (1 + Math.min(40, Math.max(event.deltaY, -40)) / 200),
+							(window.innerWidth - infoWidth) / this.durationMeasures
+						);
+					
+					this.updateRendered();
+					const newSongTimelineWidth = timelineHeaderTicks.getBoundingClientRect().width;
+					
+					timeline.scrollLeft = mouseTimeX * newSongTimelineWidth + infoWidth - event.clientX;
+				}
+			}, {passive: false})
+			
 			const track_add = new HTML.div({class: "track track-add"});
 			track_add.onmousedown = () => {
 				this.addTrackMenu.open();
@@ -241,10 +249,12 @@ class Song {
 			tracks.appendChild(track_add);
 		}
 		
-		timeline.appendChild(timelineInternal);
+		
 		targetNode.appendChild(timeline);
 		
 		this.updateRendered();
+		
+		timeline.scrollLeft = 0;
 	}
 	
 	updateRendered() {
