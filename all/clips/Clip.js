@@ -1,9 +1,12 @@
 import { HTML } from "imperative-html";
 import Identifier from "../lib/Identifier.js";
+import ClipPlacement from "./ClipPlacement.js";
 
 class Clip {
 	static typeID = null;
 	static typeName = "Default clip, do not use";
+	
+	static Placement = ClipPlacement;
 	
 	id = null;
 	name = "Clip"

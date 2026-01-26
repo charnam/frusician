@@ -11,10 +11,17 @@ class NoteTrack extends ClipTrack {
 		const track = super.render(parentNode);
 		track.classList.add("note-track");
 		
-		track.addEventListener("dblclick", event => {
-			if(event.target == track) {
+		const clipPlacements = track.querySelector(".clip-placements");
+		
+		clipPlacements.addEventListener("dblclick", event => {
+			if(event.target == clipPlacements) {
 				const clip = new NoteClip(this);
 				const clipPlacement = new ClipPlacement(clip);
+				clipPlacement.duration = 1;
+				
+				const clipPlacementsRect = clipPlacements.getBoundingClientRect();
+				clipPlacement.time = Math.floor(((event.clientX - clipPlacementsRect.left) / clipPlacementsRect.width) * this.song.durationMeasures);
+				
 				this.addClip(clip);
 				this.addClipPlacement(clipPlacement);
 			}

@@ -1,5 +1,6 @@
 import Track from "./Track.js";
 import Clip from "../clips/Clip.js";
+import { HTML } from "imperative-html";
 
 class ClipTrack extends Track {
 	clips = {};
@@ -17,10 +18,10 @@ class ClipTrack extends Track {
 	
 	render(parentNode) {
 		const track = super.render(parentNode);
-		for(let clip of this.clipPlacement) {
-			clip.render()
-		}
-		
+		track.appendChild(
+			new HTML.div({class: "clip-placements"})
+		);
+		this.updateRendered();
 		return track;
 	}
 	
@@ -28,7 +29,26 @@ class ClipTrack extends Track {
 		super.updateRendered();
 		
 		if(this.clipPlacement) {
+			for(let target of this.boundTo) {
+				const clips = target.querySelector(".clip-placements");
+				if(!clips) continue;
+				
+				for(let placementEl of clips.querySelectorAll(".clip-placement")) {
+					if(!this.clipPlacement.some(placement => placement.id == placementEl.getAttribute("placementid"))) {
+						placementEl.remove();
+					}
+				}
+				
+				for(let placement of this.clipPlacement) {
+					if(!clips.querySelector(`.clip-placement[placementid="${placement.id}"]`)) {
+						placement.render(clips);
+					}
+				}
+			}
+			
 			for(let placement of this.clipPlacement) {
+				
+				
 				placement.updateRendered();
 			}
 		}

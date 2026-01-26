@@ -276,3 +276,53 @@ body {
 }
 
 /** Clips **/
+.clip-placement {
+	background: linear-gradient(to bottom, #f00, #c00, #400);
+	border-radius: 5px;
+	overflow: hidden;
+}
+.clip-placement:after {
+	content: "";
+	position: absolute;
+	box-shadow: 0 0 2px 1px inset black,
+				0 0 4px 0px inset #fff7;
+	z-index: 999;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+}
+.clip-placement-header {
+	background: linear-gradient(to bottom, #fcc, #f88);
+	font-size: 11px;
+	color: black;
+	font-weight: 600;
+	padding: 0 3px;
+	box-sizing: border-box;
+	text-shadow: 0 1px 1px #fff5;
+	border-radius: 2px;
+	cursor: grab;
+}
+
+.clip-placement-extend-panel {
+	background: #ca09;
+	border-radius: 8px 0 0 8px;
+}
+.clip-placement-extend-panel > * {
+	cursor: grab;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: #000c;
+}
+.clip-placement-extend-panel > *:after {
+	font-family: bootstrap-icons;
+	font-size: 12px;
+}
+.clip-placement-extend-loop:after {
+	content: "\F116";
+}
+.clip-placement-extend-duration:after {
+	content: "\F6AA"
+}
