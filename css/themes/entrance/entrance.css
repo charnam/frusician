@@ -238,11 +238,14 @@ button:active {
 	fill: var(--background-color-level2);
 }
 
-/** Tracks **/
+.timeline-playhead {
+	background: var(--text-color-level1);
+}
 
+/** Tracks **/
 .track {
 	background: var(--background-color-level0);
-	border-bottom: 1px solid var(--background-color-level3);
+	/*border-bottom: 1px solid var(--background-color-level3);*/
 	box-sizing: border-box;
 	transition: 0.2s ease-in-out;
 	transition-property: opacity, box-shadow, transform;
@@ -260,6 +263,15 @@ button:active {
 	content: "\F4FE";
 	font-size: 32px;
 	color: var(--background-color-level3);
+}
+.track:before {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	height: 1px;
+	content: "";
+	background: var(--background-color-level3);
 }
 
 .track .track-info {

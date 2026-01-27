@@ -2,6 +2,8 @@ import { HTML } from "imperative-html";
 import Identifier from "../lib/Identifier.js";
 import Draggable from "../ui/Draggable.js";
 import EditorModal from "../ui/EditorModal.js";
+import ContextMenu from "../ui/contextmenu/ContextMenu.js";
+import ContextMenuClickableItem from "../ui/contextmenu/ContextMenuClickableItem.js";
 
 class Clip {
 	static typeID = null;
@@ -51,6 +53,26 @@ class Clip {
 				)
 			);
 			
+			const contextMenu = new ContextMenu([
+				new ContextMenuClickableItem("Edit", () => {
+					this.clip.openClipEditor();
+				}),
+				new ContextMenuClickableItem("Remove instance", () => {
+					let thisIndex = this.clip.track.clipPlacement.indexOf(this);
+					if(thisIndex > -1) {
+						this.clip.track.clipPlacement.splice(thisIndex, 1)
+					}
+					this.clip.track.updateRendered();
+				}),
+				new ContextMenuClickableItem("Delete clip", () => {
+					this.clip.track.clipPlacement = this.clip.track.clipPlacement.filter(
+						placement => placement.clip !== this.clip);
+					delete this.clip.track.clips[this.clip.id];
+					this.clip.track.updateRendered();
+				})
+			]);
+			
+			
 			const dragTrack = new Draggable(position => {
 				const roundBy = this.clip.track.song.pixelsPerMeasure / this.clip.track.song.beatsPerMeasure;
 				clipPlacement.classList.add("is-dragging");
@@ -63,6 +85,7 @@ class Clip {
 				this.updateRendered();
 			});
 			clipPlacementHeader.onmousedown = dragTrack.createDragEventHandler();
+			clipPlacement.oncontextmenu = ContextMenu.eventOpener(contextMenu);
 			
 			parentNode.appendChild(clipPlacement);
 			this.boundTo.push(clipPlacement);
@@ -141,7 +164,7 @@ class Clip {
 		}
 		
 		editorClipName.value = this.name;
-		editorClipName.oninput = event => {
+		editorClipName.oninput = () => {
 			this.name = editorClipName.value;
 			this.track.updateRendered();
 		}

@@ -6,10 +6,10 @@ class SongPlaybackInstance extends PlaybackInstance {
 		this.song = song;
 	}
 	
-	getSampleAt(time) {
+	getSampleAt(time, channel) {
 		let output = 0;
 		for(let track of Object.values(this.song.tracks)) {
-			output += track.playbackInstance.getSampleAt(time);
+			output += track.playbackInstance.getSampleAt(time, channel);
 		}
 		return output;
 	}

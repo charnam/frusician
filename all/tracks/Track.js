@@ -4,6 +4,7 @@ import Clip from "../clips/Clip.js";
 import ContextMenu from "../ui/contextmenu/ContextMenu.js";
 import ContextMenuClickableItem from "../ui/contextmenu/ContextMenuClickableItem.js";
 import Draggable from "../ui/Draggable.js";
+import TrackPlaybackInstance from "../playback/TrackPlaybackInstance.js";
 
 class Track {
 	static typeID = "none"; // Used for importing
@@ -13,6 +14,8 @@ class Track {
 	id = null;
 	name = "Track";
 	zoomLevel = 1;
+	
+	playbackInstance = new TrackPlaybackInstance(this);
 	
 	muted = false;
 	
@@ -129,6 +132,10 @@ class Track {
 		
 		this.updateRendered();
 		return track;
+	}
+	
+	getSampleAt(time, channel) {
+		return 0;
 	}
 	
 	updateRendered() {

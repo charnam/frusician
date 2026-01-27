@@ -1,4 +1,5 @@
 import { HTML } from "imperative-html";
+import EditorModal from "../ui/EditorModal.js";
 
 class NodeGraph {
 	nodes = {};
@@ -18,14 +19,19 @@ class NodeGraph {
 		return node;
 	}
 	
-	edit() {
+	openGraphEditor() {
+		const editorWrapper = new EditorModal();
+		return this.renderGraphEditor(editorWrapper);
+	}
+	
+	renderGraphEditor(parentNode) {
 		const nodeGraph = new HTML.div({class: "node-graph-container"});
 		
 		for(let [node_id, node] of Object.entries(this.nodes)) {
 			node.render(nodeGraph, this);
 		}
 		
-		document.body.appendChild(nodeGraph);
+		parentNode.appendChild(nodeGraph);
 		return nodeGraph;
 	}
 	

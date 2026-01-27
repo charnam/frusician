@@ -13,6 +13,7 @@ import trackCatalog from "./tracks/trackCatalog.js";
 import NoteTrack from "./tracks/NoteTrack.js";
 import SampleTrack from "./tracks/SampleTrack.js";
 import SongPlaybackInstance from "./playback/SongPlaybackInstance.js";
+import Draggable from "./ui/Draggable.js";
 
 
 class Song {
@@ -196,6 +197,8 @@ class Song {
 		
 		targetNode.innerHTML = "";
 		
+		const playback = this.playbackInstance.createDOMPlayer();
+		
 		let timeline,
 			timelineInternal,
 			timelineHeader,
@@ -204,7 +207,8 @@ class Song {
 			timelineHeaderPlayButton,
 			timelineHeaderTicks,
 			tracks,
-			userTracks;
+			userTracks,
+			timelinePlayhead;
 		
 		timeline = new HTML.div({class: "timeline"},
 			timelineInternal = new HTML.div({class: "timeline-internal"},
@@ -219,7 +223,33 @@ class Song {
 					userTracks = new HTML.div({class: "user-tracks"})
 				)
 			),
+			timelinePlayhead = new HTML.div({class: 'timeline-playhead'})
 		);
+		
+		timelineHeaderPlayButton.onclick = () => {
+			playback.play();
+		}
+		timelineHeaderPauseButton.onclick = () => {
+			playback.pause();
+		}
+		const updatePlayhead = position => {
+			const timelineTicksRect = timelineHeaderTicks.getBoundingClientRect();
+			const time = Math.min(Math.max(0, (position.x - timelineTicksRect.x) / timelineTicksRect.width), 1) / ((this.durationMeasures - 1) / this.beatsPerMeasure) * this.tempo;
+			playback.currentTime = time;
+		}
+		const draggable = new Draggable(updatePlayhead, updatePlayhead);
+		timelineHeaderTicks.onmousedown = event => {
+			draggable.drag(event);
+			draggable.startDrag(event);
+		};
+		
+		const updatePlayheadVisual = () => {
+			if(timeline) {
+				timeline.setAttribute("style", `--playbackTime: ${playback.currentTime / 60 * this.tempo / this.beatsPerMeasure};`);
+				requestAnimationFrame(updatePlayheadVisual);
+			}
+		}
+		updatePlayheadVisual();
 		
 		if(this.editable) {
 			timeline.addEventListener("wheel", event => {

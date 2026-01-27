@@ -1,6 +1,7 @@
 import { HTML, SVG } from "imperative-html";
 import Clip from "./Clip.js";
 import BoxAnimation from "../ui/BoxAnimation.js";
+import Note from "./NoteTrack/Note.js";
 
 class NoteClip extends Clip {
 	static typeID = "noteClip"
@@ -31,7 +32,9 @@ class NoteClip extends Clip {
 		}
 	}
 	
-	notes = [];
+	notes = [
+		new Note()
+	];
 	
 	renderClipEditor(parentNode) {
 		const editor = super.renderClipEditor(parentNode);
@@ -41,24 +44,6 @@ class NoteClip extends Clip {
 		)
 		
 		return editor;
-	}
-}
-
-class Note {
-	pitch = 60;
-	time = 0;
-	
-	serialize() {
-		return {
-			pitch: this.pitch,
-			time: this.time
-		}
-	}
-	
-	static fromSerialized(serialized) {
-		const note = new this();
-		note.pitch = serialized.pitch;
-		note.time = serialized.time;
 	}
 }
 

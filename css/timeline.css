@@ -24,6 +24,10 @@
 	}
 }
 
+.timeline {
+	position: relative;
+}
+
 .timeline-header {
 	height: 32px;
 	display: flex;
@@ -52,6 +56,15 @@
 }
 .timeline-header .big-tick, .timeline-header .little-tick {
 	fill: black;
+}
+
+.timeline-playhead {
+	position: absolute;
+	transform: translateX(calc(var(--playbackTime) * var(--pixelsPerMeasure) + var(--track-info-width))) translateX(-50%);
+	width: 3px;
+	background: black;
+	height: 100%;
+	top: 0;
 }
 
 /* Tracks, and track adjustment */
@@ -112,6 +125,7 @@
 	position: sticky;
 	left: 0;
 	width: var(--track-info-width);
+	z-index: 100;
 }
 .track.track-add::after {
 	content: "Add track...";
@@ -139,6 +153,10 @@
 	display: flex;
 	height: 32px;
 	align-items: center;
+}
+
+.clip-editor-clip-name {
+	width: 100%;
 }
 
 .clip-editor-close-button {

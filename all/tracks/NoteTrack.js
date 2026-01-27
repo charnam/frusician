@@ -1,10 +1,26 @@
 import NoteClip from "../clips/NoteClip.js";
+import Math2 from "../lib/Math2.js";
 import ClipTrack from "./ClipTrack.js";
 
 class NoteTrack extends ClipTrack {
 	static typeID = "noteTrack";
 	static typeName = "Note Track";
 	static acceptsClipTypes = [NoteClip];
+	
+	shouldRegenerateNotes = true; // caching
+	
+	_notesCache = [];
+	get notes() {
+		if(this._notesCache && !this.shouldRegenerateNotes) return this._notesCache;
+		const output = [];
+		for(let placement of this.clipPlacement) {
+			if(placement instanceof NoteClip.Placement) {
+				output.push(...placement.clip.notes.map(note => note.getWithTimeOffset(placement.time)));
+			}
+		}
+		this._notesCache = output;
+		return output;
+	}
 	
 	render(parentNode) {
 		const track = super.render(parentNode);
@@ -28,7 +44,29 @@ class NoteTrack extends ClipTrack {
 		
 		return track;
 	}
+	updateRendered() {
+		super.updateRendered();
+		/*debugging if(this._notesCache !== undefined) {
+			console.log(this.notes);
+		}*/
+	}
 	
+	getSampleAt(time, channel) {
+		const timeBeats = time / 60 * this.song.tempo;
+		const playingNotes = this.notes.filter(note => {
+			const duration = note.beats / this.song.beatsPerMeasure;
+			
+			return note.time < timeBeats && note.time + duration > timeBeats;
+		})
+		let output = 0;
+		for(let note of playingNotes) {
+			output += Math.sin(time * Math2.midiToFreq(note.pitch) * Math.PI);
+		}
+		if(playingNotes.length > 0) {
+			output /= playingNotes.length;
+		}
+		return output;
+	}
 }
 
 export default NoteTrack;

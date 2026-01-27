@@ -6,8 +6,8 @@ class TrackPlaybackInstance extends PlaybackInstance {
 		this.track = track;
 	}
 	
-	getSampleAt(time) {
-		return this.track.getSampleAt(time);
+	getSampleAt(time, channel) {
+		return this.track.getSampleAt(time, channel);
 	}
 }
 
