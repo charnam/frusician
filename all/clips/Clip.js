@@ -1,6 +1,7 @@
 import { HTML } from "imperative-html";
 import Identifier from "../lib/Identifier.js";
 import Draggable from "../ui/Draggable.js";
+import EditorModal from "../ui/EditorModal.js";
 
 class Clip {
 	static typeID = null;
@@ -113,6 +114,45 @@ class Clip {
 			name = "Clip "+iter;
 		}
 		this.name = name;
+	}
+	
+	openClipEditor() {
+		const editorWrapper = new EditorModal();
+		return this.renderClipEditor(editorWrapper);
+	}
+	
+	renderClipEditor(parentNode) {
+		let editor,
+			editorHeader,
+			editorCloseButton,
+			editorClipName;
+		
+		editor = new HTML.div({class: "clip-editor"},
+			editorHeader = new HTML.div({class: "clip-editor-header"},
+				editorCloseButton = new HTML.button({class: "clip-editor-close-button"}),
+				editorClipName = new HTML.input({type: "text", class: "clip-editor-clip-name"}),
+			),
+			new HTML.div({class: "clip-editor-edit-box"})
+		);
+		
+		editorCloseButton.onclick = () => {
+			const wrapper = parentNode.parentElement;
+			wrapper.remove();
+		}
+		
+		editorClipName.value = this.name;
+		editorClipName.oninput = event => {
+			this.name = editorClipName.value;
+			this.track.updateRendered();
+		}
+		editorClipName.onkeydown = event => {
+			if(event.key == "Enter") {
+				editorClipName.blur();
+			}
+		}
+		
+		parentNode.appendChild(editor);
+		return editor;
 	}
 	
 	serialize() {

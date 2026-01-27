@@ -5,6 +5,7 @@ class BoxAnimation {
 	static fromPositions(x, y, width, height, x2, y2, width2, height2) {
 		return new Promise(res => {
 			const box = new HTML.div({class: "box-animation"});
+			document.body.appendChild(box);
 			box.style.left = x+"px";
 			box.style.top = y+"px";
 			box.style.width = width+"px";

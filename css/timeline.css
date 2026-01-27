@@ -123,6 +123,30 @@
 	width: 100%;
 }
 
+.clip-placement-header {
+	overflow: hidden;
+	display: flex;
+}
+.clip-placement-header-name {
+	text-overflow: ellipsis;
+	overflow: hidden;
+	max-width: 100%;
+	display: inline-block;
+	white-space: nowrap;
+}
+
+.clip-editor-header {
+	display: flex;
+	height: 32px;
+	align-items: center;
+}
+
+.clip-editor-close-button {
+	aspect-ratio: 1 / 1;
+	height: 24px;
+	margin-right: 10px;
+}
+
 .clip-placement {
 	position: absolute;
 	left: calc(var(--time) * var(--pixelsPerMeasure));

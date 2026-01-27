@@ -18,6 +18,8 @@
 .box-animation {
 	position: fixed;
 	border: 1px solid gray;
+	transition: all 0.3s linear;
+	z-index: 1000;
 	box-sizing: border-box;
 }
 
@@ -29,4 +31,17 @@
 .timeline {
 	overflow-x: auto;
 	height: 100%;
+}
+
+.editor-modal-wrapper {
+	position: fixed;
+	inset: 0;
+	z-index: 1000;
+}
+.editor-modal-content {
+	z-index: 1000;
+	position: absolute;
+	inset: 20px;
+	box-sizing: border-box;
+	padding: 8px;
 }

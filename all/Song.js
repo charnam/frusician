@@ -210,8 +210,8 @@ class Song {
 			timelineInternal = new HTML.div({class: "timeline-internal"},
 				timelineHeader = new HTML.div({class: "timeline-header"},
 					timelineHeaderButtons = new HTML.div({class: "timeline-header-buttons"},
-						timelineHeaderPlayButton = new HTML.div({class: "timeline-header-button timeline-header-button-play"}),
-						timelineHeaderPauseButton = new HTML.div({class: "timeline-header-button timeline-header-button-pause"}),
+						timelineHeaderPlayButton = new HTML.button({class: "timeline-header-button timeline-header-button-play"}),
+						timelineHeaderPauseButton = new HTML.button({class: "timeline-header-button timeline-header-button-pause"}),
 					),
 					timelineHeaderTicks = new SVG.svg({class: "timeline-header-ticks"})
 				),
