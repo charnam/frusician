@@ -53,11 +53,10 @@ class NoteTrack extends ClipTrack {
 	
 	getSampleAt(time, channel) {
 		const timeBeats = time / 60 * this.song.tempo;
+		const timeMeasures = timeBeats / this.song.beatsPerMeasure;
 		const playingNotes = this.notes.filter(note => {
-			const duration = note.beats / this.song.beatsPerMeasure;
-			
-			return note.time < timeBeats && note.time + duration > timeBeats;
-		})
+			return note.time <= timeMeasures && note.time + note.duration >= timeMeasures;
+		});
 		let output = 0;
 		for(let note of playingNotes) {
 			output += Math.sin(time * Math2.midiToFreq(note.pitch) * Math.PI);

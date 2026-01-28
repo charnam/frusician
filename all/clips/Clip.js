@@ -4,6 +4,7 @@ import Draggable from "../ui/Draggable.js";
 import EditorModal from "../ui/EditorModal.js";
 import ContextMenu from "../ui/contextmenu/ContextMenu.js";
 import ContextMenuClickableItem from "../ui/contextmenu/ContextMenuClickableItem.js";
+import ContextMenuConditionalItem from "../ui/contextmenu/ContextMenuConditionalItem.js";
 
 class Clip {
 	static typeID = null;
@@ -22,6 +23,14 @@ class Clip {
 		return 2;
 	}
 	
+	delete() {
+		
+		this.track.clipPlacement = this.track.clipPlacement.filter(
+			placement => placement.clip !== this);
+		delete this.track.clips[this.id];
+		this.track.updateRendered();
+	}
+	
 	static Placement = class ClipPlacement {
 		clip = null;
 		time = 0;
@@ -29,10 +38,51 @@ class Clip {
 		loopCount = 0;
 		
 		boundTo = [];
+		contextMenu = new ContextMenu([
+			new ContextMenuClickableItem("Edit", () => {
+				this.clip.openClipEditor();
+				console.log(this.clip.track.clipPlacement);
+			}),
+			/*new ContextMenuConditionalItem(() => this.hasDuplicates(),
+				new ContextMenuClickableItem("Edit as new", () => {
+					//this.clip = 
+				}),
+			),*/
+			new ContextMenuClickableItem("Add linked clip", () => {
+				const placement = this.constructor.fromSerialized(this.clip.track, this.serialize());
+				placement.id = Identifier.create();
+				placement.time += this.duration;
+				this.clip.track.clipPlacement.push(placement);
+				this.clip.track.updateRendered();
+			}),
+			new ContextMenuConditionalItem(() => this.hasDuplicates(),
+				new ContextMenuClickableItem("Delete clip and links", () => {
+					this.clip.delete();
+				})
+			),
+			new ContextMenuConditionalItem(() => this.hasDuplicates(),
+				new ContextMenuClickableItem("Remove link", () => {
+					let thisIndex = this.clip.track.clipPlacement.indexOf(this);
+					if(thisIndex > -1) {
+						this.clip.track.clipPlacement.splice(thisIndex, 1)
+					}
+					this.clip.track.updateRendered();
+				}),
+			),
+			new ContextMenuConditionalItem(() => !this.hasDuplicates(),
+				new ContextMenuClickableItem("Delete clip", () => {
+					this.clip.delete();
+				})
+			),
+		]);
 		
 		constructor(clip) {
 			this.id = Identifier.create();
 			this.clip = clip;
+		}
+		
+		hasDuplicates() {
+			return Object.values(this.clip.track.clipPlacement).filter(placement => placement.clip.id == this.clip.id).length > 1;
 		}
 		
 		render(parentNode) {
@@ -53,25 +103,6 @@ class Clip {
 				)
 			);
 			
-			const contextMenu = new ContextMenu([
-				new ContextMenuClickableItem("Edit", () => {
-					this.clip.openClipEditor();
-				}),
-				new ContextMenuClickableItem("Remove instance", () => {
-					let thisIndex = this.clip.track.clipPlacement.indexOf(this);
-					if(thisIndex > -1) {
-						this.clip.track.clipPlacement.splice(thisIndex, 1)
-					}
-					this.clip.track.updateRendered();
-				}),
-				new ContextMenuClickableItem("Delete clip", () => {
-					this.clip.track.clipPlacement = this.clip.track.clipPlacement.filter(
-						placement => placement.clip !== this.clip);
-					delete this.clip.track.clips[this.clip.id];
-					this.clip.track.updateRendered();
-				})
-			]);
-			
 			
 			const dragTrack = new Draggable(position => {
 				const roundBy = this.clip.track.song.pixelsPerMeasure / this.clip.track.song.beatsPerMeasure;
@@ -85,7 +116,7 @@ class Clip {
 				this.updateRendered();
 			});
 			clipPlacementHeader.onmousedown = dragTrack.createDragEventHandler();
-			clipPlacement.oncontextmenu = ContextMenu.eventOpener(contextMenu);
+			clipPlacement.oncontextmenu = ContextMenu.eventOpener(this.contextMenu);
 			
 			parentNode.appendChild(clipPlacement);
 			this.boundTo.push(clipPlacement);
@@ -118,7 +149,7 @@ class Clip {
 		static fromSerialized(track, serialized) {
 			const placement = new this(track.clips[serialized.clipID]);
 			
-			placement.id = serialized.id;
+			placement.id = serialized.placementID;
 			placement.time = serialized.time;
 			placement.duration = serialized.duration;
 			placement.loopCount = serialized.loopCount;

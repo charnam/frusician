@@ -1,35 +1,37 @@
 class Note {
+	clip = null;
 	pitch = 60;
 	time = 0;
-	beats = 1;
+	duration = 0.125;
 	
-	constructor(pitch, time, beats) {
+	constructor(clip, pitch, time, duration) {
+		this.clip = clip;
 		this.pitch = pitch;
 		this.time = time;
-		this.beats = beats;
+		this.duration = duration;
 	}
 	
 	serialize() {
 		return {
 			pitch: this.pitch,
 			time: this.time,
-			beats: this.beats
+			duration: this.duration
 		}
 	}
 	
 	getWithTimeOffset(time) {
-		const note = new this.constructor();
+		const note = new this.constructor(this.clip);
 		note.pitch = this.pitch;
 		note.time = this.time + time;
-		note.beats = this.beats;
+		note.duration = this.duration;
 		return note;
 	}
 	
-	static fromSerialized(serialized) {
-		const note = new this();
+	static fromSerialized(serialized, clip) {
+		const note = new this(clip);
 		note.pitch = serialized.pitch;
 		note.time = serialized.time;
-		note.beats = serialized.beats;
+		note.duration = serialized.duration;
 	}
 }
 

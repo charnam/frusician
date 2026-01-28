@@ -33,7 +33,12 @@ class NoteClip extends Clip {
 	}
 	
 	notes = [
-		new Note()
+		new Note(this, 60, 0, 0.125),
+		new Note(this, 61, 0.25, 0.125),
+		new Note(this, 63, 0.5, 0.125),
+		new Note(this, 60, 0.75, 0.125),
+		new Note(this, 64, 0.75, 0.125),
+		new Note(this, 67, 0.75, 0.125)
 	];
 	
 	renderClipEditor(parentNode) {
