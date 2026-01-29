@@ -10,7 +10,8 @@ class Clip {
 	static typeID = null;
 	static typeName = "Default clip, do not use";
 	id = null;
-	name = "Clip"
+	name = "Clip";
+	color = 0;
 	track = null;
 	
 	get canLoop() {
@@ -55,11 +56,6 @@ class Clip {
 				this.clip.track.clipPlacement.push(placement);
 				this.clip.track.updateRendered();
 			}),
-			new ContextMenuConditionalItem(() => this.hasDuplicates(),
-				new ContextMenuClickableItem("Delete clip and links", () => {
-					this.clip.delete();
-				})
-			),
 			new ContextMenuConditionalItem(() => this.hasDuplicates(),
 				new ContextMenuClickableItem("Remove link", () => {
 					let thisIndex = this.clip.track.clipPlacement.indexOf(this);
@@ -128,7 +124,7 @@ class Clip {
 			for(let target of this.boundTo) {
 				target.querySelector(".clip-placement-header-name").innerText = this.clip.name;
 				target.setAttribute("style", `
-					--clip-hue: ${[...this.clip.id].reduce((a, b) => a + b.charCodeAt(0), 0) % 360}deg;
+					--clip-hue: ${this.clip.color * 15 % 360}deg;
 					--time: ${this.time};
 					--duration: ${this.duration};
 					--loopCount: ${this.loopCount};
@@ -163,7 +159,9 @@ class Clip {
 		this.track = track;
 		let name = null;
 		let iter = 0;
-		while(name == null || Object.values(this.track.clips).some(clip => clip.name == name)) {
+		const clips = Object.values(track.clips);
+		this.color = clips.length;
+		while(name == null || clips.some(clip => clip.name == name)) {
 			iter++;
 			name = "Clip "+iter;
 		}
@@ -179,14 +177,15 @@ class Clip {
 		let editor,
 			editorHeader,
 			editorCloseButton,
-			editorClipName;
+			editorClipName,
+			editorEditBox;
 		
 		editor = new HTML.div({class: "clip-editor"},
 			editorHeader = new HTML.div({class: "clip-editor-header"},
 				editorCloseButton = new HTML.button({class: "clip-editor-close-button"}),
 				editorClipName = new HTML.input({type: "text", class: "clip-editor-clip-name"}),
 			),
-			new HTML.div({class: "clip-editor-edit-box"})
+			editorEditBox = new HTML.div({class: "clip-editor-edit-box"})
 		);
 		
 		editorCloseButton.onclick = () => {
@@ -206,7 +205,7 @@ class Clip {
 		}
 		
 		parentNode.appendChild(editor);
-		return editor;
+		return editorEditBox;
 	}
 	
 	serialize() {
