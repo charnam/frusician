@@ -15,7 +15,9 @@ class NoteTrack extends ClipTrack {
 		const output = [];
 		for(let placement of this.clipPlacement) {
 			if(placement instanceof NoteClip.Placement) {
-				output.push(...placement.clip.notes.map(note => note.getWithTimeOffset(placement.time)));
+				for(let loop = 0; loop <= placement.loopCount; loop++) {
+					output.push(...placement.clip.notes.map(note => note.getWithTimeOffset(placement.time + placement.duration * loop)));
+				}
 			}
 		}
 		this._notesCache = output;

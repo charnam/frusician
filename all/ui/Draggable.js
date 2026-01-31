@@ -3,6 +3,9 @@ import Overlay from "./Overlay.js";
 class Draggable {
 	constructor(drag, release) {
 		this.drag = drag;
+		if(release == undefined) {
+			release = drag;
+		}
 		this.release = release;
 	}
 	

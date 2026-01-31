@@ -15,7 +15,7 @@ class NoteClip extends Clip {
 			
 			clipPlacement.ondblclick = event => {
 				if(event.target == clipPlacement) {
-					const clipEditor = this.clip.openClipEditor();
+					const clipEditor = this.clip.openClipEditor(this);
 					BoxAnimation.fromElements(clipPlacement, clipEditor.parentElement);
 				}
 			}
@@ -45,7 +45,7 @@ class NoteClip extends Clip {
 		new Note(this, 88, 0.75, 0.125)
 	];
 	
-	renderClipEditor(parentNode) {
+	renderClipEditor(parentNode, fromPlacement) {
 		const editor = super.renderClipEditor(parentNode);
 		
 		let noteEditorContainer,
@@ -62,7 +62,7 @@ class NoteClip extends Clip {
 		const pianoKeyHeight = 10;
 		const pianoKeyNames = ["C", "D♭", "D", "E♭", "E", "F", "F♯", "G", "A♭", "A", "B♭", "B"];
 		
-		const measuresAvailable = 1;
+		const measuresAvailable = Math.max(4, fromPlacement.duration + 1);
 		
 		editor.appendChild(
 			noteEditorContainer = new HTML.div({class: "note-editor-scroll-box"},
@@ -91,7 +91,12 @@ class NoteClip extends Clip {
 			noteEditor.appendChild(lineEl);
 		}
 		
+		noteEditor.appendChild(
+			new SVG.rect({class: "note-editor-duration-guide", x: fromPlacement.duration, y: 0, width: measuresAvailable - fromPlacement.duration, height: SVGHeight})
+		);
+		
 		const update = () => {
+			this.track.shouldRegenerateNotes = true;
 			noteEditor.querySelectorAll(".note-editor-user-note").forEach(note => note.remove());
 			
 			for(let note of this.notes) {

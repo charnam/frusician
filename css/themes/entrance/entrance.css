@@ -193,16 +193,23 @@ button:active {
 	font-weight: 500;
 }
 
-.editor-modal-wrapper {
-	background: #0009;
-}
-.editor-modal-content {
+.editor-modal {
 	border: 1px solid var(--background-color-level0);
 	background: var(--background-color-level1);
 	box-shadow: 0 2px 10px #0008;
 	border-radius: 10px;
 }
 
+.editor-modal-drag-window {
+	text-align: right;
+	cursor: grab;
+}
+.editor-modal-drag-window:after {
+	font-family: bootstrap-icons;
+	content: "\F3FE";
+	color: var(--text-color-level2);
+	font-size: 24px;
+}
 
 /** Timeline **/
 .timeline-header {
@@ -348,16 +355,13 @@ button:active {
 	cursor: grab;
 }
 
-.clip-placement-extend-panel {
-	background: #ca09;
-	border-radius: 8px 0 0 8px;
-}
 .clip-placement-extend-panel > * {
 	cursor: grab;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	color: #000c;
+	border-radius: 8px 0 0 8px;
 }
 .clip-placement-extend-panel > *:after {
 	font-family: bootstrap-icons;
@@ -368,6 +372,12 @@ button:active {
 }
 .clip-placement-extend-duration:after {
 	content: "\F6AA"
+}
+.clip-placement-extend-loop {
+    background: #80c9;
+}
+.clip-placement-extend-duration {
+	background: #ca09;
 }
 
 /** Generic clip editor */

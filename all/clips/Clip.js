@@ -50,19 +50,22 @@ class Clip {
 				}),
 			),*/
 			new ContextMenuClickableItem("Add linked clip", () => {
-				const placement = this.constructor.fromSerialized(this.clip.track, this.serialize());
-				placement.id = Identifier.create();
-				placement.time += this.duration;
-				this.clip.track.clipPlacement.push(placement);
+				this.duplicate(this.duration);
 				this.clip.track.updateRendered();
 			}),
-			new ContextMenuConditionalItem(() => this.hasDuplicates(),
-				new ContextMenuClickableItem("Remove link", () => {
-					let thisIndex = this.clip.track.clipPlacement.indexOf(this);
-					if(thisIndex > -1) {
-						this.clip.track.clipPlacement.splice(thisIndex, 1)
+			new ContextMenuConditionalItem(() => this.loopCount > 0,
+				new ContextMenuClickableItem("Break down loop", () => {
+					const loops = this.loopCount;
+					this.loopCount = 0;
+					for(let i = 0; i < loops; i++) {
+						this.duplicate(this.duration * (i + 1));
 					}
 					this.clip.track.updateRendered();
+				})
+			),
+			new ContextMenuConditionalItem(() => this.hasDuplicates(),
+				new ContextMenuClickableItem("Remove link", () => {
+					this.remove();
 				}),
 			),
 			new ContextMenuConditionalItem(() => !this.hasDuplicates(),
@@ -75,6 +78,21 @@ class Clip {
 		constructor(clip) {
 			this.id = Identifier.create();
 			this.clip = clip;
+		}
+		
+		remove() {
+			let thisIndex = this.clip.track.clipPlacement.indexOf(this);
+			if(thisIndex > -1) {
+				this.clip.track.clipPlacement.splice(thisIndex, 1)
+			}
+			this.clip.track.updateRendered();
+		}
+		
+		duplicate(addTime) {
+			const placement = this.constructor.fromSerialized(this.clip.track, this.serialize());
+			placement.id = Identifier.create();
+			placement.time += addTime;
+			this.clip.track.clipPlacement.push(placement);
 		}
 		
 		hasDuplicates() {
@@ -99,7 +117,6 @@ class Clip {
 				)
 			);
 			
-			
 			const dragTrack = new Draggable(position => {
 				const roundBy = this.clip.track.song.pixelsPerMeasure / this.clip.track.song.beatsPerMeasure;
 				clipPlacement.classList.add("is-dragging");
@@ -113,6 +130,29 @@ class Clip {
 			});
 			clipPlacementHeader.onmousedown = dragTrack.createDragEventHandler();
 			clipPlacement.oncontextmenu = ContextMenu.eventOpener(this.contextMenu);
+			
+			let extendStartDuration = 0;
+			clipPlacementExtendDuration.onmousedown = event => {
+				extendStartDuration = this.duration;
+				extendClip.startDrag(event);
+			}
+			const extendClip = new Draggable(position => {
+				const roundBy = this.clip.track.song.pixelsPerMeasure / this.clip.track.song.beatsPerMeasure;
+				this.duration = extendStartDuration + Math.round(position.deltaX / roundBy) * roundBy / this.clip.track.song.pixelsPerMeasure;
+				this.duration = Math.max(this.duration, 1 / this.clip.track.song.beatsPerMeasure);
+				this.updateRendered();
+			})
+			
+			let loopStartCount = 0;
+			clipPlacementExtendLoop.onmousedown = event => {
+				loopStartCount = this.loopCount;
+				loopClip.startDrag(event);
+			}
+			const loopClip = new Draggable(position => {
+				this.loopCount = loopStartCount + Math.round(position.deltaX / this.clip.track.song.pixelsPerMeasure / this.duration);
+				this.loopCount = Math.max(this.loopCount, 0);
+				this.updateRendered();
+			})
 			
 			parentNode.appendChild(clipPlacement);
 			this.boundTo.push(clipPlacement);
@@ -168,12 +208,12 @@ class Clip {
 		this.name = name;
 	}
 	
-	openClipEditor() {
+	openClipEditor(fromPlacement) {
 		const editorWrapper = new EditorModal();
-		return this.renderClipEditor(editorWrapper);
+		return this.renderClipEditor(editorWrapper, fromPlacement);
 	}
 	
-	renderClipEditor(parentNode) {
+	renderClipEditor(parentNode, _fromPlacement) {
 		let editor,
 			editorHeader,
 			editorCloseButton,

@@ -78,3 +78,7 @@
 .note-editor-note-guide.note-11 {
 	fill: #222;
 }
+
+rect.note-editor-duration-guide {
+	fill: #0008;
+}
