@@ -197,7 +197,9 @@ class Song {
 		
 		targetNode.innerHTML = "";
 		
-		const playback = this.playbackInstance.createDOMPlayer();
+		if(!this.playback) {
+			this.playback = this.playbackInstance.createDOMPlayer();
+		}
 		
 		let timeline,
 			timelineInternal,
@@ -227,15 +229,15 @@ class Song {
 		);
 		
 		timelineHeaderPlayButton.onclick = () => {
-			playback.play();
+			this.playback.play();
 		}
 		timelineHeaderPauseButton.onclick = () => {
-			playback.pause();
+			this.playback.pause();
 		}
 		const updatePlayhead = position => {
 			const timelineTicksRect = timelineHeaderTicks.getBoundingClientRect();
 			const time = Math.min(Math.max(0, (position.x - timelineTicksRect.x) / timelineTicksRect.width), 1) / ((this.durationMeasures - 1) / this.beatsPerMeasure) * this.tempo;
-			playback.currentTime = time;
+			this.playback.currentTime = time;
 		}
 		const draggable = new Draggable(updatePlayhead, updatePlayhead);
 		timelineHeaderTicks.onmousedown = event => {
@@ -245,7 +247,7 @@ class Song {
 		
 		const updatePlayheadVisual = () => {
 			if(timeline) {
-				timeline.setAttribute("style", `--playbackTime: ${playback.currentTime / 60 * this.tempo / this.beatsPerMeasure};`);
+				timeline.setAttribute("style", `--playbackTime: ${this.playback.currentTime / 60 * this.tempo / this.beatsPerMeasure};`);
 				requestAnimationFrame(updatePlayheadVisual);
 			}
 		}

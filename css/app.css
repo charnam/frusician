@@ -5,6 +5,7 @@
 @import url("./editors.css");
 @import url("./loader-default.css");
 @import url("./themes/entrance/entrance.css");
+@import url("./nodegraph.css");
 
 html {
 	background-color: unset !important;

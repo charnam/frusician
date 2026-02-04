@@ -24,7 +24,9 @@ class Draggable {
 				x,
 				y,
 				deltaX: x - startX,
-				deltaY: y - startY
+				deltaY: y - startY,
+				movementX: event.movementX,
+				movementY: event.movementY
 			});
 		}
 		
@@ -36,7 +38,9 @@ class Draggable {
 				x,
 				y,
 				deltaX: x - startX,
-				deltaY: y - startY
+				deltaY: y - startY,
+				movementX: event.movementX,
+				movementY: event.movementY
 			});
 			overlay.remove();
 			window.removeEventListener("mousemove", moveMouse);

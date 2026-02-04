@@ -1,4 +1,5 @@
-import NodeValue from "../../NodeValue.js";
+import Draggable from "../../../ui/Draggable.js";
+import NodeValue from "../NodeValue.js";
 
 class InputNodeValue extends NodeValue {
 	type = null;
@@ -8,7 +9,7 @@ class InputNodeValue extends NodeValue {
 	}
 	
 	render(parentNode) {
-		const inputNode = super(parentNode);
+		const inputNode = super.render(parentNode);
 		inputNode.classList.add("input-node");
 		return inputNode;
 	}

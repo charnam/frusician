@@ -3,8 +3,6 @@ import { HTML } from "imperative-html";
 import Header from "./ui/Header.js";
 import ContextMenu from "./ui/contextmenu/ContextMenu.js";
 import Song from "./Song.js";
-import NoteTrack from "./tracks/NoteTrack.js";
-import SampleTrack from "./tracks/SampleTrack.js";
 
 class FrusicianEditor {
 	song = null;

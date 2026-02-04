@@ -1,6 +1,5 @@
 import { HTML } from "imperative-html";
 import Identifier from "../lib/Identifier.js";
-import Clip from "../clips/Clip.js";
 import ContextMenu from "../ui/contextmenu/ContextMenu.js";
 import ContextMenuClickableItem from "../ui/contextmenu/ContextMenuClickableItem.js";
 import Draggable from "../ui/Draggable.js";
@@ -16,6 +15,14 @@ class Track {
 	zoomLevel = 1;
 	
 	playbackInstance = new TrackPlaybackInstance(this);
+	
+	_DOMPlayer = null;
+	get DOMPlayer() {
+		if(!this._DOMPlayer) {
+			this._DOMPlayer = this.playbackInstance.createDOMPlayer();
+		}
+		return this._DOMPlayer;
+	}
 	
 	muted = false;
 	

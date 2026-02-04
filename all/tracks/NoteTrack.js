@@ -1,5 +1,8 @@
 import NoteClip from "../clips/NoteClip.js";
 import Math2 from "../lib/Math2.js";
+import NodeGraph from "../nodegraph/NodeGraph.js";
+import MainoutputNode from "../nodegraph/nodes/MainoutputNode.js";
+import TrackinputNode from "../nodegraph/nodes/TrackinputNode.js";
 import ClipTrack from "./ClipTrack.js";
 
 class NoteTrack extends ClipTrack {
@@ -10,6 +13,15 @@ class NoteTrack extends ClipTrack {
 	shouldRegenerateNotes = true; // caching
 	
 	_notesCache = [];
+	
+	constructor(...args) {
+		super(...args);
+		this.nodeGraph = new NodeGraph(this, [
+			new TrackinputNode(),
+			new MainoutputNode()
+		])
+	}
+	
 	get notes() {
 		if(this._notesCache && !this.shouldRegenerateNotes) return this._notesCache;
 		const output = [];
@@ -27,6 +39,10 @@ class NoteTrack extends ClipTrack {
 	render(parentNode) {
 		const track = super.render(parentNode);
 		track.classList.add("note-track");
+		
+		track.querySelector(".track-info").ondblclick = () => {
+			this.nodeGraph.openGraphEditor();
+		}
 		
 		const clipPlacements = track.querySelector(".clip-placements");
 		
@@ -48,9 +64,6 @@ class NoteTrack extends ClipTrack {
 	}
 	updateRendered() {
 		super.updateRendered();
-		/*debugging if(this._notesCache !== undefined) {
-			console.log(this.notes);
-		}*/
 	}
 	
 	getSampleAt(time, channel) {

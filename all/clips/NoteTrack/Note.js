@@ -3,6 +3,31 @@ class Note {
 	pitch = 60;
 	time = 0;
 	duration = 0.125;
+	get endTime() {
+		return this.clip.time + this.clip.duration;
+	}
+	get timeSeconds() {
+		return this.beatsToSeconds(this.time)
+	}
+	get durationSeconds() {
+		return this.beatsToSeconds(this.durationSeconds)
+	}
+	get endTimeSeconds() {
+		return this.beatsToSeconds(this.endTime);
+	}
+	
+	secondsToBeats(sec) {
+		const timeBeats = sec / 60 * this.clip.track.song.tempo;
+		const timeMeasures = timeBeats / this.clip.track.song.beatsPerMeasure;
+		return {
+			timeBeats,
+			timeMeasures
+		}
+	}
+	beatsToSeconds(beats) {
+		const duration = beats * 60 / this.clip.track.song.tempo;
+		return duration
+	}
 	
 	constructor(clip, pitch, time, duration) {
 		this.clip = clip;

@@ -1,0 +1,131 @@
+.node-graph {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100vw;
+	height: 100vh;
+	z-index: 9999;
+}
+
+.node-graph-nodes {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+.node-graph-nodes {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	left: 0;
+	top: 0;
+	
+	--line-color: #222;
+	--line-width: calc(var(--unit) * 2);
+	--line-spacing: calc(var(--unit) * 600);
+	
+	--dot-color: #222;
+	--dot-spacing: calc(var(--unit) * 30);
+	--dot-size: calc(var(--unit) * 2);
+	
+	--bg-color: #fff2;
+	
+	background-image:
+		linear-gradient(to right, var(--line-color), var(--line-color) var(--line-width), #0000 var(--line-width)),
+		linear-gradient(to bottom, var(--line-color), var(--line-color) var(--line-width), #0000 var(--line-width)),
+		radial-gradient(var(--dot-color), var(--dot-color) var(--dot-size), var(--bg-color) var(--dot-size));
+	background-position: calc((var(--view-x) - 40) * var(--unit)) calc((var(--view-y) - 40) * var(--unit));
+	background-size:
+		var(--line-spacing) var(--line-spacing),
+		var(--line-spacing) var(--line-spacing),
+		var(--dot-spacing) var(--dot-spacing);
+	backdrop-filter: blur(5px);
+}
+
+.graph-node {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	
+	font-size: calc(16 * var(--unit));
+	
+	position: absolute;
+	left: calc(var(--x) * var(--unit) + var(--view-x) * var(--unit));
+	top:  calc(var(--y) * var(--unit) + var(--view-y) * var(--unit));
+	width: calc(var(--width) * var(--unit));
+	
+	background: var(--background-color-level0);
+	box-shadow: 0 calc(3 * var(--unit)) calc(10 * var(--unit)) var(--background-color-level0);
+	border-radius: calc(5 * var(--unit));
+}
+
+.node-value {
+	padding: calc(5 * var(--unit)) calc(10 * var(--unit));
+	position: relative;
+	--color: 0;
+}
+.node-value.connectable:after {
+	content: "";
+	position: absolute;
+	left: 0;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	width: calc(8 * var(--unit));
+	aspect-ratio: 1 / 1;
+	background-image: radial-gradient(closest-side, hsl(var(--color), 20%, 20%), transparent);
+	background-color: hsl(var(--color), 100%, 30%);
+	background-repeat: no-repeat;
+	border-radius: 50%;
+	border: calc(2 * var(--unit)) solid #0005;
+}
+.output-node.connectable:after {
+	left: 100%;
+	transform: translate(-50%, -50%);
+	background-image: radial-gradient(closest-side, hsl(var(--color), 100%, 50%), transparent);
+	background-color: hsl(var(--color), 50%, 30%);
+	background-repeat: no-repeat;
+}
+
+.graph-node-inputs-header, .graph-node-outputs-header {
+	font-size: 0.5em;
+	text-align: center;
+	background: var(--background-color-level2);
+	padding: calc(2 * var(--unit)) 0;
+}
+
+.node-connection-drag-selected {
+	background: linear-gradient(to bottom, #fff2, #fff1);
+}
+
+.node-value-label {
+	pointer-events: none;
+}
+
+.output-node .node-value-label {
+	text-align: right;
+}
+
+.graph-node-name {
+	text-align: center;
+	font-size: 0.8em;
+	border-radius: inherit;
+}
+
+.node-graph-close-button {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	width: 32px;
+	height: 32px;
+	font-size: 32px;
+	z-index: 10000;
+	cursor: pointer;
+	color: var(--text-color-level1);
+	text-shadow: 0 2px 4px black;
+}
+
+.node-graph-close-button::after {
+	content: "\F62A";
+	font-family: bootstrap-icons;
+}
