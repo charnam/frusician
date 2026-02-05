@@ -10,6 +10,7 @@ class InputNodeValue extends NodeValue {
 	
 	render(parentNode) {
 		const inputNode = super.render(parentNode);
+		inputNode.setAttribute("inputName", this.name);
 		inputNode.classList.add("input-node");
 		return inputNode;
 	}

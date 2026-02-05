@@ -123,6 +123,10 @@ class NodeGraph {
 				--unit: ${1 / this.viewZoom}px;
 			`);
 		}
+		
+		for(let node of Object.values(this.nodes)) {
+			node.updateRendered();
+		}
 	}
 	
 	serialize() {

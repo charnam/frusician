@@ -105,7 +105,7 @@ class BaseNode {
 				if(!connectedNodeEl) continue;
 				
 				const outputConnectionEl = [...connectedNodeEl.querySelectorAll(".output-node")]
-					.find(outputConnection => outputConnection.getAttribute("inputname") == connection.inputName);
+					.find(outputConnection => outputConnection.getAttribute("outputname") == connection.outputName);
 				if(!outputConnectionEl) continue;
 				
 				const inputConnectionEl = [...node.querySelectorAll(".input-node")]
@@ -121,6 +121,9 @@ class BaseNode {
 				let realConnectionOffsetX = connectionOffsetX * this.graph.viewZoom;
 				let realConnectionOffsetY = connectionOffsetY * this.graph.viewZoom;
 				
+				const padding = 8;
+				const zoom = this.graph.viewZoom;
+				
 				let SVGWidth = Math.abs(realConnectionOffsetX);
 				let SVGHeight = Math.abs(realConnectionOffsetY);
 				let SVGOffsetX = Math.min(realConnectionOffsetX, 0);
@@ -132,13 +135,19 @@ class BaseNode {
 				let pathEndY = -Math.min(-connectionOffsetY, 0);
 				
 				node.querySelector(".graph-node-input-connections").appendChild(
-					new SVG.svg({class: "input-connection", width: SVGWidth, height: SVGHeight, style: `
-							transform: translate(calc(${SVGOffsetX} * var(--unit)), calc(${SVGOffsetY} * var(--unit)));
-							width: calc(${SVGWidth} * var(--unit));
-							height: calc(${SVGHeight} * var(--unit));
+					new SVG.svg({
+						class: "input-connection",
+						viewBox: `${-padding} ${-padding} ${SVGWidth / zoom + padding * 2} ${SVGHeight / zoom + padding * 2}`,
+						style: `
+							transform: translate(calc(${SVGOffsetX} * var(--unit)), calc(${SVGOffsetY} * var(--unit)))
+									   translate(-${padding}px, -${padding}px);
+							width: calc(${SVGWidth + padding * 2 * zoom} * var(--unit));
+							height: calc(${SVGHeight + padding * 2 * zoom} * var(--unit));
 						`},
 						new SVG.path({
-							stroke: "white",
+							stroke: "#fff5",
+							style: "stroke-width: calc(4 * var(--unit))",
+							"stroke-linecap": "round",
 							fill: "transparent",
 							d: `
 								M ${pathStartX} ${pathStartY}
