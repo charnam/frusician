@@ -12,7 +12,7 @@ class BasicInstrumentNode extends BaseNode {
 		new TrackDataInputNodeValue({label: "Track Data", name: "noteTrack"}),
 	];
 	outputs = [
-		new PlaybackInstanceOutputNodeValue({name: "returned-playback"}, () => this.playbackInstance)
+		new PlaybackInstanceOutputNodeValue({label: "Instrument Audio", name: "returned-playback"}, () => this.playbackInstance)
 	];
 	
 	playbackInstance = new NodePlaybackInstance((time, channel) => {

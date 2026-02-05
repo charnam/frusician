@@ -1,4 +1,4 @@
-import { HTML } from "imperative-html";
+import { HTML, SVG } from "imperative-html";
 import Identifier from "../../lib/Identifier.js";
 import Draggable from "../../ui/Draggable.js";
 
@@ -37,7 +37,9 @@ class BaseNode {
 	}
 	
 	render(parentNode) {
-		const node = new HTML.div({class: "graph-node", nodeid: this.id});
+		const node = new HTML.div({class: "graph-node", nodeid: this.id},
+			new HTML.div({class: "graph-node-input-connections"})
+		);
 		this.boundTo.push(node);
 		
 		const nodeName = new HTML.div({class: "graph-node-name"});
@@ -91,6 +93,64 @@ class BaseNode {
 				--y: ${this.y};
 				--width: ${this.constructor.width};
 			`);
+			
+			node.querySelectorAll(".input-connection").forEach(element => {
+				element.remove();
+			});
+			
+			// Connection lines
+			for(let [name, connection] of Object.entries(this.inputConnections)) {
+				const connectedNodeEl = [...node.parentNode.querySelectorAll(".graph-node")]
+					.find(otherNode => otherNode.getAttribute("nodeid") == connection.nodeId);
+				if(!connectedNodeEl) continue;
+				
+				const outputConnectionEl = [...connectedNodeEl.querySelectorAll(".output-node")]
+					.find(outputConnection => outputConnection.getAttribute("inputname") == connection.inputName);
+				if(!outputConnectionEl) continue;
+				
+				const inputConnectionEl = [...node.querySelectorAll(".input-node")]
+					.find(inputConnection => inputConnection.getAttribute("inputname") == name);
+				if(!inputConnectionEl) continue;
+				
+				const nodeBox = node.getBoundingClientRect();
+				const outputConnectionBox = outputConnectionEl.getBoundingClientRect();
+				const inputConnectionBox = inputConnectionEl.getBoundingClientRect();
+				
+				let connectionOffsetX = outputConnectionBox.right - inputConnectionBox.x;
+				let connectionOffsetY = outputConnectionBox.y + outputConnectionBox.height / 2 - (inputConnectionBox.y + inputConnectionBox.height / 2);
+				let realConnectionOffsetX = connectionOffsetX * this.graph.viewZoom;
+				let realConnectionOffsetY = connectionOffsetY * this.graph.viewZoom;
+				
+				let SVGWidth = Math.abs(realConnectionOffsetX);
+				let SVGHeight = Math.abs(realConnectionOffsetY);
+				let SVGOffsetX = Math.min(realConnectionOffsetX, 0);
+				let SVGOffsetY = Math.min(realConnectionOffsetY, 0) + (inputConnectionBox.y - nodeBox.y + inputConnectionBox.height / 2) * this.graph.viewZoom;
+				
+				let pathStartX = -Math.min(connectionOffsetX, 0);
+				let pathStartY = -Math.min(connectionOffsetY, 0);
+				let pathEndX = -Math.min(-connectionOffsetX, 0);
+				let pathEndY = -Math.min(-connectionOffsetY, 0);
+				
+				node.querySelector(".graph-node-input-connections").appendChild(
+					new SVG.svg({class: "input-connection", width: SVGWidth, height: SVGHeight, style: `
+							transform: translate(calc(${SVGOffsetX} * var(--unit)), calc(${SVGOffsetY} * var(--unit)));
+							width: calc(${SVGWidth} * var(--unit));
+							height: calc(${SVGHeight} * var(--unit));
+						`},
+						new SVG.path({
+							stroke: "white",
+							fill: "transparent",
+							d: `
+								M ${pathStartX} ${pathStartY}
+								C ${Math.abs(pathStartX - pathEndX) / 2} ${pathStartY},
+								  ${Math.abs(pathStartX - pathEndX) / 2} ${pathEndY},
+								  ${pathEndX} ${pathEndY}
+								`
+						})
+					)
+				);
+			}
+			
 		}
 	}
 	
@@ -142,6 +202,9 @@ class BaseNode {
 		return this.outputs.find(output => output.name == name);
 	}
 	
+	/*
+	Multiple output connections can coexist -- this method shouldn't be used
+	
 	getOutputConnection(outputName) {
 		for(let node of this.graph.nodes) {
 			for(let [inputName, connection] of Object.entries(node.inputConnections)) {
@@ -155,6 +218,7 @@ class BaseNode {
 		}
 		return null;
 	}
+	*/
 	
 	getOutputValue(name) {
 		return this.getOutput(name).getValue();

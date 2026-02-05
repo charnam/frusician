@@ -60,6 +60,11 @@
 	border-radius: calc(5 * var(--unit));
 }
 
+svg.input-connection {
+	position: absolute;
+	z-index: -1000;
+}
+
 .node-value {
 	padding: calc(5 * var(--unit)) calc(10 * var(--unit));
 	position: relative;
