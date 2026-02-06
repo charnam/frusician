@@ -33,20 +33,15 @@ class FrusicianEditor {
 				new ContextMenu.ClickableItem("YAY")
 			])
 		]));
-		
-		
 		header.render(headerContainer)
+		parentNode.appendChild(headerContainer);
 		
 		const songContainer = HTML.div({id: "song"});
-		
-		parentNode.appendChild(headerContainer);
 		parentNode.appendChild(songContainer);
 		
 		this.songContainer = songContainer;
-		
 		const song = new Song()
 		this.setSong(song);
-		window.song = song;
 		
 		window.addEventListener("keydown", (keyEvent) => {
 			if(document.querySelector(".node-graph-container")) {

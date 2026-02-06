@@ -1,3 +1,4 @@
+import Math2 from "../../lib/Math2.js";
 import NodePlaybackInstance from "../../playback/NodePlaybackInstance.js";
 import TrackDataInputNodeValue from "../values/inputs/TrackDataInputNodeValue.js";
 import PlaybackInstanceOutputNodeValue from "../values/outputs/PlaybackInstanceOutputNodeValue.js";
@@ -5,6 +6,7 @@ import BaseNode from "./BaseNode.js";
 
 class BasicInstrumentNode extends BaseNode {
 	static name = "Basic Instrument";
+	static category = "Instruments";
 	static typeID = "basicInstrument";
 	static exclusiveTo = ["noteTrack"];
 	
@@ -18,7 +20,7 @@ class BasicInstrumentNode extends BaseNode {
 	playbackInstance = new NodePlaybackInstance((time, channel) => {
 		const noteTrack = this.getInputValue("noteTrack");
 		
-		const playingNotes = noteTrack.notes.filter(note => note.timeSeconds < time && note.endTimeSeconds > time)
+		const playingNotes = noteTrack.notes.filter(note => note.timeSeconds < time && note.endTimeSeconds > time);
 		
 		let output = 0;
 		for(let note of playingNotes) {

@@ -98,8 +98,24 @@ class BaseNode {
 				element.remove();
 			});
 			
+			for(let node of Object.values(this.graph.nodes)) {
+				for(let connection of Object.values(node.inputConnections)) {
+					if(connection.nodeId == this.id) {
+						node.updateRendered();
+					}
+				}
+			}
+			
 			// Connection lines
 			for(let [name, connection] of Object.entries(this.inputConnections)) {
+				const padding = 32;
+				const connectionSpacing = 10;
+				
+				const connectedNode = this.graph.nodes[connection.nodeId];
+				if(this.x !== (this.x = Math.max(this.x, connectedNode.x + connectedNode.constructor.width + connectionSpacing * 6))) {
+					return this.updateRendered();
+				}
+				
 				const connectedNodeEl = [...node.parentNode.querySelectorAll(".graph-node")]
 					.find(otherNode => otherNode.getAttribute("nodeid") == connection.nodeId);
 				if(!connectedNodeEl) continue;
@@ -121,7 +137,6 @@ class BaseNode {
 				let realConnectionOffsetX = connectionOffsetX * this.graph.viewZoom;
 				let realConnectionOffsetY = connectionOffsetY * this.graph.viewZoom;
 				
-				const padding = 8;
 				const zoom = this.graph.viewZoom;
 				
 				let SVGWidth = Math.abs(realConnectionOffsetX);
@@ -145,15 +160,18 @@ class BaseNode {
 							height: calc(${SVGHeight + padding * 2 * zoom} * var(--unit));
 						`},
 						new SVG.path({
-							stroke: "#fff5",
+							stroke: `hsla(${this.getInput(name).color}, 100%, 40%, 0.3)`,
 							style: "stroke-width: calc(4 * var(--unit))",
 							"stroke-linecap": "round",
+							"stroke-linejoin": "round",
 							fill: "transparent",
 							d: `
 								M ${pathStartX} ${pathStartY}
+								L ${pathStartX - connectionSpacing / zoom} ${pathStartY}
 								C ${Math.abs(pathStartX - pathEndX) / 2} ${pathStartY},
 								  ${Math.abs(pathStartX - pathEndX) / 2} ${pathEndY},
-								  ${pathEndX} ${pathEndY}
+								  ${pathEndX + connectionSpacing / zoom} ${pathEndY}
+								L ${pathEndX} ${pathEndY}
 								`
 						})
 					)
@@ -199,11 +217,15 @@ class BaseNode {
 	}
 	
 	getInputValue(name) {
-		const input = this.getInput(name);
-		if(input) {
-			return input.getValue()
+		const output = this.getInputConnection(name);
+		if(output) {
+			return output.getValue();
 		} else {
-			return this.inputValues[name];
+			if(typeof this.inputValues[name] !== "undefined") {
+				return this.inputValues[name];
+			} else {
+				return this.getInput(name).default;
+			}
 		}
 	}
 	

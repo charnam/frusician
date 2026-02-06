@@ -2,7 +2,8 @@ import InputNodeValue from "./InputNodeValue.js";
 
 class TrackDataInputNodeValue extends InputNodeValue {
 	type = "trackData";
-	static color = 100;
+	color = 100;
+	default = null; // TODO: default
 }
 
 export default TrackDataInputNodeValue;

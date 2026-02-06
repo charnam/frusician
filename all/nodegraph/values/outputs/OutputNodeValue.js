@@ -14,7 +14,6 @@ class OutputNodeValue extends NodeValue {
 		outputNode.classList.add("output-node");
 		outputNode.setAttribute("outputName", this.name);
 		
-		console.log(this.node);
 		if(this.connectable && !this.disabled) {
 			let dragTarget = null;
 			const draggable = new Draggable(position => {
@@ -24,14 +23,19 @@ class OutputNodeValue extends NodeValue {
 				dragTarget = null;
 				for(let node of document.querySelectorAll(".graph-node")) {
 					for(let input of node.querySelectorAll(".input-node.connectable")) {
+						const nodeId = node.getAttribute("nodeid");
+						const inputName = input.getAttribute("inputname");
+						const inputType = this.node.graph.nodes[nodeId].getInput(inputName).type;
+						if(inputType !== this.type) continue;
+						
 						const inputRect = input.getBoundingClientRect();
 						if(
 							position.x > inputRect.x && position.y > inputRect.y &&
 							position.x < inputRect.x + inputRect.width && position.y < inputRect.y + inputRect.height) {
 							target = input;
 							dragTarget = {
-								nodeId: node.getAttribute("nodeid"),
-								inputName: input.getAttribute("inputname")
+								nodeId,
+								inputName
 							};
 						}
 					}
@@ -44,7 +48,6 @@ class OutputNodeValue extends NodeValue {
 				document.querySelectorAll(".node-connection-drag-selected")
 					.forEach(el => el.classList.remove("node-connection-drag-selected"));
 				if(dragTarget) {
-					console.log(this.node.graph.nodes[dragTarget.nodeId]);
 					this.node.graph.nodes[dragTarget.nodeId].inputConnections[dragTarget.inputName] = {
 						nodeId: this.node.id,
 						outputName: this.name

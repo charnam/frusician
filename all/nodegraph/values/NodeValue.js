@@ -38,7 +38,7 @@ class NodeValue {
 			throw new Error("NodeValue is not assigned to a Node and attempts to render, which causes issues. You may need to specify 'node: this' in your 'new "+this.constructor.name+"()' constructor.");
 		}
 		
-		const connection = new HTML.div({class: "node-value", style: `--color: ${this.constructor.color}`});
+		const connection = new HTML.div({class: "node-value", style: `--color: ${this.color}`});
 		parentNode.appendChild(connection);
 		
 		if(this.label) {

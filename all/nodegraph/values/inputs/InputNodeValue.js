@@ -3,6 +3,7 @@ import NodeValue from "../NodeValue.js";
 
 class InputNodeValue extends NodeValue {
 	type = null;
+	default = null;
 	
 	constructor(info) {
 		super(info);

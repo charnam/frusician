@@ -17,7 +17,6 @@ class MainoutputNode extends BaseNode {
 	constructor(...args) {
 		super(...args);
 		delete this.inputs;
-		this.inputConnections.playback = {nodeId: "MAIN_INPUT", outputName: "track"};
 	}
 }
 

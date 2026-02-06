@@ -1,6 +1,7 @@
 import NoteClip from "../clips/NoteClip.js";
 import Math2 from "../lib/Math2.js";
 import NodeGraph from "../nodegraph/NodeGraph.js";
+import BasicInstrumentNode from "../nodegraph/nodes/BasicInstrumentNode.js";
 import MainoutputNode from "../nodegraph/nodes/MainoutputNode.js";
 import TrackinputNode from "../nodegraph/nodes/TrackinputNode.js";
 import ClipTrack from "./ClipTrack.js";
@@ -16,10 +17,19 @@ class NoteTrack extends ClipTrack {
 	
 	constructor(...args) {
 		super(...args);
+		const inputNode = new TrackinputNode();
+		const instrumentNode = new BasicInstrumentNode();
+		instrumentNode.y = -30;
+		const outputNode = new MainoutputNode();
+		
 		this.nodeGraph = new NodeGraph(this, [
-			new TrackinputNode(),
-			new MainoutputNode()
+			inputNode,
+			instrumentNode,
+			outputNode
 		])
+		
+		instrumentNode.inputConnections.noteTrack = {nodeId: inputNode.id, outputName: "track"};
+		outputNode.inputConnections.playback = {nodeId: instrumentNode.id, outputName: "returned-playback"};
 	}
 	
 	get notes() {
@@ -67,19 +77,7 @@ class NoteTrack extends ClipTrack {
 	}
 	
 	getSampleAt(time, channel) {
-		const timeBeats = time / 60 * this.song.tempo;
-		const timeMeasures = timeBeats / this.song.beatsPerMeasure;
-		const playingNotes = this.notes.filter(note => {
-			return note.time <= timeMeasures && note.time + note.duration >= timeMeasures;
-		});
-		let output = 0;
-		for(let note of playingNotes) {
-			output += Math.sin(time * Math2.midiToFreq(note.pitch) * Math.PI);
-		}
-		if(playingNotes.length > 0) {
-			output /= playingNotes.length;
-		}
-		return output;
+		return this.nodeGraph.nodes.MAIN_OUTPUT.getInputValue("playback").getSampleAt(time, channel);
 	}
 }
 

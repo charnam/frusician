@@ -23,12 +23,30 @@ class NodeGraph {
 			node.x += 600 * iter++;
 		}
 		
-		this.addMenu = new ContextMenu(nodeCatalog.all.map(item => {
+		const menuItems = nodeCatalog.all.filter(item => {
 			if(item.exclusiveTo && !item.exclusiveTo.includes(track.constructor.typeID)) {
-				return null;
+				return false;
 			}
 			
-			return new ContextMenu.ClickableItem(item.name, event => {
+			return true;
+		});
+		
+		const menuCategories = {
+			default: []
+		};
+		
+		for(let item of menuItems) {
+			if(item.category) {
+				if(!menuCategories[item.category]) {
+					menuCategories[item.category] = [];
+				}
+				menuCategories[item.category].push(item);
+			} else {
+				menuCategories.default.push(item);
+			}
+		}
+		
+		const mapItem = item => new ContextMenu.ClickableItem(item.name, event => {
 				const node = new item();
 				
 				node.x = (event.clientX) * this.viewZoom - this.viewX - item.width / 2;
@@ -36,7 +54,23 @@ class NodeGraph {
 				
 				this.addNode(node);
 			});
-		}).filter(item => item !== null));
+		
+		this.addMenu = new ContextMenu(
+			[
+				...menuCategories.default.map(mapItem),
+				...Object.entries(menuCategories)
+					.filter(([category, _item]) => category !== "default")
+					.map(([category, items]) => {
+						return new ContextMenu.Submenu(category, items.map(mapItem))
+					})
+			]
+		);
+			/*nodeCatalog.all.map(item => {
+			if(item.exclusiveTo && !item.exclusiveTo.includes(track.constructor.typeID)) {
+				return null;
+			}
+			
+			return ;*/
 	}
 	
 	addNode(node) {
@@ -125,7 +159,12 @@ class NodeGraph {
 		}
 		
 		for(let node of Object.values(this.nodes)) {
-			node.updateRendered();
+			// This if statement is included for performance reasons.
+			// The specific reasoning is a little complicated, so I don't know how to explain it much.
+			// Don't worry about it, for now.
+			if(!Object.values(this.nodes).some(otherNode => Object.values(otherNode.inputConnections).nodeId == node.id)) {
+				node.updateRendered();
+			}
 		}
 	}
 	

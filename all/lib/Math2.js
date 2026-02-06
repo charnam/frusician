@@ -5,6 +5,8 @@ class Math2 {
 	static midiToFreq = (midi) => {
 		return 440 * Math.pow(2, (midi - 69) / 12);
 	};
+	static slideFreq() {
+	}
 }
 
 export default Math2;
