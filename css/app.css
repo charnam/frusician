@@ -4,8 +4,8 @@
 @import url("./contextmenu.css");
 @import url("./editors.css");
 @import url("./loader-default.css");
-@import url("./themes/entrance/entrance.css");
 @import url("./nodegraph.css");
+@import url("./themes/entrance/entrance.css");
 
 html {
 	background-color: unset !important;

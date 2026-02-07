@@ -22,9 +22,7 @@
         
         <script type="module">
             import editor from "./all/globalEditor.js";
-            import NodeGraph from "./all/nodegraph/NodeGraph.js";
-            import NoteClip from "./all/clips/NoteClip.js";
-            window.NodeGraph = NodeGraph;
+            window.editor = editor;
             
             const loadingStartedAt = Date.now();
             window.onload = () => {
@@ -32,8 +30,6 @@
                     document.body.classList.add("loaded");
                 }, 1000 - (Date.now() - loadingStartedAt))
             }
-            
-            window.noteClip = NoteClip;
         </script>
     </body>
 </html>

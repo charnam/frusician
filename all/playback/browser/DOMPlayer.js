@@ -3,6 +3,7 @@ class DOMPlayer {
 	static TARGET_BUFFER = 0.3;
 	
 	node = null;
+	testedOverhead = 0;
 	
 	_playStartCtxTime = 0;
 	_playStartMediaTime = 0;
@@ -113,9 +114,8 @@ class DOMPlayer {
 			this.node.port.postMessage({type: "chunk", samples}, samples.map(channel => channel.buffer));
 			
 			this._nextChunkTime += DOMPlayer.CHUNK_DURATION;
+			this.testedOverhead = (Date.now() - profilingStartTime) / (DOMPlayer.TARGET_BUFFER * 1000);
 		}
-		
-		this.testedOverhead = (Date.now() - profilingStartTime) / (DOMPlayer.TARGET_BUFFER * 1000);
 		
 		this._currentTime = playheadTime;
 		this._streaming = false;

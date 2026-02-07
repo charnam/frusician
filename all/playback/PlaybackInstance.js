@@ -1,7 +1,7 @@
 import DOMPlayer from "./browser/DOMPlayer.js";
 
 class PlaybackInstance {
-	channelCount = 1;
+	channelCount = 2;
 	
 	get duration() { // Total playback time, in seconds
 		return 4;

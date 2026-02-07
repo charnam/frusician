@@ -6,14 +6,15 @@ class Note {
 	get endTime() {
 		return this.time + this.duration;
 	}
+	
 	get timeSeconds() {
-		return this.beatsToSeconds(this.time)
+		return this.clip.track.song.beatsToSeconds(this.time)
 	}
 	get durationSeconds() {
-		return this.beatsToSeconds(this.duration);
+		return this.clip.track.song.beatsToSeconds(this.duration);
 	}
 	get endTimeSeconds() {
-		return this.beatsToSeconds(this.endTime);
+		return this.clip.track.song.beatsToSeconds(this.endTime);
 	}
 	
 	secondsToBeats(sec) {
@@ -23,10 +24,6 @@ class Note {
 			timeBeats,
 			timeMeasures
 		}
-	}
-	beatsToSeconds(beats) {
-		const duration = beats / 60 * this.clip.track.song.tempo;
-		return duration;
 	}
 	
 	constructor(clip, pitch, time, duration) {

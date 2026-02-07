@@ -4,13 +4,14 @@ import SliderInputNodeValue from "../values/inputs/SliderInputNodeValue.js";
 import PlaybackInstanceOutputNodeValue from "../values/outputs/PlaybackInstanceOutputNodeValue.js";
 import BaseNode from "./BaseNode.js";
 
-class VolumeNode extends BaseNode {
-	static name = "Basic Volume";
-	static typeID = "volume";
-	static category = "Basic";
+class MonoEchoNode extends BaseNode {
+	static name = "Echo";
+	static typeID = "echo";
+	static category = "Effects";
 	
 	inputs = [
-		new SliderInputNodeValue({min: 0, max: 2, step: 0.01, default: 0.2, name: "volume", label: "Volume"}),
+		new SliderInputNodeValue({min: 0, max: 8, step: 0.25, default: 0.2, name: "delay", label: "Delay"}),
+		new SliderInputNodeValue({min: 1, max: 8, step: 1, default: 4, name: "repetitions", label: "Repetitions"}),
 		new PlaybackInstanceInputNodeValue({name: "incoming-playback", label: "Input Playback"}),
 	];
 	outputs = [
@@ -18,9 +19,18 @@ class VolumeNode extends BaseNode {
 	];
 	
 	playbackInstance = new NodePlaybackInstance((time, channel) => {
-		return this.getInputValue("incoming-playback").getSampleAt(time, channel)
-				* this.getInputValue("volume");
+		
+		const playback = this.getInputValue("incoming-playback");
+		const delay = this.getInputValue("delay");
+		const repetitions = this.getInputValue("repetitions");
+		
+		let output = 0;
+		for(let i = 0; i < repetitions; i++) {
+			output += playback.getSampleAt(time - delay * i, channel) * (1 - (i / repetitions));
+		}
+		
+		return output;
 	})
 }
 
-export default VolumeNode;
+export default MonoEchoNode;

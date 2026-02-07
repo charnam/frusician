@@ -24,6 +24,10 @@ class NodeGraph {
 		}
 		
 		const menuItems = nodeCatalog.all.filter(item => {
+			if(item.canBeAdded === false) {
+				return false;
+			}
+			
 			if(item.exclusiveTo && !item.exclusiveTo.includes(track.constructor.typeID)) {
 				return false;
 			}

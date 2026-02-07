@@ -147,7 +147,7 @@ svg.input-connection {
 	width: 100%;
 }
 .input-node .slider-wrapper input[type="number"] {
-	width: 10%;
+	width: 20%;
 	flex: none;
 	font-size: inherit;
 	font-family: inherit;
@@ -157,9 +157,26 @@ svg.input-connection {
 	border: none;
 	background: transparent;
 	color: inherit;
+	text-align: right;
 }
 .input-node .slider-wrapper input[type="number"]::-webkit-outer-spin-button,
 .input-node .slider-wrapper input[type="number"]::-webkit-inner-spin-button {
 	-webkit-appearance: none;
 	margin: 0;
+}
+
+.input-node select {
+	font-family: inherit;
+	font-size: inherit;
+	padding: 0;
+	margin: 0;
+	border: none;
+	appearance: none;
+	background: transparent;
+	color: inherit;
+}
+
+option {
+	color: black;
+	background: white;
 }

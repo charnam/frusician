@@ -22,6 +22,9 @@ class BaseNode {
 	x = 0;
 	y = 0;
 	
+	optimization_lastUpdatedX = null;
+	optimization_lastUpdatedY = null;
+	
 	constructor(graph) {
 		this.id = Identifier.create();
 		this.graph = graph;
@@ -53,34 +56,6 @@ class BaseNode {
 		
 		nodeName.innerText = this.constructor.name;
 		
-		if(this.inputs.length > 0) {
-			let inputsBox,
-				inputsBoxHeader;
-			inputsBox = new HTML.div({class: "graph-node-inputs"},
-				inputsBoxHeader = new HTML.div({class: "graph-node-inputs-header"}, "INPUTS")
-			);
-			
-			for(let input of this.inputs) {
-				input.render(inputsBox);
-			}
-			
-			node.appendChild(inputsBox);
-		}
-		
-		if(this.outputs.length > 0) {
-			let outputsBox,
-				outputsBoxHeader;
-			outputsBox = new HTML.div({class: "graph-node-outputs"},
-				outputsBoxHeader = new HTML.div({class: "graph-node-outputs-header"}, "OUTPUTS")
-			);
-			
-			for(let output of this.outputs) {
-				output.render(outputsBox);
-			}
-			
-			node.appendChild(outputsBox);
-		}
-		
 		parentNode.appendChild(node);
 		this.updateRendered();
 		return node;
@@ -94,13 +69,54 @@ class BaseNode {
 				--width: ${this.constructor.width};
 			`);
 			
+			const inp = node.querySelector(".graph-node-inputs");
+			if(inp) {
+				inp.remove();
+			}
+			
+			const outp = node.querySelector(".graph-node-outputs");
+			if(outp) {
+				outp.remove();
+			}
+			
+			if(this.inputs.length > 0) {
+				let inputsBox,
+					inputsBoxHeader;
+				inputsBox = new HTML.div({class: "graph-node-inputs"},
+					inputsBoxHeader = new HTML.div({class: "graph-node-inputs-header"}, "INPUTS")
+				);
+				
+				for(let input of this.inputs) {
+					input.render(inputsBox);
+				}
+				
+				node.appendChild(inputsBox);
+			}
+			
+			if(this.outputs.length > 0) {
+				let outputsBox,
+					outputsBoxHeader;
+				outputsBox = new HTML.div({class: "graph-node-outputs"},
+					outputsBoxHeader = new HTML.div({class: "graph-node-outputs-header"}, "OUTPUTS")
+				);
+				
+				for(let output of this.outputs) {
+					output.render(outputsBox);
+				}
+				
+				node.appendChild(outputsBox);
+			}
+			
 			node.querySelectorAll(".input-connection").forEach(element => {
 				element.remove();
 			});
 			
-			for(let node of Object.values(this.graph.nodes)) {
-				for(let connection of Object.values(node.inputConnections)) {
-					if(connection.nodeId == this.id) {
+			if(this.optimization_lastUpdatedX !== this.x || this.optimization_lastUpdatedY !== this.y) {
+				this.optimization_lastUpdatedX = this.x;
+				this.optimization_lastUpdatedY = this.y;
+				
+				for(let node of Object.values(this.graph.nodes)) {
+					if(Object.values(node.inputConnections).some(connection => connection.nodeId == this.id)) {
 						node.updateRendered();
 					}
 				}
@@ -155,7 +171,7 @@ class BaseNode {
 						viewBox: `${-padding} ${-padding} ${SVGWidth / zoom + padding * 2} ${SVGHeight / zoom + padding * 2}`,
 						style: `
 							transform: translate(calc(${SVGOffsetX} * var(--unit)), calc(${SVGOffsetY} * var(--unit)))
-									   translate(-${padding}px, -${padding}px);
+									translate(-${padding}px, -${padding}px);
 							width: calc(${SVGWidth + padding * 2 * zoom} * var(--unit));
 							height: calc(${SVGHeight + padding * 2 * zoom} * var(--unit));
 						`},
@@ -169,15 +185,14 @@ class BaseNode {
 								M ${pathStartX} ${pathStartY}
 								L ${pathStartX - connectionSpacing / zoom} ${pathStartY}
 								C ${Math.abs(pathStartX - pathEndX) / 2} ${pathStartY},
-								  ${Math.abs(pathStartX - pathEndX) / 2} ${pathEndY},
-								  ${pathEndX + connectionSpacing / zoom} ${pathEndY}
+								${Math.abs(pathStartX - pathEndX) / 2} ${pathEndY},
+								${pathEndX + connectionSpacing / zoom} ${pathEndY}
 								L ${pathEndX} ${pathEndY}
 								`
 						})
 					)
 				);
 			}
-			
 		}
 	}
 	

@@ -65,6 +65,11 @@ class Song {
 		this.updateRendered();
 	}
 	
+	beatsToSeconds(beats) {
+		const duration = beats / 60 * this.tempo;
+		return duration;
+	}
+	
 	get sortedTracks() {
 		return Object.entries(this.tracks)
 			.sort((a, b) => this.trackAssortment.indexOf(a[0]) - this.trackAssortment.indexOf(b[0]))
@@ -205,8 +210,9 @@ class Song {
 			timelineInternal,
 			timelineHeader,
 			timelineHeaderButtons,
-			timelineHeaderPauseButton,
 			timelineHeaderPlayButton,
+			timelineHeaderPauseButton,
+			cpuUsage,
 			timelineHeaderTicks,
 			tracks,
 			userTracks,
@@ -218,6 +224,10 @@ class Song {
 					timelineHeaderButtons = new HTML.div({class: "timeline-header-buttons"},
 						timelineHeaderPlayButton = new HTML.button({class: "timeline-header-button timeline-header-button-play"}),
 						timelineHeaderPauseButton = new HTML.button({class: "timeline-header-button timeline-header-button-pause"}),
+						cpuUsage = new HTML.div({class: "song-cpu-usage"},
+							new HTML.div({class: "song-cpu-usage-bar"}),
+							new HTML.div({class: "song-cpu-usage-text"}, "CPU%")
+						)
 					),
 					timelineHeaderTicks = new SVG.svg({class: "timeline-header-ticks"})
 				),
@@ -227,6 +237,10 @@ class Song {
 			),
 			timelinePlayhead = new HTML.div({class: 'timeline-playhead'})
 		);
+		
+		setInterval(() => {
+			cpuUsage.setAttribute("style", `--cpu: ${this.playback.testedOverhead}`);
+		});
 		
 		timelineHeaderPlayButton.onclick = () => {
 			this.playback.play();

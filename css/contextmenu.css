@@ -19,6 +19,7 @@
 	min-width: 125px;
 	display: flex;
 	flex-direction: column;
+	white-space: nowrap;
 }
 .contextmenu-item-clickable {
 	cursor: pointer;
