@@ -53,7 +53,9 @@ class Draggable {
 	
 	createDragEventHandler() {
 		return event => {
-			this.startDrag(event);
+			if(event.button == 0) {
+				this.startDrag(event);
+			}
 		}
 	}
 }

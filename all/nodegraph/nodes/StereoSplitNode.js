@@ -1,7 +1,7 @@
 import PlaybackInstanceInputNodeValue from "../values/inputs/PlaybackInstanceInputNodeValue.js";
 import PlaybackInstanceOutputNodeValue from "../values/outputs/PlaybackInstanceOutputNodeValue.js";
 import BaseNode from "./BaseNode.js";
-import NodePlaybackInstance from "../../playback/NodePlaybackInstance.js";
+import RangedNodePlaybackInstance from "../../playback/RangedNodePlaybackInstance.js";
 
 class StereoSplitNode extends BaseNode {
 	static name = "Stereo Split";
@@ -17,18 +17,18 @@ class StereoSplitNode extends BaseNode {
 	];
 	
 	
-	playbackInstanceLeft = new NodePlaybackInstance((time, channel) => {
+	playbackInstanceLeft = new RangedNodePlaybackInstance((startTime, sampleCount, secondsPerSample, channel) => {
 		if(channel == 0) {
-			return this.getInputValue("incoming-playback").getSampleAt(time, channel)
+			return this.getInputValue("incoming-playback").getSampleRange(startTime, sampleCount, secondsPerSample, channel)
 		} else {
-			return 0;
+			return new Float32Array(sampleCount);
 		}
 	})
-	playbackInstanceRight = new NodePlaybackInstance((time, channel) => {
+	playbackInstanceRight = new RangedNodePlaybackInstance((startTime, sampleCount, secondsPerSample, channel) => {
 		if(channel == 1) {
-			return this.getInputValue("incoming-playback").getSampleAt(time, channel)
+			return this.getInputValue("incoming-playback").getSampleRange(startTime, sampleCount, secondsPerSample, channel)
 		} else {
-			return 0;
+			return new Float32Array(sampleCount);
 		}
 	})
 }

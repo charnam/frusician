@@ -193,22 +193,14 @@ button:active {
 	font-weight: 500;
 }
 
-.editor-modal {
+.editor-modal-wrapper {
+	background: #0009;
+}
+.editor-modal-content {
 	border: 1px solid var(--background-color-level0);
 	background: var(--background-color-level1);
 	box-shadow: 0 2px 10px #0008;
 	border-radius: 10px;
-}
-
-.editor-modal-drag-window {
-	text-align: right;
-	cursor: grab;
-}
-.editor-modal-drag-window:after {
-	font-family: bootstrap-icons;
-	content: "\F3FE";
-	color: var(--text-color-level2);
-	font-size: 24px;
 }
 
 /** Timeline **/

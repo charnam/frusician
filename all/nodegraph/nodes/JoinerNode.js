@@ -1,4 +1,4 @@
-import NodePlaybackInstance from "../../playback/NodePlaybackInstance.js";
+import RangedNodePlaybackInstance from "../../playback/RangedNodePlaybackInstance.js";
 import PlaybackInstanceInputNodeValue from "../values/inputs/PlaybackInstanceInputNodeValue.js";
 import SliderInputNodeValue from "../values/inputs/SliderInputNodeValue.js";
 import PlaybackInstanceOutputNodeValue from "../values/outputs/PlaybackInstanceOutputNodeValue.js";
@@ -45,18 +45,36 @@ class JoinerNode extends BaseNode {
 		new PlaybackInstanceOutputNodeValue({name: "returned-playback", label: "Output"}, () => this.playbackInstance)
 	];
 	
-	playbackInstance = new NodePlaybackInstance((time, channel) => {
+	playbackInstance = new RangedNodePlaybackInstance((startTime, sampleCount, secondsPerSample, channel) => {
 		const playbacks = this.getInputPlaybacks();
 		
-		let output = 0;
-		for(let playback of playbacks) {
-			const volume = this.getInputValue("volume-"+playback);
-			if(volume !== undefined) {
-				output += this.getInputValue(playback).getSampleAt(time, channel) * volume;
-			}
-		}
 		
-		return output;
+		if(playbacks.length > 0) {
+			let initial = null;
+			
+			for(let playback of playbacks) {
+				const volume = this.getInputValue("volume-"+playback);
+				
+				// Check if this is just a "fake" / "dummy" input
+				if(volume !== undefined) {
+					const range = this.getInputValue(playback).getSampleRange(startTime, sampleCount, secondsPerSample, channel);
+					if(initial === null) {
+						initial = range;
+						for(let sample in range) {
+							initial[sample] *= volume;
+						}
+					} else {
+						for(let sample in range) {
+							initial[sample] += range[sample] * volume;
+						}
+					}
+				}
+			}
+			
+			return initial;
+		} else {
+			return new Float32Array(sampleCount);
+		}
 	})
 }
 

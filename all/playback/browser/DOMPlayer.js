@@ -1,6 +1,6 @@
 class DOMPlayer {
-	static CHUNK_DURATION = 0.1;
-	static TARGET_BUFFER = 0.3;
+	static CHUNK_DURATION = 0.2;
+	static TARGET_BUFFER = 0.2;
 	
 	node = null;
 	testedOverhead = 0;
@@ -17,18 +17,16 @@ class DOMPlayer {
 		this._currentTime = seconds;
 		this._nextChunkTime = seconds;
 		
-		if(this.ctx) {
-			if (this.node) {
-				this.node.port.postMessage({ type: "reset" });
-			}
-			if (this.ctx.state === "running") {
-				this._playStartCtxTime = this.ctx.currentTime;
-				this._playStartMediaTime = seconds;
-			}
+		if(this.ctx && this.node) {
+			this.node.port.postMessage({ type: "reset" });
+		}
+		if (this.playing) {
+			this._playStartCtxTime = this.ctx.currentTime;
+			this._playStartMediaTime = seconds;
 		}
 	}
 	get currentTime() {
-		if(this.ctx && this.ctx.state === "running") {
+		if(this.playing) {
 			return this._playStartMediaTime + (this.ctx.currentTime - this._playStartCtxTime);
 		}
 		return this._currentTime;
@@ -39,6 +37,14 @@ class DOMPlayer {
 	}
 	get volume() {
 		return this.gain.gain.value;
+	}
+	
+	get playing() {
+		return this.ctx && this.ctx.state === "running";
+	}
+	
+	get paused() {
+		return !this.playing;
 	}
 	
 	async play() {
@@ -59,13 +65,20 @@ class DOMPlayer {
 		}
 	}
 	
+	async playpause() {
+		if(this.playing) {
+			this.pause();
+		} else {
+			this.play();
+		}
+	}
+	
 	constructor(playbackInstance) {
 		this.playbackInstance = playbackInstance;
 		
 		this._currentTime = 0;
 		this._nextChunkTime = 0;
 		this._streaming = false;
-		
 	}
 	
 	async _ensureNode() {
@@ -75,7 +88,7 @@ class DOMPlayer {
 			this.node.disconnect();
 			delete this.node;
 		} else if(!this.ctx) {
-			this.ctx = new AudioContext();
+			this.ctx = new AudioContext({ sampleRate: 44100 });
 			this.gain = this.ctx.createGain();
 			this.gain.connect(this.ctx.destination);
 		}
@@ -109,7 +122,7 @@ class DOMPlayer {
 		const playheadTime = this._playStartMediaTime + this.ctx.currentTime - this._playStartCtxTime;
 		while (this._nextChunkTime < playheadTime + DOMPlayer.TARGET_BUFFER) {
 			const samples = this.playbackInstance.getChannelSampleRange(
-				this._nextChunkTime, DOMPlayer.CHUNK_DURATION, this.ctx.sampleRate);
+				this._nextChunkTime, DOMPlayer.CHUNK_DURATION * this.ctx.sampleRate, 1 / this.ctx.sampleRate);
 			
 			this.node.port.postMessage({type: "chunk", samples}, samples.map(channel => channel.buffer));
 			

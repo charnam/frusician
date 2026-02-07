@@ -158,6 +158,7 @@ svg.input-connection {
 	background: transparent;
 	color: inherit;
 	text-align: right;
+	-moz-appearance: textfield;
 }
 .input-node .slider-wrapper input[type="number"]::-webkit-outer-spin-button,
 .input-node .slider-wrapper input[type="number"]::-webkit-inner-spin-button {

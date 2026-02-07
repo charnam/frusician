@@ -98,6 +98,10 @@
 	top: 0;
 }
 
+.timeline[playing] .timeline-playhead {
+	transition: transform 100ms linear;
+}
+
 /* Tracks, and track adjustment */
 .track {
 	height: var(--track-height);

@@ -7,7 +7,11 @@ class TrackPlaybackInstance extends PlaybackInstance {
 	}
 	
 	getSampleAt(time, channel) {
-		return this.track.getSampleAt(time, channel);
+		return this.track.getSampleRange(time, 1, 1, channel)[0];
+	}
+	
+	getSampleRange(startTime, sampleCount, secondsPerSample, channel) {
+		return this.track.getSampleRange(startTime, sampleCount, secondsPerSample, channel);
 	}
 }
 

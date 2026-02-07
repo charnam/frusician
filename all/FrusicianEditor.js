@@ -47,9 +47,11 @@ class FrusicianEditor {
 			if(document.querySelector(".node-graph-container")) {
 				return;
 			}
-			const keyPressed = keyEvent.key;
 			
-			
+			if(keyEvent.key == " ") {
+				keyEvent.preventDefault();
+				song.playback.playpause();
+			}
 		});
 	}
 	

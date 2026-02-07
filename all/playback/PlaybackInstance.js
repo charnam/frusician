@@ -7,17 +7,19 @@ class PlaybackInstance {
 		return 4;
 	}
 	
-	getSampleAt(time, channel) { // Time is in seconds
-		return Math.sin(time * Math.PI * 440 * (channel + 1)); // Resulting sample (-1 to 1) - 100Hz?
+	getSampleAt(time, channel) {
+		return this.getSampleRange(time, 1, 1/8000, channel);
 	}
 	
-	getSampleRange(startTime, duration, samplesPerSecond, channel) {
-		const secondsPerSample = 1 / samplesPerSecond;
-		const samples = new Float32Array(duration / secondsPerSample);
+	getSampleRange(startTime, sampleCount, secondsPerSample, channel) {
+		const samples = new Float32Array(sampleCount);
 		
 		for(let index = 0; index < samples.length; index++) {
-			const currentTime = index * secondsPerSample + startTime;
-			samples[index] = this.getSampleAt(currentTime, channel);
+			if(sampleCount !== 1) {
+				samples[index] = this.getSampleAt(startTime + secondsPerSample * index, channel);
+			} else {
+				samples[index] = 0;
+			}
 		}
 		
 		return samples;
@@ -27,8 +29,8 @@ class PlaybackInstance {
 		return Array.from({length: this.channelCount}, (_, index) => this.getSampleAt(time, index));
 	}
 	
-	getChannelSampleRange(startTime, duration, samplesPerSecond) {
-		return Array.from({length: this.channelCount}, (_, index) => this.getSampleRange(startTime, duration, samplesPerSecond, index));
+	getChannelSampleRange(startTime, sampleCount, secondsPerSample) {
+		return Array.from({length: this.channelCount}, (_, index) => this.getSampleRange(startTime, sampleCount, secondsPerSample, index));
 	}
 	
 	createDOMPlayer() {

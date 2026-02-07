@@ -48,11 +48,29 @@ class OutputNodeValue extends NodeValue {
 				document.querySelectorAll(".node-connection-drag-selected")
 					.forEach(el => el.classList.remove("node-connection-drag-selected"));
 				if(dragTarget) {
-					this.node.graph.nodes[dragTarget.nodeId].inputConnections[dragTarget.inputName] = {
+					const targetNode = this.node.graph.nodes[dragTarget.nodeId];
+					const disallowedNodes = [this.node];
+					
+					let connections = Object.values(this.node.inputConnections);
+					while(connections.length > 0) {
+						let newConnections = [];
+						for(let connection of connections) {
+							const connectedNode = this.node.graph.nodes[connection.nodeId];
+							newConnections.push(...Object.values(connectedNode.inputConnections));
+							disallowedNodes.push(connectedNode);
+						}
+						connections = newConnections;
+					}
+					
+					if(disallowedNodes.includes(targetNode)) return;
+					
+					targetNode.inputConnections[dragTarget.inputName] = {
 						nodeId: this.node.id,
 						outputName: this.name
 					}
 					this.node.graph.updateRendered();
+					this.node.updateRendered(true);
+					targetNode.updateRendered(true);
 				}
 			});
 			

@@ -1,23 +1,34 @@
 import BaseNode from "./BaseNode.js";
 import PlaybackInstanceInputNodeValue from "../values/inputs/PlaybackInstanceInputNodeValue.js";
+import RangedNodePlaybackInstance from "../../playback/RangedNodePlaybackInstance.js";
+import SliderInputNodeValue from "../values/inputs/SliderInputNodeValue.js";
 
 class MainoutputNode extends BaseNode {
 	static name = "Main Output";
 	static typeID = "mainOutput";
 	static canBeAdded = false;
 	id = "MAIN_OUTPUT";
-	get inputs() {
-		return [
-			new PlaybackInstanceInputNodeValue({label: "Playback", name: "playback", node: this})
-		];
-	}
+	
+	inputs = [
+		new PlaybackInstanceInputNodeValue({label: "Playback", name: "playback"}),
+		new SliderInputNodeValue({label: "Volume", name: "volume", min: 0.0, max: 1.0, step: 0.01, default: 0.1})
+	];
 	outputs = [
 	];
 	
-	constructor(...args) {
-		super(...args);
-		delete this.inputs;
-	}
+	outputPlayback = new RangedNodePlaybackInstance((startTime, sampleCount, secondsPerSample, channel) => {
+		const playback = this.getInputValue("playback");
+		const volume = this.getInputValue("volume");
+		
+		const playbackData = playback.getSampleRange(startTime, sampleCount, secondsPerSample, channel);
+		
+		const output = new Float32Array(sampleCount);
+		for(let sample in output) {
+			output[sample] = playbackData[sample] * volume;
+		}
+		
+		return output;
+	})
 }
 
 export default MainoutputNode;

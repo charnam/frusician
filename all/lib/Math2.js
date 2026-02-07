@@ -7,6 +7,13 @@ class Math2 {
 	};
 	static slideFreq() {
 	}
+	static createSamples(startTime, count, iter, func) {
+		const arr = new Float32Array(count);
+		for(let i = 0; i < arr.length; i++) {
+			arr[i] = func(startTime + i * iter);
+		}
+		return arr;
+	}
 }
 
 export default Math2;

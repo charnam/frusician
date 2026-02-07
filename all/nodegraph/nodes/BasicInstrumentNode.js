@@ -1,5 +1,5 @@
 import Math2 from "../../lib/Math2.js";
-import NodePlaybackInstance from "../../playback/NodePlaybackInstance.js";
+import RangedNodePlaybackInstance from "../../playback/RangedNodePlaybackInstance.js";
 import DropdownInputNodeValue from "../values/inputs/DropdownInputNodeValue.js";
 import TrackDataInputNodeValue from "../values/inputs/TrackDataInputNodeValue.js";
 import PlaybackInstanceOutputNodeValue from "../values/outputs/PlaybackInstanceOutputNodeValue.js";
@@ -14,38 +14,42 @@ class BasicInstrumentNode extends BaseNode {
 	inputs = [
 		new TrackDataInputNodeValue({
 			name: "noteTrack",
-			label: "Track Data"}),
+			label: "Track Data"
+		}),
 		new DropdownInputNodeValue({name: "wave", label: "Wave", items: ["Sine", "Square", "Sawtooth", "Triangle"], default: "Sine"})
 	];
 	outputs = [
 		new PlaybackInstanceOutputNodeValue({label: "Instrument Audio", name: "returned-playback"}, () => this.playbackInstance)
 	];
 	
-	playbackInstance = new NodePlaybackInstance((time, channel) => {
+	playbackInstance = new RangedNodePlaybackInstance((startTime, sampleCount, secondsPerSample, channel) => {
 		const noteTrack = this.getInputValue("noteTrack");
 		const wave = this.getInputValue("wave");
 		
-		const playingNotes = noteTrack.notes.filter(note => note.timeSeconds < time && note.endTimeSeconds > time);
+		const duration = sampleCount * secondsPerSample;
+		const notes = noteTrack.notes.map(note => ({
+			start: note.timeSeconds,
+			end: note.endTimeSeconds,
+			frequency: Math2.midiToFreq(note.pitch)
+		})).filter(note => note.end > startTime && note.start < startTime + duration);
 		
-		let output = 0;
-		for(let note of playingNotes) {
-			const repeat = (time - note.timeSeconds) * Math2.midiToFreq(note.pitch);
-			if(wave == "Sine") {
-				output += Math.sin(repeat * Math.PI * 2);
-			} else if(wave == "Square") {
-				output += repeat % 1 < 0.5 ? 1 : -1;
-			} else if(wave == "Sawtooth") {
-				output += ((repeat % 1) - 0.5) * 2;
-			} else if(wave == "Triangle") {
-				if(repeat % 1 > 0.5) {
-					output += ((repeat % 1) - 0.5) * 2
-				} else {
-					output += (1 - (repeat % 1) - 0.5) * 2
+		const output = new Float32Array(sampleCount);
+		for(let i = 0; i < output.length; i++) {
+			const time = startTime + i * secondsPerSample;
+			for(let note of notes) {
+				if(note.start <= time && note.end > time) {
+					const repeat = (time - note.start) * note.frequency;
+					if(wave == "Sine") {
+						output[i] += Math.sin(repeat * Math.PI * 2);
+					} else if(wave == "Square") {
+						output[i] += repeat % 1 < 0.5 ? 1 : -1;
+					} else if(wave == "Sawtooth") {
+						output[i] += ((repeat % 1) - 0.5) * 2;
+					} else if(wave == "Triangle") {
+						output[i] += Math.asin(Math.sin(repeat * Math.PI * 2)) * 2 / Math.PI
+					}
 				}
 			}
-		}
-		if(playingNotes.length > 0) {
-			output /= playingNotes.length;
 		}
 		
 		return output;

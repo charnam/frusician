@@ -222,8 +222,8 @@ class Song {
 			timelineInternal = new HTML.div({class: "timeline-internal"},
 				timelineHeader = new HTML.div({class: "timeline-header"},
 					timelineHeaderButtons = new HTML.div({class: "timeline-header-buttons"},
-						timelineHeaderPlayButton = new HTML.button({class: "timeline-header-button timeline-header-button-play"}),
-						timelineHeaderPauseButton = new HTML.button({class: "timeline-header-button timeline-header-button-pause"}),
+						timelineHeaderPlayButton = new HTML.button({class: "timeline-header-button timeline-header-button-play", tabindex: "-1"}),
+						timelineHeaderPauseButton = new HTML.button({class: "timeline-header-button timeline-header-button-pause", tabindex: "-1"}),
 						cpuUsage = new HTML.div({class: "song-cpu-usage"},
 							new HTML.div({class: "song-cpu-usage-bar"}),
 							new HTML.div({class: "song-cpu-usage-text"}, "CPU%")
@@ -244,14 +244,28 @@ class Song {
 		
 		timelineHeaderPlayButton.onclick = () => {
 			this.playback.play();
+			timeline.setAttribute("playing", "");
 		}
 		timelineHeaderPauseButton.onclick = () => {
 			this.playback.pause();
+			timeline.removeAttribute("playing");
 		}
 		const updatePlayhead = position => {
+			timeline.removeAttribute("playing");
+			timeline.scrollWidth;
+			
 			const timelineTicksRect = timelineHeaderTicks.getBoundingClientRect();
 			const time = Math.min(Math.max(0, (position.x - timelineTicksRect.x) / timelineTicksRect.width), 1) / ((this.durationMeasures - 1) / this.beatsPerMeasure) * this.tempo;
 			this.playback.currentTime = time;
+			
+			updatePlayheadVisual(false, false);
+			
+			timeline.scrollWidth;
+			if(this.playback.playing) {
+				timeline.setAttribute("playing", "");
+			}
+			
+			timeline.scrollWidth;
 		}
 		const draggable = new Draggable(updatePlayhead, updatePlayhead);
 		timelineHeaderTicks.onmousedown = event => {
@@ -259,13 +273,22 @@ class Song {
 			draggable.startDrag(event);
 		};
 		
-		const updatePlayheadVisual = () => {
+		const updatePlayheadVisual = (loop = false, animate = true) => {
 			if(timeline) {
+				if(this.playback.playing && animate) {
+					timeline.setAttribute("playing", "");
+				} else {
+					timeline.removeAttribute("playing");
+				}
 				timeline.setAttribute("style", `--playbackTime: ${this.playback.currentTime / 60 * this.tempo / this.beatsPerMeasure};`);
-				requestAnimationFrame(updatePlayheadVisual);
+				if(loop) {
+					setTimeout(() => {
+						updatePlayheadVisual(true);
+					}, 100);
+				}
 			}
 		}
-		updatePlayheadVisual();
+		updatePlayheadVisual(true);
 		
 		if(this.editable) {
 			timeline.addEventListener("wheel", event => {
@@ -297,7 +320,6 @@ class Song {
 		
 		
 		targetNode.appendChild(timeline);
-		
 		this.updateRendered();
 		
 		timeline.scrollLeft = 0;
@@ -305,6 +327,8 @@ class Song {
 	
 	updateRendered() {
 		for(let target of this.boundTo) {
+			const timeline = target.querySelector(".timeline")
+			timeline.removeAttribute("playing");
 			target.setAttribute("style", `--pixelsPerMeasure: ${this.pixelsPerMeasure}px; --beatsPerMeasure: ${this.beatsPerMeasure};`);
 			const timelineHeader = target.querySelector(".timeline-header");
 			
@@ -382,6 +406,11 @@ class Song {
 				if(!this.tracks[track.getAttribute("trackid")]) {
 					track.remove();
 				}
+			}
+			
+			timeline.scrollWidth;
+			if(this.playback.playing) {
+				timeline.setAttribute("playing", "")
 			}
 		}
 		

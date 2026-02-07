@@ -141,7 +141,7 @@ class Track {
 		return track;
 	}
 	
-	getSampleAt(time, channel) {
+	getSampleRange(startTime, sampleCount, secondsPerSample, channel) {
 		return 0;
 	}
 	

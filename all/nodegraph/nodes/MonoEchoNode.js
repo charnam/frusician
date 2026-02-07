@@ -1,4 +1,4 @@
-import NodePlaybackInstance from "../../playback/NodePlaybackInstance.js";
+import RangedNodePlaybackInstance from "../../playback/RangedNodePlaybackInstance.js";
 import PlaybackInstanceInputNodeValue from "../values/inputs/PlaybackInstanceInputNodeValue.js";
 import SliderInputNodeValue from "../values/inputs/SliderInputNodeValue.js";
 import PlaybackInstanceOutputNodeValue from "../values/outputs/PlaybackInstanceOutputNodeValue.js";
@@ -10,7 +10,7 @@ class MonoEchoNode extends BaseNode {
 	static category = "Effects";
 	
 	inputs = [
-		new SliderInputNodeValue({min: 0, max: 8, step: 0.25, default: 0.2, name: "delay", label: "Delay"}),
+		new SliderInputNodeValue({min: 0, max: 2, step: 0.25, default: 0.25, name: "delay", label: "Delay"}),
 		new SliderInputNodeValue({min: 1, max: 8, step: 1, default: 4, name: "repetitions", label: "Repetitions"}),
 		new PlaybackInstanceInputNodeValue({name: "incoming-playback", label: "Input Playback"}),
 	];
@@ -18,15 +18,23 @@ class MonoEchoNode extends BaseNode {
 		new PlaybackInstanceOutputNodeValue({name: "returned-playback", label: "Output Playback"}, () => this.playbackInstance)
 	];
 	
-	playbackInstance = new NodePlaybackInstance((time, channel) => {
-		
+	playbackInstance = new RangedNodePlaybackInstance((startTime, sampleCount, secondsPerSample, channel) => {
 		const playback = this.getInputValue("incoming-playback");
-		const delay = this.getInputValue("delay");
+		const delay = this.graph.track.song.beatsToSeconds(this.getInputValue("delay"));
 		const repetitions = this.getInputValue("repetitions");
 		
-		let output = 0;
+		const output = new Float32Array(sampleCount);
+		
+		const maxStartOffset = delay * repetitions;
+		const range = playback.getSampleRange(startTime - maxStartOffset, Math.ceil(sampleCount + maxStartOffset / secondsPerSample), secondsPerSample, channel);
+		
 		for(let i = 0; i < repetitions; i++) {
-			output += playback.getSampleAt(time - delay * i, channel) * (1 - (i / repetitions));
+			for(let sample = 0; sample < sampleCount; sample++) {
+				if(i == 0) {
+					output[sample] = 0;
+				}
+				output[sample] += range[sample + Math.floor((maxStartOffset - delay * i) / secondsPerSample)] * (1 - i / repetitions);
+			}
 		}
 		
 		return output;

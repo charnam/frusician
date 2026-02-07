@@ -121,23 +121,34 @@ class NodeGraph {
 		nodeGraph.ondblclick = ContextMenu.eventOpener(this.addMenu);
 		
 		nodeGraph.addEventListener("wheel", event => {
-			event.preventDefault();
-			this.viewX -= event.clientX * this.viewZoom;
-			this.viewY -= event.clientY * this.viewZoom;
-			this.viewZoom = Math.max(
-				0.5,
-				Math.min(
-					this.viewZoom / (1 + Math.min(40, Math.max(-event.deltaY, -40)) / 200),
-					2,
-				),
-			);
-			this.viewX += event.clientX * this.viewZoom;
-			this.viewY += event.clientY * this.viewZoom;
+			if(event.shiftKey) {
+				this.viewX -= event.deltaY / 2 * this.viewZoom;
+				this.viewY -= event.deltaX / 2 * this.viewZoom;
+			} else if(event.ctrlKey) {
+				event.preventDefault();
+				this.viewX -= event.clientX * this.viewZoom;
+				this.viewY -= event.clientY * this.viewZoom;
+				this.viewZoom = Math.max(
+					0.5,
+					Math.min(
+						this.viewZoom / (1 + Math.min(40, Math.max(-event.deltaY, -40)) / 200),
+						2,
+					),
+				);
+				this.viewX += event.clientX * this.viewZoom;
+				this.viewY += event.clientY * this.viewZoom;
+			} else {
+				this.viewX -= event.deltaX / 2 * this.viewZoom;
+				this.viewY -= event.deltaY / 2 * this.viewZoom;
+			}
 			this.updateRendered();
 		}, {passive: false})
 		
 		parentNode.appendChild(nodeGraph);
 		this.updateRendered();
+		for(let node of Object.values(this.nodes)) {
+			node.updateRendered(true);
+		}
 		return nodeGraph;
 	}
 	
@@ -150,7 +161,7 @@ class NodeGraph {
 			}
 			
 			for(let node of Object.values(this.nodes)) {
-				if(![...graph.querySelectorAll(".graph-node")].some(nodeEl => nodeEl.getAttribute("nodeid") == node.id)) {
+				if(!graph.querySelector(`.graph-node[nodeid="${node.id}"]`)) {
 					node.render(graph);
 				}
 			}

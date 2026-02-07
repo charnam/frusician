@@ -43,6 +43,7 @@ class NoteTrack extends ClipTrack {
 			}
 		}
 		this._notesCache = output;
+		this.shouldRegenerateNotes = false;
 		return output;
 	}
 	
@@ -76,8 +77,8 @@ class NoteTrack extends ClipTrack {
 		super.updateRendered();
 	}
 	
-	getSampleAt(time, channel) {
-		return this.nodeGraph.nodes.MAIN_OUTPUT.getInputValue("playback").getSampleAt(time, channel);
+	getSampleRange(startTime, sampleCount, secondsPerSample, channel) {
+		return this.nodeGraph.nodes.MAIN_OUTPUT.outputPlayback.getSampleRange(startTime, sampleCount, secondsPerSample, channel);
 	}
 }
 

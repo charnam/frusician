@@ -1,3 +1,5 @@
+import Math2 from "../../lib/Math2.js";
+
 class Note {
 	clip = null;
 	pitch = 60;
@@ -6,7 +8,6 @@ class Note {
 	get endTime() {
 		return this.time + this.duration;
 	}
-	
 	get timeSeconds() {
 		return this.clip.track.song.beatsToSeconds(this.time)
 	}
@@ -15,6 +16,10 @@ class Note {
 	}
 	get endTimeSeconds() {
 		return this.clip.track.song.beatsToSeconds(this.endTime);
+	}
+	
+	getPhaseAt(timeSeconds) {
+		return (Math2.midiToFreq(this.pitch) * (timeSeconds - this.timeSeconds));
 	}
 	
 	secondsToBeats(sec) {
