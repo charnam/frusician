@@ -56,15 +56,9 @@ class Clip {
 				this.duplicate(this.duration);
 				this.clip.track.updateRendered();
 			}),
-			new ContextMenuConditionalItem(() => this.loopCount > 0,
+			new ContextMenuConditionalItem(() => this.applyLoop && this.loopCount > 0,
 				new ContextMenuClickableItem("Apply loop", () => {
-					if(this.hasDuplicates()) {
-						this.clip = this.clip.constructor.fromSerialized(this.clip.serialize(), this.clip.track);
-						this.clip.name += " copy";
-					}
-					this.clip.notes = this.allNotes;
-					this.duration += this.loopCount * this.duration;
-					this.loopCount = 0;
+					this.applyLoop();
 					this.clip.track.updateRendered();
 				}),
 			),
@@ -251,6 +245,7 @@ class Clip {
 		editorCloseButton.onclick = () => {
 			const wrapper = parentNode.parentElement;
 			wrapper.remove();
+			this.track.updateRendered();
 		}
 		
 		editorClipName.value = this.name;

@@ -78,17 +78,30 @@ class NoteTrack extends ClipTrack {
 	}
 	
 	playNoteSample(pitch) {
-		if(!this.noteSamplePlayback) {
-			this.noteSamplePlayback = this.nodeGraph.nodes.MAIN_OUTPUT.outputPlayback.createDOMPlayer();
+		if(!this.testingNote) {
+			this.samplePlaybackTrack = new NoteTrack(this.song, false);
+			this.noteSamplePlayback = this.samplePlaybackTrack.playbackInstance.createDOMPlayer();
+			
+			const clip = new NoteClip(this.samplePlaybackTrack);
+			this.samplePlaybackTrack.clips[clip.id] = clip;
+			this.samplePlaybackTrack.clipPlacement = [new NoteClip.Placement(clip)];
+			
+			this.testingNote = new Note(clip, 0, 0, 0.25);
+			clip.notes.push(this.testingNote);
 		}
 		
-		const samplePlaybackTrack = new NoteTrack();
+		const samplePlaybackId = this._samplePlaybackId = Date.now();
 		
-		samplePlaybackTrack.nodeGraph = NodeGraph.fromSerialized(this.nodeGraph);
-		
+		this.samplePlaybackTrack.nodeGraph = NodeGraph.fromSerialized(this.nodeGraph.serialize(), this.samplePlaybackTrack);
+		this.testingNote.pitch = pitch;
 		this.noteSamplePlayback.currentTime = 0;
 		this.noteSamplePlayback.play();
-		this.testingNote = new Note()
+		
+		setTimeout(() => {
+			if(samplePlaybackId == this._samplePlaybackId) {
+				this.noteSamplePlayback.pause();
+			}
+		}, 2000)
 	}
 	
 	serialize() {

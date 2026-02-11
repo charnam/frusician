@@ -30,7 +30,7 @@ class Track {
 	
 	contextMenu = null;
 	
-	constructor(song) {
+	constructor(song, addTrack = true) {
 		this.song = song;
 		this.id = Identifier.create();
 		let iter = 0;
@@ -43,7 +43,9 @@ class Track {
 				this.song.removeTrack(this.id);
 			})
 		])
-		song.addTrack(this);
+		if(addTrack) {
+			song.addTrack(this);
+		}
 	}
 	
 	serialize() {

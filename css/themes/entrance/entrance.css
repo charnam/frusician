@@ -326,7 +326,6 @@ button:active {
 .clip-placement {
 	background: linear-gradient(to bottom, hsl(var(--clip-hue), 100%, 50%), hsl(var(--clip-hue), 100%, 40%), hsl(var(--clip-hue), 100%, 20%));
 	border-radius: 5px;
-	overflow: hidden;
 	z-index: 0;
 }
 .clip-placement canvas {

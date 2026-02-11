@@ -69,9 +69,16 @@ class ClipTrack extends Track {
 			Object.entries(serialized.clips)
 				.map(([clipid, serializedClip]) => [clipid, clipCatalog.fromSerialized(serializedClip, track)])
 		);
+		
+		for(let [clipid, clip] of Object.entries(track.clips)) {
+			clip.id = clipid;
+		}
+		
 		for(let serializedPlacement of serialized.clipPlacement) {
 			const clip = track.clips[serializedPlacement.clipID];
-			if(!clip) throw new Error("Clip of placement is not identified");
+			if(!clip) {
+				throw new Error("Clip of placement is not identified");
+			}
 			
 			const placement = clip.constructor.Placement.fromSerialized(serializedPlacement, track);
 			track.clipPlacement.push(placement);

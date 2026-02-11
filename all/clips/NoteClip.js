@@ -4,6 +4,7 @@ import BoxAnimation from "../ui/BoxAnimation.js";
 import Note from "./NoteTrack/Note.js";
 import Math2 from "../lib/Math2.js";
 import Draggable from "../ui/Draggable.js";
+import NoteTrack from "../tracks/NoteTrack.js";
 
 class NoteClip extends Clip {
 	static typeID = "noteClip"
@@ -52,6 +53,16 @@ class NoteClip extends Clip {
 				}
 			}
 		}
+		
+		applyLoop() {
+			if(this.hasDuplicates()) {
+				this.clip = this.clip.constructor.fromSerialized(this.clip.serialize(), this.clip.track);
+				this.clip.name += " copy";
+			}
+			this.clip.notes = this.allNotes;
+			this.duration += this.loopCount * this.duration;
+			this.loopCount = 0;
+		}
 	}
 	
 	notes = [];
@@ -96,6 +107,9 @@ class NoteClip extends Clip {
 			pianoKeys.appendChild(pianoKeyEl)
 			pianoKeys.appendChild(pianoLetterEl)
 			pianoLetterEl.textContent = pianoKeyNames[realPitch];
+			if(realPitch == 0) {
+				pianoLetterEl.textContent += ((pitch + offsetFromMiddleC) / 12) - 1
+			}
 		}
 		
 		for(let beat = 0; beat < this.track.song.beatsPerMeasure * measuresAvailable; beat+=1) {
@@ -128,6 +142,8 @@ class NoteClip extends Clip {
 			if(event.button == 0 && !event.target.classList.contains("note-editor-user-note")) {
 				const addingNote = new Note(this, startPosition.y, roundNotePosition(startPosition.x), roundNotePosition(0, 1));
 				
+				this.track.playNoteSample(startPosition.y);
+				
 				const draggable = new Draggable(realPosition => {
 					const position = getNotePosition(realPosition.x, realPosition.y);
 					addingNote.duration = roundNotePosition(position.x - startPosition.x, 1);
@@ -158,33 +174,45 @@ class NoteClip extends Clip {
 		}, {passive: false})
 		
 		const update = () => {
-			noteEditor.querySelectorAll(".note-editor-user-note").forEach(note => note.remove());
+			noteEditor.querySelectorAll(".note-editor-user-note, .note-editor-other-note").forEach(note => note.remove());
 			noteEditor.setAttribute("style", `
 				--zoom: ${zoomLevel};
 			`);
+			
+			for(let track of Object.values(this.track.song.tracks)) {
+				if(!(track instanceof NoteTrack)) continue;
+				
+				for(let note of track.notes) {
+					const isSameTrack = track == this.track;
+					const noteEl = new SVG.rect({class: "note-editor-other-note", fill: "#f882", x: note.time, y: noteCount - note.pitch, width: note.duration, height: 1});
+					if(isSameTrack) {
+						noteEl.classList.add("same-track");
+						noteEl.setAttribute("fill", "#fff4");
+					}
+					noteEditor.appendChild(noteEl)
+				}
+			}
 			
 			for(let note of this.notes) {
 				const noteEl = new SVG.rect({class: "note-editor-user-note", fill: "white", x: fromPlacement.time + note.time, y: noteCount - note.pitch, width: note.duration, height: 1});
 				noteEditor.appendChild(noteEl)
 				
-				/*const noteDragHandler = position => {
-					const editorBounds = noteEditor.getBoundingClientRect();
-					const timeRel = Math.round(position.deltaX / editorBounds.width * measuresAvailable * this.track.song.beatsPerMeasure) / this.track.song.beatsPerMeasure;
-					const pitchRel = Math.round(-position.deltaY / editorBounds.height * noteCount);
-					
-					noteEl.style.transform = `translate(${timeRel}px, ${-pitchRel}px)`;
-					
-					return {timeRel, pitchRel};
-				}*/
-				
+				let lastDraggedPitch = null;
 				const noteDrag = new Draggable(position => {
 					const newPos = getNotePosition(position.x, position.y);
 					note.time = roundNotePosition(newPos.x);
 					note.pitch = newPos.y;
+					if(lastDraggedPitch !== note.pitch) {
+						lastDraggedPitch = note.pitch;
+						this.track.playNoteSample(note.pitch);
+					}
 					update();
 				});
 				
-				noteEl.onmousedown = noteDrag.createDragEventHandler();
+				noteEl.onmousedown = event => {
+					noteDrag.drag(event);
+					noteDrag.startDrag(event);
+				}
 				noteEl.oncontextmenu = event => {
 					event.preventDefault();
 					this.notes = this.notes.filter(noteChk => noteChk !== note);
@@ -194,6 +222,12 @@ class NoteClip extends Clip {
 		}
 		
 		update();
+		
+		const editorWrapperSize = noteEditorContainer.getBoundingClientRect();
+		const editorSize = noteEditor.getBoundingClientRect();
+		
+		noteEditorContainer.scrollLeft = ((fromPlacement.time + fromPlacement.duration / 2) / this.track.song.durationMeasures * editorSize.width) - editorWrapperSize.width / 2;
+		noteEditorContainer.scrollTop = editorSize.height / 2 - editorWrapperSize.height / 2
 		
 		return editor;
 	}
