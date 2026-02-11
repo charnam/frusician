@@ -1,4 +1,5 @@
 import NoteClip from "../clips/NoteClip.js";
+import Note from "../clips/NoteTrack/Note.js";
 import Math2 from "../lib/Math2.js";
 import NodeGraph from "../nodegraph/NodeGraph.js";
 import BasicInstrumentNode from "../nodegraph/nodes/BasicInstrumentNode.js";
@@ -11,9 +12,7 @@ class NoteTrack extends ClipTrack {
 	static typeName = "Note Track";
 	static acceptsClipTypes = [NoteClip];
 	
-	shouldRegenerateNotes = true; // caching
-	
-	_notesCache = [];
+	noteSamplePlayback = null;
 	
 	constructor(...args) {
 		super(...args);
@@ -33,7 +32,6 @@ class NoteTrack extends ClipTrack {
 	}
 	
 	get notes() {
-		if(this._notesCache && !this.shouldRegenerateNotes) return this._notesCache;
 		const output = [];
 		for(let placement of this.clipPlacement) {
 			if(placement instanceof NoteClip.Placement) {
@@ -42,8 +40,6 @@ class NoteTrack extends ClipTrack {
 				}
 			}
 		}
-		this._notesCache = output;
-		this.shouldRegenerateNotes = false;
 		return output;
 	}
 	
@@ -79,6 +75,36 @@ class NoteTrack extends ClipTrack {
 	
 	getSampleRange(startTime, sampleCount, secondsPerSample, channel) {
 		return this.nodeGraph.nodes.MAIN_OUTPUT.outputPlayback.getSampleRange(startTime, sampleCount, secondsPerSample, channel);
+	}
+	
+	playNoteSample(pitch) {
+		if(!this.noteSamplePlayback) {
+			this.noteSamplePlayback = this.nodeGraph.nodes.MAIN_OUTPUT.outputPlayback.createDOMPlayer();
+		}
+		
+		const samplePlaybackTrack = new NoteTrack();
+		
+		samplePlaybackTrack.nodeGraph = NodeGraph.fromSerialized(this.nodeGraph);
+		
+		this.noteSamplePlayback.currentTime = 0;
+		this.noteSamplePlayback.play();
+		this.testingNote = new Note()
+	}
+	
+	serialize() {
+		const serialized = super.serialize();
+		
+		serialized.nodeGraph = this.nodeGraph.serialize();
+		
+		return serialized;
+	}
+	
+	static fromSerialized(serialized, song) {
+		const track = super.fromSerialized(serialized, song);
+		
+		track.nodeGraph = NodeGraph.fromSerialized(serialized.nodeGraph, track);
+		
+		return track;
 	}
 }
 

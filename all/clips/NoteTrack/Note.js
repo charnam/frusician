@@ -38,14 +38,6 @@ class Note {
 		this.duration = duration;
 	}
 	
-	serialize() {
-		return {
-			pitch: this.pitch,
-			time: this.time,
-			duration: this.duration
-		}
-	}
-	
 	getWithTimeOffset(time) {
 		const note = new this.constructor(this.clip);
 		note.pitch = this.pitch;
@@ -54,11 +46,19 @@ class Note {
 		return note;
 	}
 	
+	serialize() {
+		return {
+			pitch: this.pitch,
+			time: this.time,
+			duration: this.duration
+		}
+	}
 	static fromSerialized(serialized, clip) {
 		const note = new this(clip);
 		note.pitch = serialized.pitch;
 		note.time = serialized.time;
 		note.duration = serialized.duration;
+		return note;
 	}
 }
 

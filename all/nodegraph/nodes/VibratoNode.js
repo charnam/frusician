@@ -21,14 +21,17 @@ class VibratoNode extends BaseNode {
 	playbackInstance = new RangedNodePlaybackInstance((startTime, sampleCount, secondsPerSample, channel) => {
 		const playback = this.getInputValue("playback");
 		const intensity = this.getInputValue("intensity");
-		const speed = this.getInputValue("speed");
+		const speed = this.graph.track.song.beatsToSeconds(this.getInputValue("speed"));
 		
 		const output = new Float32Array(sampleCount);
-		const samples = playback.getSampleRange(startTime - intensity, sampleCount + Math.ceil(intensity * 2 / secondsPerSample), secondsPerSample, channel);
+		const samples = playback.getSampleRange(startTime - intensity * 2, sampleCount + Math.ceil(intensity / secondsPerSample * 4), secondsPerSample, channel);
 		
 		for(let sample in output) {
 			const time = startTime + sample * secondsPerSample;
-			output[sample] = samples[Math.round((sample * secondsPerSample + Math.sin(time * speed * Math.PI * 2) * intensity) / secondsPerSample)];
+			const newTime = time + Math.sin(time * speed * Math.PI * 2) * intensity;
+			const index = (newTime + intensity * 2 - startTime) / secondsPerSample;
+			const mult = index % 1;
+			output[sample] = samples[Math.floor(index)] * (1 - mult) + samples[Math.ceil(index)] * mult;
 		}
 		
 		return output;

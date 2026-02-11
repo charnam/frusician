@@ -196,6 +196,22 @@ class NodeGraph {
 		}
 	}
 	
+	static fromSerialized(serialized, track) {
+		const graph = new NodeGraph(track);
+		
+		graph.viewX = serialized.viewX;
+		graph.viewY = serialized.viewY;
+		graph.viewZoom = serialized.viewZoom;
+		
+		for(let [id, serializedNode] of Object.entries(serialized.nodes)) {
+			const node = nodeCatalog.fromSerialized(serializedNode, graph);
+			node.id = id;
+			graph.addNode(node);
+		}
+		
+		return graph;
+	}
+	
 }
 
 export default NodeGraph;

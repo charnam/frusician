@@ -10,6 +10,7 @@
 	align-items: center;
 	flex: none;
 	margin-bottom: 8px;
+	padding: 0 8px;
 }
 .clip-editor-clip-name {
 	width: 100%;
@@ -17,7 +18,7 @@
 .clip-editor-close-button {
 	aspect-ratio: 1 / 1;
 	height: 24px;
-	margin-right: 10px;
+	margin-left: 10px;
 }
 .clip-editor-edit-box {
 	width: 100%;
@@ -36,7 +37,8 @@
 	flex: none;
 }
 .note-editor {
-	min-width: 100%;
+	--zoom: 1;
+	width: calc(100% * var(--zoom));
 }
 .note-editor-piano {
 	position: sticky;

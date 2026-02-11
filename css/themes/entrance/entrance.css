@@ -215,6 +215,20 @@ button:active {
 	background: linear-gradient(to right, var(--background-color-level1) -20%, transparent);
 }
 
+.song-cpu-usage-bar {
+	width: 100%;
+	height: 4px;
+	background: gray;
+	margin-right: 10px;
+	position: relative;
+	overflow: hidden;
+	border-radius: 2px;
+}
+.song-cpu-usage-bar:before {
+	background: currentColor;
+	transition: width 0.1s ease-in-out;
+}
+
 .timeline-header-button:after {
 	font-family: 'bootstrap-icons';
 }
@@ -382,15 +396,8 @@ button:active {
 	color: inherit;
 	border: none;
 }
-.clip-editor-close-button {
-	aspect-ratio: 1 / 1;
-	height: 24px;
-	margin-right: 10px;
-}
 
 /** Node graph */
-
-
 .input-node .dropdown-wrapper {
 	position: relative;
 }

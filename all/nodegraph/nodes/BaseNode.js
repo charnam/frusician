@@ -226,15 +226,6 @@ class BaseNode {
 		this.graph.updateRendered();
 	}
 	
-	serialize() {
-		return {
-			typeID: this.constructor.typeID,
-			x: this.x,
-			y: this.y,
-			inputConnections: this.inputConnections,
-		}
-	}
-	
 	getInput(name) {
 		return this.inputs.find(input => input.name == name);
 	}
@@ -284,6 +275,27 @@ class BaseNode {
 	
 	getOutputValue(name) {
 		return this.getOutput(name).getValue();
+	}
+	
+	serialize() {
+		return {
+			typeID: this.constructor.typeID,
+			x: this.x,
+			y: this.y,
+			inputConnections: this.inputConnections,
+			inputValues: this.inputValues
+		}
+	}
+	
+	static fromSerialized(serializedData, graph) {
+		const node = new this(graph);
+		
+		node.x = serializedData.x;
+		node.y = serializedData.y;
+		node.inputConnections = serializedData.inputConnections;
+		node.inputValues = serializedData.inputValues;
+		
+		return node;
 	}
 }
 

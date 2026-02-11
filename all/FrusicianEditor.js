@@ -22,6 +22,9 @@ class FrusicianEditor {
 				new ContextMenu.ClickableItem("Save", () => {
 					this.song.save();
 				}),
+				new ContextMenu.ClickableItem("Save (Debug)", () => {
+					this.song.save(true);
+				}),
 				new ContextMenu.ClickableItem("Open", async () => {
 					this.setSong(await Song.load());
 				}),
@@ -50,12 +53,18 @@ class FrusicianEditor {
 			
 			if(keyEvent.key == " ") {
 				keyEvent.preventDefault();
-				song.playback.playpause();
+				this.song.playback.playpause();
 			}
 		});
 	}
 	
 	setSong(song) {
+		if(this.song) {
+			if(this.song.playback) {
+				this.song.playback.pause();
+			}
+		}
+		
 		this.song = song;
 		this.song.render(this.songContainer);
 	}

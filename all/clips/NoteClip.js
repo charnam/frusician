@@ -1,4 +1,4 @@
-import { HTML, SVG } from "imperative-html";
+import { applyToElement, HTML, SVG } from "imperative-html";
 import Clip from "./Clip.js";
 import BoxAnimation from "../ui/BoxAnimation.js";
 import Note from "./NoteTrack/Note.js";
@@ -10,8 +10,9 @@ class NoteClip extends Clip {
 	static Placement = class NoteClipPlacement extends Clip.Placement {
 		render(parentNode) {
 			const clipPlacement = super.render(parentNode);
+			clipPlacement.classList.add("note-clip-placement");
 			
-			clipPlacement.appendChild(new SVG.svg({width: 1, height: 1}));
+			clipPlacement.appendChild(new SVG.svg({width: 1, height: 1, preserveAspectRatio: "none"}));
 			
 			clipPlacement.ondblclick = event => {
 				if(event.target == clipPlacement) {
@@ -23,27 +24,37 @@ class NoteClip extends Clip {
 			return clipPlacement;
 		}
 		
+		get allNotes() {
+			const output = [];
+			for(let loop = 0; loop <= this.loopCount; loop++) {
+				output.push(...this.clip.notes.map(note => note.getWithTimeOffset(this.duration * loop)));
+			}
+			return output;
+		}
+		
 		updateRendered() {
 			super.updateRendered();
 			for(let target of this.boundTo) {
 				const notePreview = target.querySelector("svg");
 				if(notePreview) {
+					applyToElement(notePreview, {
+						viewBox: `0 0 ${this.duration * (this.loopCount + 1)} 89`
+					})
 					
+					for(let note of notePreview.querySelectorAll(".note")) {
+						note.remove();
+					}
+					
+					for(let note of this.allNotes) {
+						const noteEl = new SVG.rect({class: "note", x: note.time, y: 89 - note.pitch, width: note.duration, height: 1});
+						notePreview.appendChild(noteEl);
+					}
 				}
 			}
 		}
 	}
 	
-	notes = [
-		new Note(this, 60, 0, 0.25),
-		new Note(this, 62, 0.25, 0.25),
-		new Note(this, 64, 0.5, 0.25),
-		new Note(this, 60, 0.75, 0.5),
-		new Note(this, 64, 0.75, 0.5),
-		new Note(this, 67, 0.75, 0.5),
-		new Note(this, 0, 0.75, 0.125),
-		new Note(this, 88, 0.75, 0.125)
-	];
+	notes = [];
 	
 	renderClipEditor(parentNode, fromPlacement) {
 		const editor = super.renderClipEditor(parentNode);
@@ -51,6 +62,8 @@ class NoteClip extends Clip {
 		let noteEditorContainer,
 			pianoKeys,
 			noteEditor;
+		
+		let zoomLevel = 3;
 		
 		const offsetFromMiddleC = 0;
 		const noteRangeStart = 0;
@@ -62,7 +75,7 @@ class NoteClip extends Clip {
 		const pianoKeyHeight = 10;
 		const pianoKeyNames = ["C", "D♭", "D", "E♭", "E", "F", "F♯", "G", "A♭", "A", "B♭", "B"];
 		
-		const measuresAvailable = Math.max(4, fromPlacement.duration + 1);
+		const measuresAvailable = this.track.song.durationMeasures;
 		
 		editor.appendChild(
 			noteEditorContainer = new HTML.div({class: "note-editor-scroll-box"},
@@ -92,18 +105,69 @@ class NoteClip extends Clip {
 		}
 		
 		noteEditor.appendChild(
-			new SVG.rect({class: "note-editor-duration-guide", x: fromPlacement.duration, y: 0, width: measuresAvailable - fromPlacement.duration, height: SVGHeight})
+			new SVG.rect({class: "note-editor-duration-guide note-editor-duration-guide-start", x: 0, y: 0, width: fromPlacement.time, height: SVGHeight})
+		);
+		noteEditor.appendChild(
+			new SVG.rect({class: "note-editor-duration-guide note-editor-duration-guide-end", x: fromPlacement.time + fromPlacement.duration, y: 0, width: measuresAvailable - fromPlacement.duration, height: SVGHeight})
 		);
 		
+		const getNotePosition = (x, y) => {
+			const rect = noteEditor.getBoundingClientRect();
+			return {
+				x: ((x - rect.left) / rect.width * measuresAvailable - fromPlacement.time),
+				y: noteRangeEnd - Math.floor((y - rect.top) / rect.height * (noteCount + 1) + noteRangeStart)
+			};
+		}
+		
+		const roundNotePosition = (pos, minimum = 0) => {
+			return Math.max(minimum, Math.floor(pos * this.track.song.beatsPerMeasure * this.track.song.beatsPerMeasure) + minimum) / this.track.song.beatsPerMeasure / this.track.song.beatsPerMeasure;
+		}
+		
+		noteEditor.addEventListener("mousedown", (event) => {
+			const startPosition = getNotePosition(event.clientX, event.clientY);
+			if(event.button == 0 && !event.target.classList.contains("note-editor-user-note")) {
+				const addingNote = new Note(this, startPosition.y, roundNotePosition(startPosition.x), roundNotePosition(0, 1));
+				
+				const draggable = new Draggable(realPosition => {
+					const position = getNotePosition(realPosition.x, realPosition.y);
+					addingNote.duration = roundNotePosition(position.x - startPosition.x, 1);
+					update();
+				});
+				draggable.startDrag(event);
+				
+				this.notes.push(addingNote);
+				update();
+			}
+		})
+		
+		noteEditor.addEventListener("wheel", event => {
+			if(event.ctrlKey) {
+				zoomLevel =
+					Math.max(
+						Math.min(
+							10,
+							zoomLevel / (1 + Math.min(40, Math.max(event.deltaY, -40)) / 200)
+						),
+						1
+					);
+				
+				update();
+				
+				event.preventDefault();
+			}
+		}, {passive: false})
+		
 		const update = () => {
-			this.track.shouldRegenerateNotes = true;
 			noteEditor.querySelectorAll(".note-editor-user-note").forEach(note => note.remove());
+			noteEditor.setAttribute("style", `
+				--zoom: ${zoomLevel};
+			`);
 			
 			for(let note of this.notes) {
-				const noteEl = new SVG.rect({class: "note-editor-user-note", fill: "white", x: note.time, y: noteCount - note.pitch, width: note.duration, height: 1});
+				const noteEl = new SVG.rect({class: "note-editor-user-note", fill: "white", x: fromPlacement.time + note.time, y: noteCount - note.pitch, width: note.duration, height: 1});
 				noteEditor.appendChild(noteEl)
 				
-				const noteDragHandler = position => {
+				/*const noteDragHandler = position => {
 					const editorBounds = noteEditor.getBoundingClientRect();
 					const timeRel = Math.round(position.deltaX / editorBounds.width * measuresAvailable * this.track.song.beatsPerMeasure) / this.track.song.beatsPerMeasure;
 					const pitchRel = Math.round(-position.deltaY / editorBounds.height * noteCount);
@@ -111,17 +175,18 @@ class NoteClip extends Clip {
 					noteEl.style.transform = `translate(${timeRel}px, ${-pitchRel}px)`;
 					
 					return {timeRel, pitchRel};
-				}
+				}*/
 				
-				const noteDrag = new Draggable(noteDragHandler, position => {
-					const output = noteDragHandler(position);
-					note.time += output.timeRel;
-					note.pitch += output.pitchRel;
+				const noteDrag = new Draggable(position => {
+					const newPos = getNotePosition(position.x, position.y);
+					note.time = roundNotePosition(newPos.x);
+					note.pitch = newPos.y;
 					update();
 				});
 				
 				noteEl.onmousedown = noteDrag.createDragEventHandler();
-				noteEl.oncontextmenu = () => {
+				noteEl.oncontextmenu = event => {
+					event.preventDefault();
 					this.notes = this.notes.filter(noteChk => noteChk !== note);
 					update();
 				}
@@ -131,6 +196,22 @@ class NoteClip extends Clip {
 		update();
 		
 		return editor;
+	}
+	
+	serialize() {
+		const serialized = super.serialize();
+		
+		serialized.notes = this.notes.map(note => note.serialize());
+		
+		return serialized;
+	}
+	
+	static fromSerialized(serialized, track) {
+		const clip = super.fromSerialized(serialized, track);
+		
+		clip.notes = serialized.notes.map(note => Note.fromSerialized(note, clip));
+		
+		return clip;
 	}
 }
 

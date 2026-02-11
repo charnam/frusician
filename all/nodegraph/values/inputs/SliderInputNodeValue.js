@@ -43,6 +43,7 @@ class SliderInputNodeValue extends InputNodeValue {
 		
 		if(this.node.inputConnections[this.name]) {
 			sliderInput.disabled = true;
+			sliderInputBox.disabled = true;
 		}
 		
 		sliderInput.oninput = () => {

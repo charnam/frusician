@@ -1,6 +1,6 @@
 import Track from "./Track.js";
-import Clip from "../clips/Clip.js";
 import { HTML } from "imperative-html";
+import clipCatalog from "../clips/clipCatalog.js";
 
 class ClipTrack extends Track {
 	clips = {};
@@ -57,18 +57,25 @@ class ClipTrack extends Track {
 	serialize() {
 		return {
 			...super.serialize(),
-			clips: Object.entries(this.clips).map(([clipid, clip]) => [clipid, clip.serialize()]),
-			clipPlacement: this.clipPlacement.map(clipPosition => clipPosition.serialize())
+			clips: Object.fromEntries(Object.entries(this.clips).map(([clipid, clip]) => [clipid, clip.serialize()])),
+			clipPlacement: this.clipPlacement.map(placement => placement.serialize())
 		}
 	}
 	
-	static fromSerialized(serialized) {
-		const track = super.fromSerialized(serialized);
+	static fromSerialized(serialized, song) {
+		const track = super.fromSerialized(serialized, song);
 		
 		track.clips = Object.fromEntries(
-			Object.entries(object.clips)
-				.map(([clipid, serializedClip]) => [clipid, Clip.fromSerialized(serializedClip)])
+			Object.entries(serialized.clips)
+				.map(([clipid, serializedClip]) => [clipid, clipCatalog.fromSerialized(serializedClip, track)])
 		);
+		for(let serializedPlacement of serialized.clipPlacement) {
+			const clip = track.clips[serializedPlacement.clipID];
+			if(!clip) throw new Error("Clip of placement is not identified");
+			
+			const placement = clip.constructor.Placement.fromSerialized(serializedPlacement, track);
+			track.clipPlacement.push(placement);
+		}
 		
 		return track;
 	}

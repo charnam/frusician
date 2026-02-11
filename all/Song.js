@@ -113,19 +113,6 @@ class Song {
 		link.remove();
 	}
 	
-	serialize() {
-		return {
-			title: this.title,
-			tracks: Object.fromEntries(
-				Object.entries(this.tracks)
-					.map(([id, track]) => [id, track.serialize()])
-			),
-			trackAssortment: this.trackAssortment.slice(),
-			savedAt: Date.now(),
-			timeSpent: this.timeSpent
-		}
-	}
-	
 	static load() {
 		return new Promise((res, rej) => {
 			const fileInput = new HTML.input({
@@ -173,6 +160,22 @@ class Song {
 		} catch(err) {
 			console.error(err);
 			throw new Error("Failed to load song: ", err);
+		}
+	}
+	
+	serialize() {
+		return {
+			title: this.title,
+			tracks: Object.fromEntries(
+				Object.entries(this.tracks)
+					.map(([id, track]) => [id, track.serialize()])
+			),
+			trackAssortment: this.trackAssortment.slice(),
+			durationMeasures: this.durationMeasures,
+			beatsPerMeasure: this.beatsPerMeasure,
+			pixelsPerMeasure: this.pixelsPerMeasure,
+			savedAt: Date.now(),
+			timeSpent: this.timeSpent
 		}
 	}
 	

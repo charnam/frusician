@@ -41,18 +41,33 @@ class Clip {
 		boundTo = [];
 		contextMenu = new ContextMenu([
 			new ContextMenuClickableItem("Edit", () => {
-				this.clip.openClipEditor();
+				this.clip.openClipEditor(this);
 				console.log(this.clip.track.clipPlacement);
 			}),
-			/*new ContextMenuConditionalItem(() => this.hasDuplicates(),
+			new ContextMenuConditionalItem(() => this.hasDuplicates(),
 				new ContextMenuClickableItem("Edit as new", () => {
-					//this.clip = 
+					this.clip = this.clip.constructor.fromSerialized(this.clip.serialize(), this.clip.track);
+					this.clip.name += " copy";
+					this.clip.track.updateRendered();
+					this.clip.openClipEditor(this);
 				}),
-			),*/
+			),
 			new ContextMenuClickableItem("Add linked clip", () => {
 				this.duplicate(this.duration);
 				this.clip.track.updateRendered();
 			}),
+			new ContextMenuConditionalItem(() => this.loopCount > 0,
+				new ContextMenuClickableItem("Apply loop", () => {
+					if(this.hasDuplicates()) {
+						this.clip = this.clip.constructor.fromSerialized(this.clip.serialize(), this.clip.track);
+						this.clip.name += " copy";
+					}
+					this.clip.notes = this.allNotes;
+					this.duration += this.loopCount * this.duration;
+					this.loopCount = 0;
+					this.clip.track.updateRendered();
+				}),
+			),
 			new ContextMenuConditionalItem(() => this.loopCount > 0,
 				new ContextMenuClickableItem("Break down loop", () => {
 					const loops = this.loopCount;
@@ -89,7 +104,7 @@ class Clip {
 		}
 		
 		duplicate(addTime) {
-			const placement = this.constructor.fromSerialized(this.clip.track, this.serialize());
+			const placement = this.constructor.fromSerialized(this.serialize(), this.clip.track);
 			placement.id = Identifier.create();
 			placement.time += addTime;
 			this.clip.track.clipPlacement.push(placement);
@@ -182,7 +197,7 @@ class Clip {
 				loopCount: this.loopCount
 			}
 		}
-		static fromSerialized(track, serialized) {
+		static fromSerialized(serialized, track) {
 			const placement = new this(track.clips[serialized.clipID]);
 			
 			placement.id = serialized.placementID;
@@ -216,14 +231,19 @@ class Clip {
 	renderClipEditor(parentNode, _fromPlacement) {
 		let editor,
 			editorHeader,
+			editorHeaderButtons,
+			editorPlayButton,
 			editorCloseButton,
 			editorClipName,
 			editorEditBox;
 		
 		editor = new HTML.div({class: "clip-editor"},
 			editorHeader = new HTML.div({class: "clip-editor-header"},
-				editorCloseButton = new HTML.button({class: "clip-editor-close-button"}),
 				editorClipName = new HTML.input({type: "text", class: "clip-editor-clip-name"}),
+				editorHeaderButtons = new HTML.div({class: "clip-editor-header-buttons"},
+					editorPlayButton = new HTML.button({class: "clip-editor-play-button"}),
+					editorCloseButton = new HTML.button({class: "clip-editor-close-button"}),
+				)
 			),
 			editorEditBox = new HTML.div({class: "clip-editor-edit-box"})
 		);
@@ -255,8 +275,10 @@ class Clip {
 			name: this.name
 		}
 	}
-	static fromSerialized(track, serializedData) {
-		const clip = new Clip(track);
+	static fromSerialized(serializedData, track) {
+		const clip = new this(track);
+		clip.name = serializedData.name;
+		clip.loopCount = serializedData;
 		return clip;
 	}
 }
