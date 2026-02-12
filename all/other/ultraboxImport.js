@@ -38,6 +38,8 @@ function ultraboxImport(project) {
 	const song = new Song();
 	song.tempo = project.beatsPerMinute;
 	song.beatsPerMeasure = project.beatsPerBar;
+	const octave = (project.keyOctave ?? 0) + 1;
+	const offset = (octave * 12) + ["C","C♯","D","D♯","E","F","F♯","G","G♯","A","A♯"].indexOf(project.key);
 	
 	const tickToFrusicianTime = tick => tick / project.ticksPerBeat / project.beatsPerBar;
 	
@@ -55,9 +57,10 @@ function ultraboxImport(project) {
 						const startTime = tickToFrusicianTime(Math.min(...noteTimes));
 						const endTime = tickToFrusicianTime(Math.max(...noteTimes));
 						for(let pitch of note.pitches) {
-							clip.notes.push(new Note(clip, pitch + 12, startTime, endTime - startTime))
+							clip.notes.push(new Note(clip, pitch + offset, startTime, endTime - startTime))
 						}
 					}
+					clip.name = "Pattern "+(Number(patternId) + 1);
 					
 					clip.id = "ub-"+(Number(patternId) + 1);
 					track.addClip(clip);

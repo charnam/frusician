@@ -38,7 +38,7 @@
 }
 .note-editor {
 	--zoom: 1;
-	width: calc(100% * var(--zoom));
+	width: calc(calc(200px * var(--measuresAvailable) / 2) * var(--zoom));
 }
 .note-editor-piano {
 	position: sticky;

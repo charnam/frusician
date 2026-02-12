@@ -160,6 +160,15 @@ svg.input-connection {
 	text-align: right;
 	-moz-appearance: textfield;
 }
+.adsr-sliders {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	column-gap: 20px;
+}
+.input-node .adsr-sliders .slider-wrapper input[type="number"] {
+	width: 30%;
+}
+
 .input-node .slider-wrapper input[type="number"]::-webkit-outer-spin-button,
 .input-node .slider-wrapper input[type="number"]::-webkit-inner-spin-button {
 	-webkit-appearance: none;

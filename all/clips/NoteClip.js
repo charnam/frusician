@@ -178,6 +178,7 @@ class NoteClip extends Clip {
 			noteEditor.querySelectorAll(".note-editor-user-note, .note-editor-other-note").forEach(note => note.remove());
 			noteEditor.setAttribute("style", `
 				--zoom: ${zoomLevel};
+				--measuresAvailable: ${measuresAvailable};
 			`);
 			
 			for(let track of Object.values(this.track.song.tracks)) {
