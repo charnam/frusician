@@ -39,7 +39,7 @@ class NoteClip extends Clip {
 				const notePreview = target.querySelector("svg");
 				if(notePreview) {
 					applyToElement(notePreview, {
-						viewBox: `0 0 ${this.duration * (this.loopCount + 1)} 89`
+						viewBox: `0 0 ${this.duration * (this.loopCount + 1)} 132`
 					})
 					
 					for(let note of notePreview.querySelectorAll(".note")) {
@@ -47,7 +47,7 @@ class NoteClip extends Clip {
 					}
 					
 					for(let note of this.allNotes) {
-						const noteEl = new SVG.rect({class: "note", x: note.time, y: 89 - note.pitch, width: note.duration, height: 1});
+						const noteEl = new SVG.rect({class: "note", x: note.time, y: 132 - note.pitch, width: note.duration, height: 1});
 						notePreview.appendChild(noteEl);
 					}
 				}
@@ -78,7 +78,7 @@ class NoteClip extends Clip {
 		
 		const offsetFromMiddleC = 0;
 		const noteRangeStart = 0;
-		const noteRangeEnd = 88;
+		const noteRangeEnd = 132;
 		const noteCount = (noteRangeEnd - noteRangeStart);
 		const SVGHeight = noteCount + 1;
 		
@@ -97,9 +97,10 @@ class NoteClip extends Clip {
 		
 		for(let pitch = 0; pitch <= noteCount; pitch++) {
 			let realPitch = Math2.mod(pitch + offsetFromMiddleC, 12);
+			const octave = Math.floor((pitch + offsetFromMiddleC) / 12) - 1;
 			const y = noteCount - pitch;
 			
-			const guideEl = new SVG.rect({class: "note-editor-note-guide note-"+realPitch, x: 0, y, width: measuresAvailable, height: 1});
+			const guideEl = new SVG.rect({class: `note-editor-note-guide note-${realPitch} octave-${octave}`, x: 0, y, width: measuresAvailable, height: 1});
 			noteEditor.appendChild(guideEl);
 			
 			const pianoKeyEl = new SVG.rect({class: "note-editor-piano-key note-"+realPitch, x: 0, y: y * pianoKeyHeight, width: pianoKeyWidth, height: pianoKeyHeight});
@@ -108,7 +109,7 @@ class NoteClip extends Clip {
 			pianoKeys.appendChild(pianoLetterEl)
 			pianoLetterEl.textContent = pianoKeyNames[realPitch];
 			if(realPitch == 0) {
-				pianoLetterEl.textContent += ((pitch + offsetFromMiddleC) / 12) - 1
+				pianoLetterEl.textContent += octave
 			}
 		}
 		
@@ -210,8 +211,10 @@ class NoteClip extends Clip {
 				});
 				
 				noteEl.onmousedown = event => {
-					noteDrag.drag(event);
-					noteDrag.startDrag(event);
+					if(event.button == 0) {
+						noteDrag.drag(event);
+						noteDrag.startDrag(event);
+					}
 				}
 				noteEl.oncontextmenu = event => {
 					event.preventDefault();
@@ -227,7 +230,7 @@ class NoteClip extends Clip {
 		const editorSize = noteEditor.getBoundingClientRect();
 		
 		noteEditorContainer.scrollLeft = ((fromPlacement.time + fromPlacement.duration / 2) / this.track.song.durationMeasures * editorSize.width) - editorWrapperSize.width / 2;
-		noteEditorContainer.scrollTop = editorSize.height / 2 - editorWrapperSize.height / 2
+		noteEditorContainer.scrollTop = (editorSize.height / noteCount * Math2.average([...this.notes.map(note => noteCount - note.pitch)], 65)) - editorWrapperSize.height / 2
 		
 		return editor;
 	}

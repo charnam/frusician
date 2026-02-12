@@ -31,7 +31,7 @@
 .timeline-header {
 	height: 32px;
 	display: flex;
-	z-index: 100;
+	z-index: 150;
 	position: sticky;
 	top: 0;
 }

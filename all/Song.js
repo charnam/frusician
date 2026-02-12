@@ -66,7 +66,11 @@ class Song {
 	}
 	
 	beatsToSeconds(beats) {
-		const duration = beats / 60 * this.tempo;
+		const duration = beats * 60 / this.tempo * this.beatsPerMeasure;
+		return duration;
+	}
+	secondsToBeats(beats) {
+		const duration = beats * (this.tempo / 60) / this.beatsPerMeasure;
 		return duration;
 	}
 	
@@ -84,11 +88,6 @@ class Song {
 		this.sessionStartTime = Date.now();
 		this.id = Identifier.create();
 		this.playbackInstance = new SongPlaybackInstance(this);
-		
-		new NoteTrack(this);
-		new NoteTrack(this);
-		new NoteTrack(this);
-		new SampleTrack(this);
 	}
 	
 	save(debug = false) {
@@ -258,7 +257,7 @@ class Song {
 			timeline.scrollWidth;
 			
 			const timelineTicksRect = timelineHeaderTicks.getBoundingClientRect();
-			const time = Math.min(Math.max(0, (position.x - timelineTicksRect.x) / timelineTicksRect.width), 1) / ((this.durationMeasures - 1) / this.beatsPerMeasure) * this.tempo;
+			const time = this.beatsToSeconds(Math.min(Math.max(0, (position.x - timelineTicksRect.x) / timelineTicksRect.width), 1) * this.durationMeasures);
 			this.playback.currentTime = time;
 			
 			updatePlayheadVisual(false, false);
@@ -283,7 +282,7 @@ class Song {
 				} else {
 					timeline.removeAttribute("playing");
 				}
-				timeline.setAttribute("style", `--playbackTime: ${this.playback.currentTime / 60 * this.tempo / this.beatsPerMeasure};`);
+				timeline.setAttribute("style", `--playbackTime: ${this.secondsToBeats(this.playback.currentTime)};`);
 				if(loop) {
 					setTimeout(() => {
 						updatePlayheadVisual(true);

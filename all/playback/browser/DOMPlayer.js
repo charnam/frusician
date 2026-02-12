@@ -73,6 +73,10 @@ class DOMPlayer {
 		}
 	}
 	
+	forceUpdate() {
+		this._stream(true);
+	}
+	
 	constructor(playbackInstance) {
 		this.playbackInstance = playbackInstance;
 		
@@ -113,7 +117,7 @@ class DOMPlayer {
 		};
 	}
 	
-	async _stream() {
+	async _stream(forceClear = false) {
 		if (this._streaming) return;
 		await this._ensureNode();
 		this._streaming = true;
@@ -124,7 +128,7 @@ class DOMPlayer {
 			const samples = this.playbackInstance.getChannelSampleRange(
 				this._nextChunkTime, DOMPlayer.CHUNK_DURATION * this.ctx.sampleRate, 1 / this.ctx.sampleRate);
 			
-			this.node.port.postMessage({type: "chunk", samples}, samples.map(channel => channel.buffer));
+			this.node.port.postMessage({type: "chunk", samples, forceClear}, samples.map(channel => channel.buffer));
 			
 			this._nextChunkTime += DOMPlayer.CHUNK_DURATION;
 			this.testedOverhead = (Date.now() - profilingStartTime) / (DOMPlayer.TARGET_BUFFER * 1000);

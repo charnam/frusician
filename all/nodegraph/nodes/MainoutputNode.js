@@ -22,12 +22,11 @@ class MainoutputNode extends BaseNode {
 		
 		const playbackData = playback.getSampleRange(startTime, sampleCount, secondsPerSample, channel);
 		
-		const output = new Float32Array(sampleCount);
-		for(let sample in output) {
-			output[sample] = playbackData[sample] * volume;
+		for(let sample in playbackData) {
+			playbackData[sample] *= volume;
 		}
 		
-		return output;
+		return playbackData;
 	})
 }
 

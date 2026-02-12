@@ -10,10 +10,12 @@ function updateCursor(event) {
 	cursorPosition.y = event.clientY;
 }
 
-window.addEventListener("mousedown", updateCursor);
-window.addEventListener("mouseup", updateCursor);
-window.addEventListener("mousemove", updateCursor);
-window.addEventListener("contextmenu", updateCursor);
+if(typeof window !== "undefined") {
+	window.addEventListener("mousedown", updateCursor);
+	window.addEventListener("mouseup", updateCursor);
+	window.addEventListener("mousemove", updateCursor);
+	window.addEventListener("contextmenu", updateCursor);
+}
 
 class ContextMenu {
 	static ClickableItem = ContextMenuClickableItem;

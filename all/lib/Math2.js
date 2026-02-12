@@ -14,6 +14,10 @@ class Math2 {
 		}
 		return arr;
 	}
+	static average(array, alternate) {
+		if(array.length == 0) array = [alternate];
+		return array.reduce((a, b) => a + b) / array.length;
+	}
 }
 
 export default Math2;

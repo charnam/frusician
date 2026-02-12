@@ -18,7 +18,7 @@ class BasicInstrumentNode extends BaseNode {
 			name: "noteTrack",
 			label: "Track Data"
 		}),
-		new DropdownInputNodeValue({name: "wave", label: "Wave", items: ["Sine", "Square", "Sawtooth", "Triangle"], default: "Sine"}),
+		new DropdownInputNodeValue({name: "wave", label: "Wave", items: ["Sine", "Square", "Sawtooth", "Triangle"], default: "Square"}),
 		new ADSRInputNodeValue({name: "adsr"}),
 		/*new SliderInputNodeValue({
 			name: "attack",

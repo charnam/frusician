@@ -28,13 +28,12 @@ class MonoEchoNode extends BaseNode {
 		const maxStartOffset = delay * repetitions;
 		const range = playback.getSampleRange(startTime - maxStartOffset, Math.ceil(sampleCount + maxStartOffset / secondsPerSample), secondsPerSample, channel);
 		
-		for(let i = 0; i < repetitions; i++) {
-			for(let sample = 0; sample < sampleCount; sample++) {
-				if(i == 0) {
-					output[sample] = 0;
-				}
-				output[sample] += range[sample + Math.floor((maxStartOffset - delay * i) / secondsPerSample)] * (1 - i / repetitions);
+		for(let sample = 0; sample < sampleCount; sample++) {
+			let value = 0;
+			for(let i = 0; i < repetitions; i++) {
+				value += range[sample + Math.floor((maxStartOffset - delay * i) / secondsPerSample)] * (1 - i / repetitions);
 			}
+			output[sample] = value;
 		}
 		
 		return output;

@@ -5,7 +5,7 @@ class ADSRInputNodeValue extends InputNodeValue {
 	type = "adsr";
 	color = 250;
 	
-	default = {attack: 0.01, decay: 0, sustain: 1.0, release: 0.01};
+	default = {attack: 0, decay: 0, sustain: 1.0, release: 0.01};
 	
 	constructor(info) {
 		super(info);

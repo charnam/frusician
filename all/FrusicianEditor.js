@@ -3,6 +3,9 @@ import { HTML } from "imperative-html";
 import Header from "./ui/Header.js";
 import ContextMenu from "./ui/contextmenu/ContextMenu.js";
 import Song from "./Song.js";
+import { ultraboxImportFile } from "./other/ultraboxImport.js";
+import NoteTrack from "./tracks/NoteTrack.js";
+import SampleTrack from "./tracks/SampleTrack.js";
 
 class FrusicianEditor {
 	song = null;
@@ -17,7 +20,7 @@ class FrusicianEditor {
 		const header = new Header(new ContextMenu([
 			new ContextMenu.Submenu("File", [
 				new ContextMenu.ClickableItem("New", () => {
-					this.setSong(new Song());
+					this.newSong();
 				}),
 				new ContextMenu.ClickableItem("Save", () => {
 					this.song.save();
@@ -27,6 +30,9 @@ class FrusicianEditor {
 				}),
 				new ContextMenu.ClickableItem("Open", async () => {
 					this.setSong(await Song.load());
+				}),
+				new ContextMenu.ClickableItem("Import from UB", async () => {
+					this.setSong(await ultraboxImportFile());
 				}),
 			]),
 			new ContextMenu.Submenu("Edit", [
@@ -43,8 +49,7 @@ class FrusicianEditor {
 		parentNode.appendChild(songContainer);
 		
 		this.songContainer = songContainer;
-		const song = new Song()
-		this.setSong(song);
+		this.newSong();
 		
 		window.addEventListener("keydown", (keyEvent) => {
 			if(document.querySelector(".node-graph-container")) {
@@ -56,6 +61,15 @@ class FrusicianEditor {
 				this.song.playback.playpause();
 			}
 		});
+	}
+	
+	newSong() {
+		const song = new Song()
+		new NoteTrack(song);
+		new NoteTrack(song);
+		new NoteTrack(song);
+		new SampleTrack(song);
+		this.setSong(song);
 	}
 	
 	setSong(song) {

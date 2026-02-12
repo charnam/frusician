@@ -8,7 +8,7 @@ class PlaybackInstance {
 	}
 	
 	getSampleAt(time, channel) {
-		return this.getSampleRange(time, 1, 1/8000, channel);
+		return this.getSampleRange(time, 1, 1/8000, channel)[0];
 	}
 	
 	getSampleRange(startTime, sampleCount, secondsPerSample, channel) {

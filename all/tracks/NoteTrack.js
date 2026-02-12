@@ -77,25 +77,44 @@ class NoteTrack extends ClipTrack {
 		return this.nodeGraph.nodes.MAIN_OUTPUT.outputPlayback.getSampleRange(startTime, sampleCount, secondsPerSample, channel);
 	}
 	
-	playNoteSample(pitch) {
-		if(!this.testingNote) {
+	async playNoteSample(pitch) {
+		if(!this.samplePlaybackClip) {
 			this.samplePlaybackTrack = new NoteTrack(this.song, false);
 			this.noteSamplePlayback = this.samplePlaybackTrack.playbackInstance.createDOMPlayer();
 			
-			const clip = new NoteClip(this.samplePlaybackTrack);
-			this.samplePlaybackTrack.clips[clip.id] = clip;
-			this.samplePlaybackTrack.clipPlacement = [new NoteClip.Placement(clip)];
+			this.samplePlaybackClip = new NoteClip(this.samplePlaybackTrack);
+			this.samplePlaybackTrack.clips[this.samplePlaybackClip.id] = this.samplePlaybackClip;
+			this.samplePlaybackTrack.clipPlacement = [new NoteClip.Placement(this.samplePlaybackClip)];
 			
-			this.testingNote = new Note(clip, 0, 0, 0.25);
-			clip.notes.push(this.testingNote);
 		}
 		
 		const samplePlaybackId = this._samplePlaybackId = Date.now();
 		
 		this.samplePlaybackTrack.nodeGraph = NodeGraph.fromSerialized(this.nodeGraph.serialize(), this.samplePlaybackTrack);
-		this.testingNote.pitch = pitch;
-		this.noteSamplePlayback.currentTime = 0;
-		this.noteSamplePlayback.play();
+		
+		if(!this.noteSamplePlayback.playing) {
+			this.samplePlaybackClip.notes = [];
+			this.noteSamplePlayback.currentTime = 0;
+		}
+		
+		this.samplePlaybackClip.notes = this.samplePlaybackClip.notes.map(
+			note => {
+				if(note.endTimeSeconds > this.noteSamplePlayback.currentTime) {
+					note.duration = this.song.secondsToBeats(this.noteSamplePlayback.currentTime - this.song.beatsToSeconds(note.time))
+				}
+				return note;
+			}
+		);
+		this.samplePlaybackClip.notes.push(new Note(this.samplePlaybackClip, pitch, this.song.secondsToBeats(this.noteSamplePlayback.currentTime), 0.25))
+		this.samplePlaybackClip.notes = this.samplePlaybackClip.notes.filter(
+			(_note, index) => index >= this.samplePlaybackClip.notes.length - 4
+		)
+		
+		if(!this.noteSamplePlayback.playing) {
+			this.noteSamplePlayback.play();
+		} else {
+			this.noteSamplePlayback.forceUpdate();
+		}
 		
 		setTimeout(() => {
 			if(samplePlaybackId == this._samplePlaybackId) {

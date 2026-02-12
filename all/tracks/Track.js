@@ -144,7 +144,7 @@ class Track {
 	}
 	
 	getSampleRange(startTime, sampleCount, secondsPerSample, channel) {
-		return 0;
+		return new Float32Array(sampleCount);
 	}
 	
 	updateRendered() {

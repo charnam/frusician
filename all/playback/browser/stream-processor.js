@@ -11,7 +11,7 @@ class StreamProcessor extends AudioWorkletProcessor {
 		
 		this.port.onmessage = (event) => {
 			if(event.data.type === "chunk") {
-				this.appendChunk(event.data.samples);
+				this.appendChunk(event.data.samples, event.data.forceClear);
 			} else if(event.data.type === "reset") {
 				this.resetBuffers();
 			}
@@ -23,14 +23,14 @@ class StreamProcessor extends AudioWorkletProcessor {
 		this.buffers = Array.from({length: this.channelCount}, () => new Float32Array(0));
 	}
 	
-	appendChunk(channelBuffers) {
+	appendChunk(channelBuffers, forceClear = false) {
 		for(let channel in channelBuffers) {
 			const chunk = channelBuffers[channel];
 			let buffer = this.buffers[channel];
 			
 			if(this.readIndex > 0) {
 				// compact
-				buffer = buffer.slice(this.readIndex);
+				buffer = buffer.slice(forceClear ? buffer.length : this.readIndex);
 			}
 			
 			// left channel is used for length to prevent somehow desynchonizing
