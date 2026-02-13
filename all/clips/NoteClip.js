@@ -15,7 +15,7 @@ class NoteClip extends Clip {
 			
 			clipPlacement.appendChild(new SVG.svg({width: 1, height: 1, preserveAspectRatio: "none"}));
 			
-			clipPlacement.ondblclick = event => {
+			clipPlacement.onclick = event => {
 				if(event.target == clipPlacement) {
 					const clipEditor = this.clip.openClipEditor(this);
 					BoxAnimation.fromElements(clipPlacement, clipEditor.parentElement);
@@ -57,7 +57,7 @@ class NoteClip extends Clip {
 		}
 		
 		get serializedData() {
-			return this.allNotes.map(note => note.pitch+"-"+note.duration+"-"+note.time).join(";")+"v"+this.loopCount;
+			return this.allNotes.map(note => note.pitch+"-"+note.duration+"-"+note.time).join(";")+"v"+this.loopCount+"v"+this.duration;
 		}
 		
 		applyLoop() {

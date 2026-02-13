@@ -230,8 +230,8 @@ class Song {
 							new HTML.div({class: "song-cpu-usage-text"}, "CPU%")
 						)
 					),
-					timelineHeaderTicks = new SVG.svg({class: "timeline-header-ticks"}),
-					new HTML.div({class: "timeline-header-playhead"})
+					new HTML.div({class: "timeline-header-playhead"}),
+					timelineHeaderTicks = new SVG.svg({class: "timeline-header-ticks"})
 				),
 				tracks = new HTML.div({class: "tracks"},
 					userTracks = new HTML.div({class: "user-tracks"})
@@ -267,7 +267,7 @@ class Song {
 		}
 		
 		let wasPlaying = false;
-		const draggable = new Draggable(updatePlayhead, position => {
+		const playheadDrag = new Draggable(updatePlayhead, position => {
 			updatePlayhead(position);
 			if(wasPlaying) {
 				this.playback.play();
@@ -276,9 +276,47 @@ class Song {
 		timelineHeaderTicks.onmousedown = event => {
 			wasPlaying = this.playback.playing;
 			this.playback.pause();
-			draggable.drag(event);
-			draggable.startDrag(event);
+			playheadDrag.drag(event);
+			playheadDrag.startDrag(event);
 		};
+		
+		let dragScrollXMomentum = 0;
+		let dragScrollYMomentum = 0;
+		let isDragScrolling = false;
+		const updateScroll = (vx, vy, cont = false) => {
+			timeline.scrollBy(vx, vy);
+			if(cont && !isDragScrolling) {
+				requestAnimationFrame(() => {
+					updateScroll(vx / 1.1, vy / 1.1, Math.abs(vx) > 0.1 || Math.abs(vy) > 0.1);
+				});
+			}
+		}
+		
+		setInterval(() => {
+			dragScrollXMomentum /= 2;
+			dragScrollYMomentum /= 2;
+		}, 10)
+		
+		const screenDrag = new Draggable(
+			position => {
+				isDragScrolling = true;
+				updateScroll(-position.movementX, -position.movementY);
+				dragScrollXMomentum += -position.movementX;
+				dragScrollYMomentum += -position.movementY;
+			},
+			() => {
+				isDragScrolling = false;
+				updateScroll(dragScrollXMomentum, dragScrollYMomentum, true);
+				dragScrollXMomentum = 0;
+				dragScrollYMomentum = 0;
+			}
+		);
+		
+		timeline.addEventListener("mousedown", event => {
+			if(event.button == 1 && event.target.classList.contains("clip-placements")) {
+				screenDrag.startDrag(event);
+			}
+		})
 		
 		const updatePlayheadVisual = (loop = false, animate = true) => {
 			if(timeline) {

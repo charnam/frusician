@@ -12,8 +12,6 @@ class BaseNode {
 	graph = null;
 	
 	// Inputs and outputs are NOT SAVED between sessions
-	inputs = [];
-	outputs = [];
 	
 	inputValues = {};
 	inputConnections = {};

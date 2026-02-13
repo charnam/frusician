@@ -39,7 +39,7 @@ function ultraboxImport(project) {
 	song.tempo = project.beatsPerMinute;
 	song.beatsPerMeasure = project.beatsPerBar;
 	const octave = (project.keyOctave ?? 0) + 1;
-	const offset = (octave * 12) + ["C","C♯","D","D♯","E","F","F♯","G","G♯","A","A♯"].indexOf(project.key);
+	const offset = (octave * 12) + ["C","C♯","D","D♯","E","F","F♯","G","G♯","A","A♯","B"].indexOf(project.key);
 	
 	const tickToFrusicianTime = tick => tick / project.ticksPerBeat / project.beatsPerBar;
 	
@@ -49,30 +49,25 @@ function ultraboxImport(project) {
 				const track = new NoteTrack(song);
 				track.name = "Channel "+(Number(channelId)+1);
 				
-				for(let [patternId, pattern] of Object.entries(channel.patterns)) {
-					const clip = new NoteClip(track);
-					
-					for(let note of pattern.notes) {
-						const noteTimes = note.points.map(point => point.tick);
-						const startTime = tickToFrusicianTime(Math.min(...noteTimes));
-						const endTime = tickToFrusicianTime(Math.max(...noteTimes));
-						for(let pitch of note.pitches) {
-							clip.notes.push(new Note(clip, pitch + offset, startTime, endTime - startTime))
-						}
-					}
-					clip.name = "Pattern "+(Number(patternId) + 1);
-					
-					clip.id = "ub-"+(Number(patternId) + 1);
-					track.addClip(clip);
-				}
-				
 				for(let [timeMeasures, patternId] of Object.entries(channel.sequence)) {
 					if(patternId == 0) continue;
-					const clip = track.clips["ub-"+patternId];
+					let clip = track.clips["ub-"+patternId];
 					
 					if(!clip) {
-						console.error("Clip "+patternId+" not found");
-						continue;
+						clip = new NoteClip(track);
+						
+						for(let note of channel.patterns[patternId-1].notes) {
+							const noteTimes = note.points.map(point => point.tick);
+							const startTime = tickToFrusicianTime(Math.min(...noteTimes));
+							const endTime = tickToFrusicianTime(Math.max(...noteTimes));
+							for(let pitch of note.pitches) {
+								clip.notes.push(new Note(clip, pitch + offset, startTime, endTime - startTime))
+							}
+						}
+						clip.name = String(Number(patternId) + 1);
+						clip.id = "ub-"+patternId;
+						clip.color = patternId
+						track.addClip(clip);
 					}
 					
 					const placement = new NoteClip.Placement(clip);

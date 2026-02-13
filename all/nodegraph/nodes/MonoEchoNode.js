@@ -9,11 +9,13 @@ class MonoEchoNode extends BaseNode {
 	static typeID = "echo";
 	static category = "Effects";
 	
-	inputs = [
-		new SliderInputNodeValue({min: 0, max: 2, step: 0.25, default: 0.25, name: "delay", label: "Delay"}),
-		new SliderInputNodeValue({min: 1, max: 8, step: 1, default: 4, name: "repetitions", label: "Repetitions"}),
-		new PlaybackInstanceInputNodeValue({name: "incoming-playback", label: "Input Playback"}),
-	];
+	get inputs() {
+		return [
+			new SliderInputNodeValue({node: this, min: 0, max: 2, step: 1 / this.graph.track.song.beatsPerMeasure / this.graph.track.song.beatsPerMeasure, default: 0.25, name: "delay", label: "Delay"}),
+			new SliderInputNodeValue({node: this, min: 1, max: 8, step: 1, default: 4, name: "repetitions", label: "Repetitions"}),
+			new PlaybackInstanceInputNodeValue({node: this, name: "incoming-playback", label: "Input Playback"}),
+		];
+	}
 	outputs = [
 		new PlaybackInstanceOutputNodeValue({name: "returned-playback", label: "Output Playback"}, () => this.playbackInstance)
 	];

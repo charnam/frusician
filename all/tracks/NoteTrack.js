@@ -53,7 +53,7 @@ class NoteTrack extends ClipTrack {
 		
 		const clipPlacements = track.querySelector(".clip-placements");
 		
-		clipPlacements.addEventListener("dblclick", event => {
+		clipPlacements.addEventListener("click", event => {
 			if(event.target == clipPlacements) {
 				const clip = new NoteClip(this);
 				const clipPlacement = new NoteClip.Placement(clip);

@@ -43,6 +43,7 @@
 	position: sticky;
 	left: 0;
 	width: var(--track-info-width);
+	z-index: 80;
 }
 
 .timeline-header-button {
@@ -100,12 +101,12 @@
 	height: calc(var(--track-height) * var(--track-count));
 	top: var(--timeline-header-height);
 	bottom: 0;
+	pointer-events: none;
 }
 
 .timeline-header-playhead {
 	top: 0;
 	height: var(--timeline-header-height);
-	z-index: 300;
 }
 
 .timeline[playing] .timeline-playhead,
@@ -201,6 +202,7 @@
 	left: calc(var(--time) * var(--pixelsPerMeasure));
 	width: calc(var(--duration) * var(--pixelsPerMeasure) * (var(--loopCount) + 1));
 	height: 100%;
+	cursor: pointer;
 }
 
 .clip-placement:before {

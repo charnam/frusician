@@ -9,11 +9,6 @@ class JoinerNode extends BaseNode {
 	static typeID = "joiner";
 	static category = "Basic";
 	
-	constructor(...args) {
-		super(...args)
-		delete this.inputs;
-	}
-	
 	getInputPlaybacks() {
 		return Object.keys(this.inputConnections).filter(key => key.startsWith("incoming-playback-"));
 	}
