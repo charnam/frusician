@@ -39,40 +39,78 @@ function ultraboxImport(project) {
 	song.tempo = project.beatsPerMinute;
 	song.beatsPerMeasure = project.beatsPerBar;
 	const octave = (project.keyOctave ?? 0) + 1;
-	const offset = (octave * 12) + ["C","C♯","D","D♯","E","F","F♯","G","G♯","A","A♯"].indexOf(project.key);
+	const offset = (octave * 12) + ["C","C♯","D","D♯","E","F","F♯","G","G♯","A","A♯","B"].indexOf(project.key);
 	
 	const tickToFrusicianTime = tick => tick / project.ticksPerBeat / project.beatsPerBar;
 	
 	for(let [channelId, channel] of Object.entries(project.channels)) {
+		if(!channel.sequence.some(pattern => pattern !== 0)) continue;
+		
 		switch(channel.type) {
 			case "pitch":
 				const track = new NoteTrack(song);
 				track.name = "Channel "+(Number(channelId)+1);
 				
-				for(let [patternId, pattern] of Object.entries(channel.patterns)) {
-					const clip = new NoteClip(track);
-					
-					for(let note of pattern.notes) {
-						const noteTimes = note.points.map(point => point.tick);
-						const startTime = tickToFrusicianTime(Math.min(...noteTimes));
-						const endTime = tickToFrusicianTime(Math.max(...noteTimes));
-						for(let pitch of note.pitches) {
-							clip.notes.push(new Note(clip, pitch + offset, startTime, endTime - startTime))
+				
+				let patternSequences = [];
+				let patternSequenceClips = [];
+				let currentPatternSequence = [];
+				for(let patternId of channel.sequence) {
+					if(patternId == 0) {
+						if(currentPatternSequence.length > 0) {
+							patternSequences.push(currentPatternSequence);
+							currentPatternSequence = [];
 						}
+						continue;
 					}
-					clip.name = "Pattern "+(Number(patternId) + 1);
+					currentPatternSequence.push(patternId);
+				}
+				if(currentPatternSequence.length > 0) {
+					patternSequences.push(currentPatternSequence);
+				}
+				
+				for(let index in channel.patterns) {
+					const patternId = index + 1;
+					if(patternSequences.filter(sequence => sequence.includes(patternId)).length > 1) {
+						for(let sequenceIndex in patternSequences) {
+							const sequence = patternSequences[sequenceIndex];
+							const indexOfPatternId = sequence.indexOf(patternId)
+							if(indexOfPatternId > -1) {
+								delete patternSequences[sequenceIndex];
+								patternSequences[sequenceIndex] = sequence.slice(0,indexOfPatternId);
+								patternSequences.push(sequence.slice(indexOfPatternId+1));
+							}
+						}
+						patternSequences.push([patternId]);
+					}
+				}
+				patternSequences = patternSequences.filter(sequence => Array.isArray(sequence) && sequence.length > 0);
+				
+				for(let sequence in patternSequences) {
 					
-					clip.id = "ub-"+(Number(patternId) + 1);
-					track.addClip(clip);
+					for(let sequenceId of sequence) {
+						
+					}
+					
 				}
 				
 				for(let [timeMeasures, patternId] of Object.entries(channel.sequence)) {
 					if(patternId == 0) continue;
-					const clip = track.clips["ub-"+patternId];
+					let clip = track.clips["ub-"+patternId];
 					
 					if(!clip) {
-						console.error("Clip "+patternId+" not found");
-						continue;
+						clip = new NoteClip(track);
+						
+						for(let note of channel.patterns[patternId-1].notes) {
+							const noteTimes = note.points.map(point => point.tick);
+							const startTime = tickToFrusicianTime(Math.min(...noteTimes));
+							const endTime = tickToFrusicianTime(Math.max(...noteTimes));
+							for(let pitch of note.pitches) {
+								clip.notes.push(new Note(clip, pitch + offset, startTime, endTime - startTime))
+							}
+						}
+						clip.name = "Pattern "+(Number(patternId) + 1);
+						track.addClip(clip);
 					}
 					
 					const placement = new NoteClip.Placement(clip);
