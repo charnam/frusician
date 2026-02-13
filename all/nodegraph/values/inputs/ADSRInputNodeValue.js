@@ -48,7 +48,7 @@ class ADSRInputNodeValue extends InputNodeValue {
 			);
 			
 			sliderInput.value = value[slider.name];
-			sliderInputBox.value = value[slider.name].toFixed(2);
+			sliderInputBox.value = Number(value[slider.name]).toFixed(2);
 			
 			if(this.node.inputConnections[this.name]) {
 				sliderInput.disabled = true;
@@ -56,7 +56,7 @@ class ADSRInputNodeValue extends InputNodeValue {
 			}
 			
 			sliderInput.oninput = () => {
-				sliderInputBox.value = sliderInput.value.toFixed(2);
+				sliderInputBox.value = Number(sliderInput.value).toFixed(2);
 				this.node.inputValues[this.name][slider.name] = Number(sliderInput.value);
 			}
 			sliderInputBox.oninput = () => {

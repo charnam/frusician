@@ -217,8 +217,7 @@ class Song {
 			cpuUsage,
 			timelineHeaderTicks,
 			tracks,
-			userTracks,
-			timelinePlayhead;
+			userTracks;
 		
 		timeline = new HTML.div({class: "timeline"},
 			timelineInternal = new HTML.div({class: "timeline-internal"},
@@ -231,13 +230,14 @@ class Song {
 							new HTML.div({class: "song-cpu-usage-text"}, "CPU%")
 						)
 					),
-					timelineHeaderTicks = new SVG.svg({class: "timeline-header-ticks"})
+					timelineHeaderTicks = new SVG.svg({class: "timeline-header-ticks"}),
+					new HTML.div({class: "timeline-header-playhead"})
 				),
 				tracks = new HTML.div({class: "tracks"},
 					userTracks = new HTML.div({class: "user-tracks"})
-				)
+				),
+				new HTML.div({class: 'timeline-playhead'})
 			),
-			timelinePlayhead = new HTML.div({class: 'timeline-playhead'})
 		);
 		
 		setInterval(() => {
@@ -254,7 +254,6 @@ class Song {
 		}
 		const updatePlayhead = position => {
 			timeline.removeAttribute("playing");
-			timeline.scrollWidth;
 			
 			const timelineTicksRect = timelineHeaderTicks.getBoundingClientRect();
 			const time = this.beatsToSeconds(Math.min(Math.max(0, (position.x - timelineTicksRect.x) / timelineTicksRect.width), 1) * this.durationMeasures);
@@ -262,15 +261,21 @@ class Song {
 			
 			updatePlayheadVisual(false, false);
 			
-			timeline.scrollWidth;
 			if(this.playback.playing) {
 				timeline.setAttribute("playing", "");
 			}
-			
-			timeline.scrollWidth;
 		}
-		const draggable = new Draggable(updatePlayhead, updatePlayhead);
+		
+		let wasPlaying = false;
+		const draggable = new Draggable(updatePlayhead, position => {
+			updatePlayhead(position);
+			if(wasPlaying) {
+				this.playback.play();
+			}
+		});
 		timelineHeaderTicks.onmousedown = event => {
+			wasPlaying = this.playback.playing;
+			this.playback.pause();
 			draggable.drag(event);
 			draggable.startDrag(event);
 		};
@@ -331,7 +336,7 @@ class Song {
 		for(let target of this.boundTo) {
 			const timeline = target.querySelector(".timeline")
 			timeline.removeAttribute("playing");
-			target.setAttribute("style", `--pixelsPerMeasure: ${this.pixelsPerMeasure}px; --beatsPerMeasure: ${this.beatsPerMeasure};`);
+			target.setAttribute("style", `--pixelsPerMeasure: ${this.pixelsPerMeasure}px; --beatsPerMeasure: ${this.beatsPerMeasure}; --track-count: ${Object.values(this.tracks).length}`);
 			const timelineHeader = target.querySelector(".timeline-header");
 			
 			
@@ -410,7 +415,6 @@ class Song {
 				}
 			}
 			
-			timeline.scrollWidth;
 			if(this.playback.playing) {
 				timeline.setAttribute("playing", "")
 			}

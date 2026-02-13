@@ -4,6 +4,7 @@
 	--track-height: 128px;
 	--beat-width: 64px;
 	--timeline-height: 32px;
+	--timeline-header-height: 32px;
 }
 
 @keyframes track-move-up {
@@ -29,11 +30,12 @@
 }
 
 .timeline-header {
-	height: 32px;
+	height: var(--timeline-header-height);
 	display: flex;
 	z-index: 150;
 	position: sticky;
 	top: 0;
+	box-sizing: border-box;
 }
 
 .timeline-header-buttons {
@@ -89,16 +91,25 @@
 	fill: black;
 }
 
-.timeline-playhead {
+.timeline-playhead, .timeline-header-playhead {
 	position: absolute;
+	z-index: 50;
 	transform: translateX(calc(var(--playbackTime) * var(--pixelsPerMeasure) + var(--track-info-width))) translateX(-50%);
 	width: 3px;
 	background: black;
-	height: 100%;
-	top: 0;
+	height: calc(var(--track-height) * var(--track-count));
+	top: var(--timeline-header-height);
+	bottom: 0;
 }
 
-.timeline[playing] .timeline-playhead {
+.timeline-header-playhead {
+	top: 0;
+	height: var(--timeline-header-height);
+	z-index: 300;
+}
+
+.timeline[playing] .timeline-playhead,
+.timeline[playing] .timeline-header-playhead {
 	transition: transform 100ms linear;
 }
 

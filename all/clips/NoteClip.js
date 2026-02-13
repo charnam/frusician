@@ -37,7 +37,9 @@ class NoteClip extends Clip {
 			super.updateRendered();
 			for(let target of this.boundTo) {
 				const notePreview = target.querySelector("svg");
-				if(notePreview) {
+				if(notePreview && notePreview.getAttribute("serializedData") !== this.serializedData) {
+					notePreview.setAttribute("serializedData", this.serializedData)
+					
 					applyToElement(notePreview, {
 						viewBox: `0 0 ${this.duration * (this.loopCount + 1)} 132`
 					})
@@ -52,6 +54,10 @@ class NoteClip extends Clip {
 					}
 				}
 			}
+		}
+		
+		get serializedData() {
+			return this.allNotes.map(note => note.pitch+"-"+note.duration+"-"+note.time).join(";")+"v"+this.loopCount;
 		}
 		
 		applyLoop() {

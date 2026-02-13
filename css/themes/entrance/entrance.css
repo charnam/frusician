@@ -251,9 +251,17 @@ button:active {
 	fill: var(--background-color-level2);
 }
 
-.timeline-playhead {
-	background: var(--text-color-level1);
+.timeline .timeline-playhead,
+.timeline .timeline-header-playhead {
+	background: linear-gradient(to right, transparent, var(--text-color-level1), transparent);
+	transition-property: transform, background-color !important;
 }
+
+.timeline:not([playing]) .timeline-playhead,
+.timeline:not([playing]) .timeline-header-playhead {
+	background-color: var(--text-color-level1);
+}
+
 
 /** Tracks **/
 .track {
