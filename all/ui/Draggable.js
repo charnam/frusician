@@ -1,6 +1,8 @@
 import Overlay from "./Overlay.js";
 
 class Draggable {
+	requiresMovement = false;
+	
 	constructor(drag, release) {
 		this.drag = drag;
 		if(release == undefined) {
@@ -12,11 +14,18 @@ class Draggable {
 	startDrag(event) {
 		const overlay = new Overlay();
 		overlay.style.cursor = "grabbing";
+		if(this.requiresMovement) {
+			overlay.style.display = "none";
+		}
 		
 		let startX = event.clientX;
 		let startY = event.clientY;
 		
 		const moveMouse = event => {
+			if(this.requiresMovement) {
+				overlay.style.display = "";
+			}
+			
 			let x = event.clientX;
 			let y = event.clientY;
 			

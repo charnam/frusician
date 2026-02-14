@@ -98,7 +98,8 @@ class NodeGraph {
 		editorWrapper.appendChild(closeButton);
 		
 		document.body.appendChild(editorWrapper);
-		return this.renderNodes(editorWrapper);
+		this.renderNodes(editorWrapper);
+		return editorWrapper;
 	}
 	
 	renderNodes(parentNode) {
@@ -112,13 +113,32 @@ class NodeGraph {
 			this.updateRendered();
 		});
 		
+		draggable.requiresMovement = true;
+		
+		let lastClick = 0;
+		let lastClickX = 0;
+		let lastClickY = 0;
 		nodeGraph.onmousedown = event => {
-			if(event.target == nodeGraph && event.button == 1) {
-				draggable.startDrag(event);
+			if(event.target == nodeGraph) {
+				if(event.button !== 2) {
+					draggable.startDrag(event);
+					if(event.button === 0) {
+						if(lastClick > Date.now() - 500 && Math.abs(lastClickX - event.clientX) < 20 && Math.abs(lastClickY - event.clientY) < 20) {
+							this.addMenu.open();
+						}
+						lastClick = Date.now();
+						lastClickX = event.clientX;
+						lastClickY = event.clientY;
+					}
+				}
 			}
 		};
-		
-		nodeGraph.ondblclick = ContextMenu.eventOpener(this.addMenu);
+		nodeGraph.oncontextmenu = event => {
+			event.preventDefault();
+			if(event.target == nodeGraph) {
+				this.addMenu.open();
+			}
+		}
 		
 		nodeGraph.addEventListener("wheel", event => {
 			if(event.shiftKey) {

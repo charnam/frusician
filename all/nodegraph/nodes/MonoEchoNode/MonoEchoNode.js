@@ -1,8 +1,12 @@
-import RangedNodePlaybackInstance from "../../playback/RangedNodePlaybackInstance.js";
-import PlaybackInstanceInputNodeValue from "../values/inputs/PlaybackInstanceInputNodeValue.js";
-import SliderInputNodeValue from "../values/inputs/SliderInputNodeValue.js";
-import PlaybackInstanceOutputNodeValue from "../values/outputs/PlaybackInstanceOutputNodeValue.js";
-import BaseNode from "./BaseNode.js";
+import RangedNodePlaybackInstance from "../../../playback/RangedNodePlaybackInstance.js";
+import PlaybackInstanceInputNodeValue from "../../values/inputs/PlaybackInstanceInputNodeValue.js";
+import SliderInputNodeValue from "../../values/inputs/SliderInputNodeValue.js";
+import PlaybackInstanceOutputNodeValue from "../../values/outputs/PlaybackInstanceOutputNodeValue.js";
+import BaseNode from "../BaseNode.js";
+
+import initSync, { apply_echo } from "./pkg/frusician_wasm_monoechonode.js";
+
+initSync();
 
 class MonoEchoNode extends BaseNode {
 	static name = "Echo";
@@ -30,13 +34,7 @@ class MonoEchoNode extends BaseNode {
 		const maxStartOffset = delay * repetitions;
 		const range = playback.getSampleRange(startTime - maxStartOffset, Math.ceil(sampleCount + maxStartOffset / secondsPerSample), secondsPerSample, channel);
 		
-		for(let sample = 0; sample < sampleCount; sample++) {
-			let value = 0;
-			for(let i = 0; i < repetitions; i++) {
-				value += range[sample + Math.floor((maxStartOffset - delay * i) / secondsPerSample)] * (1 - i / repetitions);
-			}
-			output[sample] = value;
-		}
+		apply_echo(range, output, repetitions, Math.floor(delay / secondsPerSample), Math.floor(maxStartOffset / secondsPerSample));
 		
 		return output;
 	})

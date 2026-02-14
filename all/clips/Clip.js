@@ -25,7 +25,6 @@ class Clip {
 	}
 	
 	delete() {
-		
 		this.track.clipPlacement = this.track.clipPlacement.filter(
 			placement => placement.clip !== this);
 		delete this.track.clips[this.id];
@@ -42,7 +41,6 @@ class Clip {
 		contextMenu = new ContextMenu([
 			new ContextMenuClickableItem("Edit", () => {
 				this.clip.openClipEditor(this);
-				console.log(this.clip.track.clipPlacement);
 			}),
 			new ContextMenuConditionalItem(() => this.hasDuplicates(),
 				new ContextMenuClickableItem("Edit as new", () => {
@@ -50,6 +48,7 @@ class Clip {
 					this.clip.name += " copy";
 					this.clip.track.updateRendered();
 					this.clip.openClipEditor(this);
+					this.clip.track.clips[this.clip.id] = this.clip;
 				}),
 			),
 			new ContextMenuClickableItem("Add linked clip", () => {
@@ -267,13 +266,19 @@ class Clip {
 		return {
 			typeID: this.constructor.typeID,
 			loopCount: this.loopCount,
+			color: this.color,
 			name: this.name
 		}
 	}
 	static fromSerialized(serializedData, track) {
 		const clip = new this(track);
 		clip.name = serializedData.name;
-		clip.loopCount = serializedData;
+		clip.loopCount = serializedData.loopCount;
+		if(typeof serializedData.color !== "undefined") {
+			clip.color = serializedData.color;
+		} else {
+			clip.color = Object.values(track.clips).length;
+		}
 		return clip;
 	}
 }

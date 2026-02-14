@@ -110,7 +110,7 @@ class NoteClip extends Clip {
 			noteEditor.appendChild(guideEl);
 			
 			const pianoKeyEl = new SVG.rect({class: "note-editor-piano-key note-"+realPitch, x: 0, y: y * pianoKeyHeight, width: pianoKeyWidth, height: pianoKeyHeight});
-			const pianoLetterEl = new SVG.text({class: "note-editor-piano-text note-"+realPitch, x: 5, y: y * pianoKeyHeight});
+			const pianoLetterEl = new SVG.text({class: "note-editor-piano-text note-"+realPitch, x: 5, y: y * pianoKeyHeight + (pianoKeyHeight / 2)});
 			pianoKeys.appendChild(pianoKeyEl)
 			pianoKeys.appendChild(pianoLetterEl)
 			pianoLetterEl.textContent = pianoKeyNames[realPitch];

@@ -1,17 +1,9 @@
 
-// When adding new tracks, make sure to add the track both:
-// - here, in the imports section, and
-// - below, in the "catalog" section
-// This is to ensure songs with a new track type may be properly
-// saved and loaded later.
 import { HTML, SVG, applyToElement } from "imperative-html";
 import ContextMenu from "./ui/contextmenu/ContextMenu.js";
 import ContextMenuClickableItem from "./ui/contextmenu/ContextMenuClickableItem.js";
 import Identifier from "./lib/Identifier.js";
-import Track from "./tracks/Track.js";
 import trackCatalog from "./tracks/trackCatalog.js";
-import NoteTrack from "./tracks/NoteTrack.js";
-import SampleTrack from "./tracks/SampleTrack.js";
 import SongPlaybackInstance from "./playback/SongPlaybackInstance.js";
 import Draggable from "./ui/Draggable.js";
 
@@ -32,8 +24,12 @@ class Song {
 	durationMeasures = 16;
 	beatsPerMeasure = 4;
 	boundTo = [];
-	_pixelsPerMeasure = 200;
 	
+	get durationSeconds() {
+		return this.beatsToSeconds(this.durationMeasures);
+	}
+	
+	_pixelsPerMeasure = 200;
 	set pixelsPerMeasure(value) {
 		this._pixelsPerMeasure = Math.min(Math.max(50, value), 500);
 	}
@@ -110,6 +106,58 @@ class Song {
 		document.body.appendChild(link);
 		link.click();
 		link.remove();
+	}
+	
+	exportWAV() {
+		const link = new HTML.a;
+		const wav = this.toWAV();
+		link.href = URL.createObjectURL(wav);
+		link.download = this.title.replace(/[^0-9a-zA-Z\- ]/g, "_")+".wav";
+		document.body.appendChild(link);
+		link.click();
+		link.remove();
+	}
+	
+	toWAV(sampleRate = 44100) {
+		const buffers = this.playbackInstance.getChannelSampleRange(0, sampleRate * this.durationSeconds, 1 / sampleRate);
+		
+		const numberOfChannels = buffers.length;
+		const bytesPerSample = 2; // 16-bit PCM
+		const dataSize = buffers[0].length * bytesPerSample * numberOfChannels;
+		const newBuffer = new ArrayBuffer(44 + dataSize);
+		const view = new DataView(newBuffer);
+		
+		const writeString = (offset, string) => {
+			for (let i = 0; i < string.length; i++) {
+				view.setUint8(offset + i, string.charCodeAt(i));
+			}
+		}
+		
+		// WAV header
+		writeString(0, "RIFF");
+		view.setUint32(4, 36 + dataSize, true);
+		writeString(8, "WAVE");
+		writeString(12, "fmt ");
+		view.setUint32(16, 16, true);
+		view.setUint16(20, 1, true); // AudioFormat: 1 (PCM)
+		view.setUint16(22, numberOfChannels, true);
+		view.setUint32(24, sampleRate, true);
+		view.setUint32(28, sampleRate * numberOfChannels * bytesPerSample, true);
+		view.setUint16(32, numberOfChannels * bytesPerSample, true);
+		view.setUint16(34, bytesPerSample * 8, true);
+		writeString(36, "data");
+		view.setUint32(40, dataSize, true);
+		
+		// PCM data
+		const data = new Int16Array(newBuffer, 44);
+		for (let i = 0; i < buffers[0].length; i++) {
+			for(let j = 0; j < buffers.length; j++) {
+				const val = Math.max(-1, Math.min(1, buffers[j][i]));
+				data[i*buffers.length + j] = val < 0 ? val * 0x8000 : val * 0x7FFF;
+			}
+		}
+		
+		return new Blob([view], { type: "audio/wav" });
 	}
 	
 	static load() {
@@ -336,23 +384,35 @@ class Song {
 		updatePlayheadVisual(true);
 		
 		if(this.editable) {
+			
+			let zoomDataCache = {};
+			let updateCache = () => {
+				zoomDataCache.updateTime = Date.now();
+				zoomDataCache.infoWidth = timelineHeaderButtons.getBoundingClientRect().width;
+			}
+			updateCache();
+			
 			timeline.addEventListener("wheel", event => {
 				if((event.ctrlKey || event.target == timelineHeaderTicks) && !event.shiftKey) {
 					event.preventDefault();
-					const songTimelineRect = timelineHeaderTicks.getBoundingClientRect();
-					const infoWidth = timelineHeaderButtons.getBoundingClientRect().width;
-					const mouseTimeX = ((event.clientX - songTimelineRect.left) / songTimelineRect.width);
+					if(zoomDataCache.lastScroll < Date.now() - 500) {
+						updateCache();
+					}
+					zoomDataCache.lastScroll = Date.now();
+					
+					const timelineWidth = this.durationMeasures * this.pixelsPerMeasure;
+					const mouseTimeX = (event.clientX + timeline.scrollLeft - zoomDataCache.infoWidth) / timelineWidth;
 					
 					this.pixelsPerMeasure = 
 						Math.max(
 							this.pixelsPerMeasure / (1 + Math.min(40, Math.max(event.deltaY, -40)) / 200),
-							(window.innerWidth - infoWidth) / this.durationMeasures
+							(window.innerWidth - zoomDataCache.infoWidth) / this.durationMeasures
 						);
 					
-					this.updateRendered();
-					const newSongTimelineWidth = timelineHeaderTicks.getBoundingClientRect().width;
+					this.updateRendered(true);
 					
-					timeline.scrollLeft = mouseTimeX * newSongTimelineWidth + infoWidth - event.clientX;
+					const newSongTimelineWidth = this.durationMeasures * this.pixelsPerMeasure;
+					timeline.scrollLeft = mouseTimeX * newSongTimelineWidth + zoomDataCache.infoWidth - event.clientX;
 				}
 			}, {passive: false})
 			
@@ -370,32 +430,42 @@ class Song {
 		timeline.scrollLeft = 0;
 	}
 	
-	updateRendered() {
+	renderTimelineHeader() {
+		
+	}
+	
+	updateRendered(isChangingZoom) {
 		for(let target of this.boundTo) {
 			const timeline = target.querySelector(".timeline")
 			timeline.removeAttribute("playing");
 			target.setAttribute("style", `--pixelsPerMeasure: ${this.pixelsPerMeasure}px; --beatsPerMeasure: ${this.beatsPerMeasure}; --track-count: ${Object.values(this.tracks).length}`);
+			
+			if(isChangingZoom) {
+				continue;
+			}
+			
+			if(this.playback.playing) {
+				timeline.setAttribute("playing", "")
+			}
+			
 			const timelineHeader = target.querySelector(".timeline-header");
 			
 			
 			const timelineHeaderTicks = timelineHeader.querySelector(".timeline-header-ticks");
-			const serializedSongInfo = `${this.pixelsPerMeasure}-${this.beatsPerMeasure}-${this.durationMeasures}`;
+			const serializedSongInfo = `${this.beatsPerMeasure}-${this.durationMeasures}`;
 			if(timelineHeaderTicks.getAttribute("serialized-song-info") !== serializedSongInfo) {
 				timelineHeaderTicks.setAttribute("serialized-song-info", serializedSongInfo);
 				
 				timelineHeaderTicks.innerHTML = "";
 				applyToElement(timelineHeaderTicks, {
-					width: this.durationMeasures * this.pixelsPerMeasure,
+					style: `width: calc(var(--pixelsPerMeasure) * ${this.durationMeasures})`,
 					height: 32,
-					viewBox: "0 0 "+this.durationMeasures*this.pixelsPerMeasure+" 32"
 				});
 				
 				for(let i = 0; i < this.durationMeasures; i++) {
-					let bigTickX = this.pixelsPerMeasure * i;
 					const bigTick = SVG.rect({
 						class: "big-tick",
-						x: bigTickX,
-						y: 0,
+						style: `x: calc(${i} * var(--pixelsPerMeasure)); y: 0;`,
 						width: 2,
 						height: 24
 					});
@@ -403,8 +473,7 @@ class Song {
 					for(let j = 1; j < this.beatsPerMeasure; j++) {
 						const littleTick = SVG.rect({
 							class: "little-tick",
-							x: bigTickX + (this.pixelsPerMeasure / this.beatsPerMeasure) * j,
-							y: 0,
+							style: `x: calc(${i + (j / this.beatsPerMeasure)} * var(--pixelsPerMeasure)); y: 0;`,
 							width: 2,
 							height: 15
 						})
@@ -412,10 +481,10 @@ class Song {
 					}
 				}
 				for(let i = 0; i < this.durationMeasures; i++) {
-					let bigTickX = this.pixelsPerMeasure * i;
 					const beatText = SVG.text({
 						class: "beat-number",
-						x: bigTickX + 5,
+						style: `transform: translateX(calc(${i} * var(--pixelsPerMeasure) + 5px));`,
+						x: 0,
 						y: 18,
 						fill: "currentColor"
 					}, i + 1);
@@ -453,11 +522,11 @@ class Song {
 				}
 			}
 			
-			if(this.playback.playing) {
-				timeline.setAttribute("playing", "")
-			}
 		}
 		
+		if(isChangingZoom) {
+			return;
+		}
 		for(let track of Object.values(this.tracks)) {
 			track.updateRendered();
 		}

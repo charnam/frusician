@@ -8,7 +8,7 @@ import PlaybackInstanceOutputNodeValue from "../values/outputs/PlaybackInstanceO
 import BaseNode from "./BaseNode.js";
 
 class BasicInstrumentNode extends BaseNode {
-	static name = "Basic Instrument";
+	static name = "Chip Instrument";
 	static category = "Instruments";
 	static typeID = "basicInstrument";
 	static exclusiveTo = ["noteTrack"];

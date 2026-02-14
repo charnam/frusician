@@ -49,15 +49,16 @@
 	fill: #222;
 }
 .note-editor-piano-text {
-	font-size: 8px;
+	font-size: 6px;
 	text-anchor: start;
-	dominant-baseline: hanging;
+	dominant-baseline: central;
 	fill: white;
 }
 
 .note-editor-beat-guide {
 	vector-effect: non-scaling-stroke;
 	stroke: black;
+	pointer-events: none;
 }
 .note-editor-note-guide {
 	vector-effect: non-scaling-stroke;
@@ -66,6 +67,9 @@
 
 .note-editor-note-guide {
 	fill: #111;
+}
+.note-editor-note-guide:hover {
+	filter: brightness(1.5);
 }
 
 .note-editor-note-guide.note-0 {

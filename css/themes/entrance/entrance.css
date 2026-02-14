@@ -330,6 +330,17 @@ button:active {
 	color: var(--text-color-level2);
 }
 
+.node-graph-button {
+	cursor: pointer;
+	position: absolute;
+	bottom: 5px;
+	right: 5px;
+}
+.node-graph-button:after {
+	font-family: bootstrap-icons;
+	content: "\F2EC";
+}
+
 /** Clips **/
 .clip-placement {
 	background: linear-gradient(to bottom, hsl(var(--clip-hue), 30%, 20%), hsl(var(--clip-hue), 80%, 30%), hsl(var(--clip-hue), 100%, 20%));

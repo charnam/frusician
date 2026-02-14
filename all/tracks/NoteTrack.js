@@ -1,3 +1,4 @@
+import { HTML } from "imperative-html";
 import NoteClip from "../clips/NoteClip.js";
 import Note from "../clips/NoteTrack/Note.js";
 import Math2 from "../lib/Math2.js";
@@ -6,6 +7,7 @@ import BasicInstrumentNode from "../nodegraph/nodes/BasicInstrumentNode.js";
 import MainoutputNode from "../nodegraph/nodes/MainoutputNode.js";
 import TrackinputNode from "../nodegraph/nodes/TrackinputNode.js";
 import ClipTrack from "./ClipTrack.js";
+import BoxAnimation from "../ui/BoxAnimation.js";
 
 class NoteTrack extends ClipTrack {
 	static typeID = "noteTrack";
@@ -47,8 +49,12 @@ class NoteTrack extends ClipTrack {
 		const track = super.render(parentNode);
 		track.classList.add("note-track");
 		
-		track.querySelector(".track-info").ondblclick = () => {
-			this.nodeGraph.openGraphEditor();
+		const nodeGraphButton = new HTML.button({class: "node-graph-button"});
+		track.querySelector(".track-info").appendChild(nodeGraphButton);
+		
+		nodeGraphButton.onclick = () => {
+			const editor = this.nodeGraph.openGraphEditor();
+			BoxAnimation.fromElements(nodeGraphButton, editor);
 		}
 		
 		const clipPlacements = track.querySelector(".clip-placements");

@@ -1,0 +1,9 @@
+[workspace]
+members = [
+	"all/nodegraph/nodes/MonoEchoNode",
+]
+resolver = "3"
+
+[workspace.package]
+name = "frusician-wasm-plugins"
+version = "1.0.0"

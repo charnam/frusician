@@ -17,23 +17,25 @@ class FrusicianEditor {
 		parentNode.textContent = "";
 		
 		const headerContainer = HTML.div({id: "header"});
-		const header = new Header(new ContextMenu([
+		const contextMenu = new ContextMenu([
 			new ContextMenu.Submenu("File", [
 				new ContextMenu.ClickableItem("New", () => {
 					this.newSong();
 				}),
-				new ContextMenu.ClickableItem("Save", () => {
-					this.song.save();
-				}),
-				new ContextMenu.ClickableItem("Save (Debug)", () => {
-					this.song.save(true);
-				}),
 				new ContextMenu.ClickableItem("Open", async () => {
 					this.setSong(await Song.load());
 				}),
-				new ContextMenu.ClickableItem("Import from UB", async () => {
-					this.setSong(await ultraboxImportFile());
+				new ContextMenu.ClickableItem("Save", () => {
+					this.song.save(true);
 				}),
+				new ContextMenu.ClickableItem("Export as WAV", () => {
+					this.song.exportWAV();
+				}),
+				new ContextMenu.Submenu("Other", [
+					new ContextMenu.ClickableItem("Import from UltraBox", async () => {
+						this.setSong(await ultraboxImportFile());
+					}),
+				])
 			]),
 			new ContextMenu.Submenu("Edit", [
 				new ContextMenu.ClickableItem("Hello World")
@@ -41,7 +43,9 @@ class FrusicianEditor {
 			new ContextMenu.Submenu("Preferences", [
 				new ContextMenu.ClickableItem("YAY")
 			])
-		]));
+		]);
+		
+		const header = new Header(contextMenu);
 		header.render(headerContainer)
 		parentNode.appendChild(headerContainer);
 		
@@ -51,6 +55,8 @@ class FrusicianEditor {
 		this.songContainer = songContainer;
 		this.newSong();
 		
+		
+		let lastPlayPauseTime = null;
 		window.addEventListener("keydown", (keyEvent) => {
 			if(document.querySelector(".node-graph-container")) {
 				return;
@@ -58,7 +64,17 @@ class FrusicianEditor {
 			
 			if(keyEvent.key == " ") {
 				keyEvent.preventDefault();
-				this.song.playback.playpause();
+				if(document.querySelector(".node-graph") || document.querySelector(".clip-editor")) {
+					if(this.song.playback.playing) {
+						this.song.playback.pause();
+						this.song.playback.currentTime = lastPlayPauseTime;
+					} else {
+						this.song.playback.play();
+						lastPlayPauseTime = this.song.playback.currentTime;
+					}
+				} else {
+					this.song.playback.playpause();
+				}
 			}
 		});
 	}

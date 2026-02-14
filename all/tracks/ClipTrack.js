@@ -65,13 +65,11 @@ class ClipTrack extends Track {
 	static fromSerialized(serialized, song) {
 		const track = super.fromSerialized(serialized, song);
 		
-		track.clips = Object.fromEntries(
-			Object.entries(serialized.clips)
-				.map(([clipid, serializedClip]) => [clipid, clipCatalog.fromSerialized(serializedClip, track)])
-		);
-		
-		for(let [clipid, clip] of Object.entries(track.clips)) {
+		for(let [clipid, serializedClip] of Object.entries(serialized.clips)) {
+			const clip = clipCatalog.fromSerialized(serializedClip, track);
 			clip.id = clipid;
+			
+			track.clips[clip.id] = clip;
 		}
 		
 		for(let serializedPlacement of serialized.clipPlacement) {
