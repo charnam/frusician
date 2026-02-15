@@ -5,7 +5,6 @@ import PlaybackInstanceOutputNodeValue from "../../values/outputs/PlaybackInstan
 import BaseNode from "../BaseNode.js";
 
 import initSync, { apply_echo } from "./pkg/frusician_wasm_monoechonode.js";
-
 initSync();
 
 class MonoEchoNode extends BaseNode {

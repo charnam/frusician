@@ -8,7 +8,7 @@ import MonoEchoNode from "./MonoEchoNode/MonoEchoNode.js";
 import PlaybackinputNode from "./PlaybackinputNode.js";
 import StereoSplitNode from "./StereoSplitNode.js";
 import TrackinputNode from "./TrackinputNode.js";
-import VibratoNode from "./VibratoNode.js";
+import VibratoNode from "./VibratoNode/VibratoNode.js";
 
 
 const nodeCatalog = new TypeCatalog([

@@ -1,6 +1,7 @@
 [workspace]
 members = [
 	"all/nodegraph/nodes/MonoEchoNode",
+	"all/nodegraph/nodes/VibratoNode",
 ]
 resolver = "3"
 

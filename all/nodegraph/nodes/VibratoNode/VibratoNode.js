@@ -1,8 +1,11 @@
-import RangedNodePlaybackInstance from "../../playback/RangedNodePlaybackInstance.js";
-import PlaybackInstanceInputNodeValue from "../values/inputs/PlaybackInstanceInputNodeValue.js";
-import SliderInputNodeValue from "../values/inputs/SliderInputNodeValue.js";
-import PlaybackInstanceOutputNodeValue from "../values/outputs/PlaybackInstanceOutputNodeValue.js";
-import BaseNode from "./BaseNode.js";
+import RangedNodePlaybackInstance from "../../../playback/RangedNodePlaybackInstance.js";
+import PlaybackInstanceInputNodeValue from "../../values/inputs/PlaybackInstanceInputNodeValue.js";
+import SliderInputNodeValue from "../../values/inputs/SliderInputNodeValue.js";
+import PlaybackInstanceOutputNodeValue from "../../values/outputs/PlaybackInstanceOutputNodeValue.js";
+import BaseNode from "../BaseNode.js";
+
+import initSync, {apply_vibrato} from "./pkg/frusician_wasm_vibratonode.js";
+initSync();
 
 class VibratoNode extends BaseNode {
 	static name = "Vibrato";
@@ -26,13 +29,7 @@ class VibratoNode extends BaseNode {
 		const output = new Float32Array(sampleCount);
 		const samples = playback.getSampleRange(startTime - intensity * 2, sampleCount + Math.ceil(intensity / secondsPerSample * 4), secondsPerSample, channel);
 		
-		for(let sample in output) {
-			const time = startTime + sample * secondsPerSample;
-			const newTime = time + Math.sin(time * speed * Math.PI * 2) * intensity;
-			const index = (newTime + intensity * 2 - startTime) / secondsPerSample;
-			const mult = index % 1;
-			output[sample] = samples[Math.floor(index)] * (1 - mult) + samples[Math.ceil(index)] * mult;
-		}
+		apply_vibrato(samples, output, intensity, speed, secondsPerSample, startTime);
 		
 		return output;
 	})
