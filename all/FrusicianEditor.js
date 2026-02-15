@@ -37,12 +37,9 @@ class FrusicianEditor {
 					}),
 				])
 			]),
-			new ContextMenu.Submenu("Edit", [
-				new ContextMenu.ClickableItem("Hello World")
-			]),
-			new ContextMenu.Submenu("Preferences", [
-				new ContextMenu.ClickableItem("YAY")
-			])
+			new ContextMenu.ClickableItem("Preferences", () => {
+				
+			})
 		]);
 		
 		const header = new Header(contextMenu);

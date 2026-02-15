@@ -6,6 +6,7 @@ import Identifier from "./lib/Identifier.js";
 import trackCatalog from "./tracks/trackCatalog.js";
 import SongPlaybackInstance from "./playback/SongPlaybackInstance.js";
 import Draggable from "./ui/Draggable.js";
+import ArrayMath from "./lib/ArrayMath/ArrayMath.js";
 
 
 class Song {
@@ -120,44 +121,7 @@ class Song {
 	
 	toWAV(sampleRate = 44100) {
 		const buffers = this.playbackInstance.getChannelSampleRange(0, sampleRate * this.durationSeconds, 1 / sampleRate);
-		
-		const numberOfChannels = buffers.length;
-		const bytesPerSample = 2; // 16-bit PCM
-		const dataSize = buffers[0].length * bytesPerSample * numberOfChannels;
-		const newBuffer = new ArrayBuffer(44 + dataSize);
-		const view = new DataView(newBuffer);
-		
-		const writeString = (offset, string) => {
-			for (let i = 0; i < string.length; i++) {
-				view.setUint8(offset + i, string.charCodeAt(i));
-			}
-		}
-		
-		// WAV header
-		writeString(0, "RIFF");
-		view.setUint32(4, 36 + dataSize, true);
-		writeString(8, "WAVE");
-		writeString(12, "fmt ");
-		view.setUint32(16, 16, true);
-		view.setUint16(20, 1, true); // AudioFormat: 1 (PCM)
-		view.setUint16(22, numberOfChannels, true);
-		view.setUint32(24, sampleRate, true);
-		view.setUint32(28, sampleRate * numberOfChannels * bytesPerSample, true);
-		view.setUint16(32, numberOfChannels * bytesPerSample, true);
-		view.setUint16(34, bytesPerSample * 8, true);
-		writeString(36, "data");
-		view.setUint32(40, dataSize, true);
-		
-		// PCM data
-		const data = new Int16Array(newBuffer, 44);
-		for (let i = 0; i < buffers[0].length; i++) {
-			for(let j = 0; j < buffers.length; j++) {
-				const val = Math.max(-1, Math.min(1, buffers[j][i]));
-				data[i*buffers.length + j] = val < 0 ? val * 0x8000 : val * 0x7FFF;
-			}
-		}
-		
-		return new Blob([view], { type: "audio/wav" });
+		return new Blob([ArrayMath.arrayToWav(buffers, sampleRate)], {type: "audio/wav"});
 	}
 	
 	static load() {

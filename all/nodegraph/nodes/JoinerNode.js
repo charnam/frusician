@@ -1,3 +1,4 @@
+import ArrayMath from "../../lib/ArrayMath/ArrayMath.js";
 import RangedNodePlaybackInstance from "../../playback/RangedNodePlaybackInstance.js";
 import PlaybackInstanceInputNodeValue from "../values/inputs/PlaybackInstanceInputNodeValue.js";
 import SliderInputNodeValue from "../values/inputs/SliderInputNodeValue.js";
@@ -53,15 +54,11 @@ class JoinerNode extends BaseNode {
 				// Check if this is just a "fake" / "dummy" input
 				if(volume !== undefined) {
 					const range = this.getInputValue(playback).getSampleRange(startTime, sampleCount, secondsPerSample, channel);
+					ArrayMath.multiplyArrayByNumber(range, volume);
 					if(initial === null) {
 						initial = range;
-						for(let sample in range) {
-							initial[sample] *= volume;
-						}
 					} else {
-						for(let sample in range) {
-							initial[sample] += range[sample] * volume;
-						}
+						ArrayMath.addToArray(initial, range);
 					}
 				}
 			}

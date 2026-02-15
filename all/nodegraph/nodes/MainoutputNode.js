@@ -2,6 +2,7 @@ import BaseNode from "./BaseNode.js";
 import PlaybackInstanceInputNodeValue from "../values/inputs/PlaybackInstanceInputNodeValue.js";
 import RangedNodePlaybackInstance from "../../playback/RangedNodePlaybackInstance.js";
 import SliderInputNodeValue from "../values/inputs/SliderInputNodeValue.js";
+import ArrayMath from "../../lib/ArrayMath/ArrayMath.js";
 
 class MainoutputNode extends BaseNode {
 	static name = "Main Output";
@@ -21,10 +22,7 @@ class MainoutputNode extends BaseNode {
 		const volume = this.getInputValue("volume");
 		
 		const playbackData = playback.getSampleRange(startTime, sampleCount, secondsPerSample, channel);
-		
-		for(let sample in playbackData) {
-			playbackData[sample] *= volume;
-		}
+		ArrayMath.multiplyArrayByNumber(playbackData, volume);
 		
 		return playbackData;
 	})

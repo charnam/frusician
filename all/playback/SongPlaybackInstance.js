@@ -1,3 +1,4 @@
+import ArrayMath from "../lib/ArrayMath/ArrayMath.js";
 import PlaybackInstance from "./PlaybackInstance.js";
 
 class SongPlaybackInstance extends PlaybackInstance {
@@ -19,9 +20,7 @@ class SongPlaybackInstance extends PlaybackInstance {
 		
 		for(let track of Object.values(this.song.tracks)) {
 			const samples = track.playbackInstance.getSampleRange(startTime, sampleCount, secondsPerSample, channel);
-			for(let index in samples) {
-				output[index] += samples[index];
-			}
+			ArrayMath.addToArray(output, samples);
 		}
 		
 		return output;
