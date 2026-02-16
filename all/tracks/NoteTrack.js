@@ -3,7 +3,7 @@ import NoteClip from "../clips/NoteClip.js";
 import Note from "../clips/NoteTrack/Note.js";
 import Math2 from "../lib/Math2.js";
 import NodeGraph from "../nodegraph/NodeGraph.js";
-import BasicInstrumentNode from "../nodegraph/nodes/BasicInstrumentNode.js";
+import ChipInstrumentNode from "../nodegraph/nodes/ChipInstrumentNode/ChipInstrumentNode.js";
 import MainoutputNode from "../nodegraph/nodes/MainoutputNode.js";
 import TrackinputNode from "../nodegraph/nodes/TrackinputNode.js";
 import ClipTrack from "./ClipTrack.js";
@@ -19,7 +19,7 @@ class NoteTrack extends ClipTrack {
 	constructor(...args) {
 		super(...args);
 		const inputNode = new TrackinputNode();
-		const instrumentNode = new BasicInstrumentNode();
+		const instrumentNode = new ChipInstrumentNode();
 		instrumentNode.y = -30;
 		const outputNode = new MainoutputNode();
 		

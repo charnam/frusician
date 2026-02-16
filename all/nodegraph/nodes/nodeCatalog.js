@@ -1,7 +1,7 @@
 import TypeCatalog from "../../lib/TypeCatalog.js";
 
-import BasicInstrumentNode from "./BasicInstrumentNode.js";
 import BitcrushNode from "./BitcrushNode.js";
+import ChipInstrumentNode from "./ChipInstrumentNode/ChipInstrumentNode.js";
 import JoinerNode from "./JoinerNode.js";
 import MainoutputNode from "./MainoutputNode.js";
 import MonoEchoNode from "./MonoEchoNode/MonoEchoNode.js";
@@ -16,7 +16,7 @@ const nodeCatalog = new TypeCatalog([
 	TrackinputNode,
 	PlaybackinputNode,
 	
-	BasicInstrumentNode,
+	ChipInstrumentNode,
 	
 	JoinerNode,
 	StereoSplitNode,

@@ -1,6 +1,9 @@
 [workspace]
 members = [
 	"all/lib/ArrayMath",
+	
+	"all/nodegraph/nodes/ChipInstrumentNode",
+	
 	"all/nodegraph/nodes/MonoEchoNode",
 	"all/nodegraph/nodes/VibratoNode",
 ]
