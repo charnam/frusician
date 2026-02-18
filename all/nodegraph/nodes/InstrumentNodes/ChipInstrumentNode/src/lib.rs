@@ -22,6 +22,7 @@ pub fn generate_chip_instrument_samples(
 		for note in 0..note_start_times.len() {
 			let note_start_time = note_start_times[note];
 			let note_end_time = note_end_times[note];
+			let note_duration = note_end_time - note_start_time;
 			let note_frequency = note_frequencies[note];
 			
 			if note_start_time <= time && note_end_time + adsr[3] > time {
@@ -40,7 +41,7 @@ pub fn generate_chip_instrument_samples(
 					note_value = f32::asin(f32::sin(period * PI * 2.0)) * 2.0 / PI;
 				}
 				
-				note_value *= get_adsr_multiplier(adsr);
+				note_value *= get_adsr_multiplier(adsr, note_time, note_duration);
 				
 				sample += note_value;
 			}

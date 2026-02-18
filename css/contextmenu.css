@@ -29,15 +29,17 @@
 }
 
 .contextmenu-item-submenu > .contextmenu-submenu {
-	transition: visibility 0.2s linear;
-}
-.contextmenu-item-submenu:hover > .contextmenu-submenu {
-	z-index: 100;
-}
-.contextmenu-item-submenu:not(:hover) > .contextmenu-submenu {
+	transition: 0.2s linear;
+	transition-property: visibility, opacity;
 	visibility: hidden;
 	opacity: 0;
-	transition-property: visibility, opacity;
+}
+:is(.contextmenu, .contextmenu-submenu):not(:has(.contextmenu-item-submenu.open)) > .contextmenu-item-submenu:hover > .contextmenu-submenu,
+.contextmenu-item-submenu.open > .contextmenu-submenu {
+	z-index: 100;
+	transition: none;
+	opacity: 1;
+	visibility: unset;
 }
 
 .contextmenu-item {

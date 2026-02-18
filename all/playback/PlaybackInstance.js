@@ -2,6 +2,7 @@ import DOMPlayer from "./browser/DOMPlayer.js";
 
 class PlaybackInstance {
 	channelCount = 2;
+	shouldLoop = false;
 	
 	get duration() { // Total playback time, in seconds
 		return 4;

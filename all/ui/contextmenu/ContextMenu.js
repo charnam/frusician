@@ -55,6 +55,11 @@ class ContextMenu {
 		});
 		
 		const menu = new HTML.div({class: "contextmenu"});
+		menu.addEventListener("keydown", event => {
+			if(event.key == "Escape") {
+				ContextMenu.hide();
+			}
+		})
 		menu.style.left = this.x+"px";
 		menu.style.top = this.y+"px";
 		
@@ -62,6 +67,11 @@ class ContextMenu {
 			item.render(menu);
 		}
 		overlay.appendChild(menu);
+		setTimeout(() => {
+			if(menu.firstElementChild) {
+				menu.firstElementChild.focus();
+			}
+		}, 10);
 		return menu;
 	}
 	

@@ -7,8 +7,26 @@ class ContextMenuItem {
 	}
 	
 	render(parentNode) {
-		const item = HTML.div({class: "contextmenu-item"});
+		const item = HTML.div({class: "contextmenu-item", tabindex: '0'});
 		parentNode.appendChild(item);
+		
+		item.addEventListener("keydown", (event) => {
+			if(event.target != item) return;
+			
+			if(event.key == "ArrowUp") {
+				if(item.previousElementSibling) {
+					item.previousElementSibling.focus();
+				} else {
+					parentNode.lastElementChild.focus();
+				}
+			} else if(event.key == "ArrowDown") {
+				if(item.nextElementSibling) {
+					item.nextElementSibling.focus();
+				} else {
+					parentNode.firstElementChild.focus();
+				}
+			}
+		})
 		
 		const itemNameText = HTML.div({class: "contextmenu-item-nametext"});
 		itemNameText.innerText = this.name;

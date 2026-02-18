@@ -190,6 +190,7 @@ class NodeGraph {
 				--view-x: ${this.viewX};
 				--view-y: ${this.viewY};
 				--unit: ${1 / this.viewZoom}px;
+				--zoom: ${this.viewZoom};
 			`);
 		}
 		

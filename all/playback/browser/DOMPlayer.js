@@ -27,7 +27,12 @@ class DOMPlayer {
 	}
 	get currentTime() {
 		if(this.playing) {
-			return this._playStartMediaTime + (this.ctx.currentTime - this._playStartCtxTime);
+			const playbackTime = this._playStartMediaTime + (this.ctx.currentTime - this._playStartCtxTime);
+			if(this.playbackInstance.shouldLoop) {
+				return playbackTime % this.playbackInstance.duration;
+			} else {
+				return playbackTime;
+			}
 		}
 		return this._currentTime;
 	}
@@ -67,9 +72,9 @@ class DOMPlayer {
 	
 	async playpause() {
 		if(this.playing) {
-			this.pause();
+			await this.pause();
 		} else {
-			this.play();
+			await this.play();
 		}
 	}
 	

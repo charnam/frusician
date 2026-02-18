@@ -53,6 +53,32 @@ button:active {
 	font-family: bootstrap-icons;
 }
 
+.timeline-header-settings-button:before {
+	content: "\F4FE";
+	font-family: bootstrap-icons;
+}
+
+.song-duration-wrapper {
+	color: var(--text-color-level1);
+}
+.timeline-header-settings-button {
+	background: linear-gradient(to left, var(--background-color-level1), transparent);
+}
+.song-settings-menu {
+	background: var(--background-color-level1);
+	box-shadow: 0 5px 10px #0009;
+	border-radius: 5px;
+}
+button.song-duration-part.song-duration-subtract-button {
+	border-radius: 5px 0 0 5px;
+}
+button.song-duration-part.song-duration-add-button {
+	border-radius: 0 5px 5px 0;
+}
+.song-duration-part {
+	background: var(--background-color-level0);
+}
+
 @keyframes contextmenu-open {
 	0% {
 		opacity: 0;

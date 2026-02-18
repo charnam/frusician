@@ -44,8 +44,10 @@ class Clip {
 			}),
 			new ContextMenuConditionalItem(() => this.hasDuplicates(),
 				new ContextMenuClickableItem("Edit as new", () => {
-					this.clip = this.clip.constructor.fromSerialized(this.clip.serialize(), this.clip.track);
-					this.clip.name += " copy";
+					const serialized = this.clip.serialize();
+					delete serialized.name;
+					delete serialized.color;
+					this.clip = this.clip.constructor.fromSerialized(serialized, this.clip.track);
 					this.clip.track.updateRendered();
 					this.clip.openClipEditor(this);
 					this.clip.track.clips[this.clip.id] = this.clip;
@@ -272,7 +274,9 @@ class Clip {
 	}
 	static fromSerialized(serializedData, track) {
 		const clip = new this(track);
-		clip.name = serializedData.name;
+		if(typeof serializedData.name !== "undefined") {
+			clip.name = serializedData.name;
+		}
 		clip.loopCount = serializedData.loopCount;
 		if(typeof serializedData.color !== "undefined") {
 			clip.color = serializedData.color;

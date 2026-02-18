@@ -66,8 +66,8 @@ class FrusicianEditor {
 						this.song.playback.pause();
 						this.song.playback.currentTime = lastPlayPauseTime;
 					} else {
-						this.song.playback.play();
 						lastPlayPauseTime = this.song.playback.currentTime;
+						this.song.playback.play();
 					}
 				} else {
 					this.song.playback.playpause();

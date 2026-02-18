@@ -1,0 +1,1650 @@
+FRUSICIAN%{
+    "title": "Untitled Song",
+    "tempo": 120,
+    "durationMeasures": 32,
+    "beatsPerMeasure": 4,
+    "pixelsPerMeasure": 50,
+    "savedAt": 1771445626578,
+    "timeSpent": 66631085,
+    "tracks": {
+        "8afd6449-8749-4a58-ab89-8cd74ef50f1c": {
+            "typeID": "noteTrack",
+            "name": "Note Track 1",
+            "id": "8afd6449-8749-4a58-ab89-8cd74ef50f1c",
+            "clips": {
+                "669ac916-1350-4e8b-b18a-df727e9d0c77": {
+                    "typeID": "noteClip",
+                    "color": 0,
+                    "name": "Clip 1",
+                    "notes": [
+                        {
+                            "pitch": 84,
+                            "time": 0,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 72,
+                            "time": 0.25,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 60,
+                            "time": 0.5,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 81,
+                            "time": 0,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 57,
+                            "time": 0.5,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 76,
+                            "time": 0.25,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 77,
+                            "time": 0.5,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 76,
+                            "time": 0.75,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 72,
+                            "time": 0.75,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 57,
+                            "time": 0.75,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 77,
+                            "time": 0,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 69,
+                            "time": 0.25,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 84,
+                            "time": 1,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 72,
+                            "time": 1.25,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 60,
+                            "time": 1.5,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 81,
+                            "time": 1,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 57,
+                            "time": 1.5,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 76,
+                            "time": 1.25,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 77,
+                            "time": 1.5,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 76,
+                            "time": 1.75,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 72,
+                            "time": 1.75,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 57,
+                            "time": 1.75,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 77,
+                            "time": 1,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 69,
+                            "time": 1.25,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 83,
+                            "time": 2,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 71,
+                            "time": 2.25,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 59,
+                            "time": 2.5,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 79,
+                            "time": 2,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 55,
+                            "time": 2.5,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 74,
+                            "time": 2.25,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 76,
+                            "time": 2.5,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 74,
+                            "time": 2.75,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 71,
+                            "time": 2.75,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 55,
+                            "time": 2.75,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 74,
+                            "time": 2,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 67,
+                            "time": 2.25,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 83,
+                            "time": 3,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 71,
+                            "time": 3.25,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 59,
+                            "time": 3.5,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 79,
+                            "time": 3,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 55,
+                            "time": 3.5,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 74,
+                            "time": 3.25,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 76,
+                            "time": 3.5,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 74,
+                            "time": 3.75,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 71,
+                            "time": 3.75,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 55,
+                            "time": 3.75,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 74,
+                            "time": 3,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 67,
+                            "time": 3.25,
+                            "duration": 0.25
+                        }
+                    ]
+                },
+                "de99206b-c39d-403a-a492-908d13293569": {
+                    "typeID": "noteClip",
+                    "color": 1,
+                    "name": "Clip 2",
+                    "notes": [
+                        {
+                            "pitch": 84,
+                            "time": 0,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 72,
+                            "time": 0.25,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 60,
+                            "time": 0.5,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 81,
+                            "time": 0,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 57,
+                            "time": 0.5,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 76,
+                            "time": 0.25,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 77,
+                            "time": 0.5,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 76,
+                            "time": 0.75,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 72,
+                            "time": 0.75,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 57,
+                            "time": 0.75,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 77,
+                            "time": 0,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 69,
+                            "time": 0.25,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 84,
+                            "time": 1,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 72,
+                            "time": 1.25,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 60,
+                            "time": 1.5,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 81,
+                            "time": 1,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 57,
+                            "time": 1.5,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 76,
+                            "time": 1.25,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 77,
+                            "time": 1.5,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 76,
+                            "time": 1.75,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 72,
+                            "time": 1.75,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 57,
+                            "time": 1.75,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 77,
+                            "time": 1,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 69,
+                            "time": 1.25,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 83,
+                            "time": 2,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 71,
+                            "time": 2.25,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 59,
+                            "time": 2.5,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 79,
+                            "time": 2,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 55,
+                            "time": 2.5,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 74,
+                            "time": 2.25,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 76,
+                            "time": 2.5,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 74,
+                            "time": 2.75,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 71,
+                            "time": 2.75,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 55,
+                            "time": 2.75,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 74,
+                            "time": 2,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 67,
+                            "time": 2.25,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 83,
+                            "time": 3,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 71,
+                            "time": 3.25,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 59,
+                            "time": 3.5,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 79,
+                            "time": 3,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 55,
+                            "time": 3.5,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 74,
+                            "time": 3.25,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 76,
+                            "time": 3.5,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 79,
+                            "time": 3.75,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 74,
+                            "time": 3.75,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 69,
+                            "time": 3.75,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 74,
+                            "time": 3,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 67,
+                            "time": 3.25,
+                            "duration": 0.25
+                        }
+                    ]
+                }
+            },
+            "clipPlacement": [
+                {
+                    "clipID": "669ac916-1350-4e8b-b18a-df727e9d0c77",
+                    "placementID": "d24068c1-f5ce-4ed6-8505-a50ae6765452",
+                    "time": 0,
+                    "duration": 4,
+                    "loopCount": 0
+                },
+                {
+                    "clipID": "de99206b-c39d-403a-a492-908d13293569",
+                    "placementID": "e2000948-a4a4-4b14-9959-22bc03badbf5",
+                    "time": 4,
+                    "duration": 4,
+                    "loopCount": 0
+                },
+                {
+                    "clipID": "669ac916-1350-4e8b-b18a-df727e9d0c77",
+                    "placementID": "3a9502ca-d2c5-423a-9f01-9b3de160a7bb",
+                    "time": 8,
+                    "duration": 4,
+                    "loopCount": 0
+                },
+                {
+                    "clipID": "669ac916-1350-4e8b-b18a-df727e9d0c77",
+                    "placementID": "8bc2142a-9445-425a-aaee-32fc0fed40ad",
+                    "time": 16,
+                    "duration": 4,
+                    "loopCount": 0
+                },
+                {
+                    "clipID": "de99206b-c39d-403a-a492-908d13293569",
+                    "placementID": "55d8438d-6798-473f-b3fc-1aef49b013d0",
+                    "time": 12,
+                    "duration": 4,
+                    "loopCount": 0
+                },
+                {
+                    "clipID": "de99206b-c39d-403a-a492-908d13293569",
+                    "placementID": "2bc1f89d-e23e-409c-a6ea-dabd78fc120a",
+                    "time": 20,
+                    "duration": 4,
+                    "loopCount": 0
+                },
+                {
+                    "clipID": "669ac916-1350-4e8b-b18a-df727e9d0c77",
+                    "placementID": "fba02e39-62f3-4b7b-8f6c-5f2495b05094",
+                    "time": 24,
+                    "duration": 4,
+                    "loopCount": 0
+                },
+                {
+                    "clipID": "de99206b-c39d-403a-a492-908d13293569",
+                    "placementID": "588d7339-e51d-4d3a-837e-cc1e50507fcb",
+                    "time": 28,
+                    "duration": 4,
+                    "loopCount": 0
+                }
+            ],
+            "nodeGraph": {
+                "viewX": 337.3219847842141,
+                "viewY": 338.0193816252961,
+                "viewZoom": 1.4337321987026226,
+                "nodes": {
+                    "MAIN_INPUT": {
+                        "typeID": "trackInput",
+                        "x": 10,
+                        "y": 227,
+                        "inputConnections": {},
+                        "inputValues": {}
+                    },
+                    "7407e332-f70e-442e-bd46-f9166ef19fa0": {
+                        "typeID": "basicInstrument",
+                        "x": 600,
+                        "y": -30,
+                        "inputConnections": {
+                            "noteTrack": {
+                                "nodeId": "MAIN_INPUT",
+                                "outputName": "track"
+                            }
+                        },
+                        "inputValues": {
+                            "adsr": {
+                                "attack": 0.09,
+                                "decay": 0,
+                                "sustain": 1,
+                                "release": 0
+                            },
+                            "wave": "Triangle"
+                        }
+                    },
+                    "MAIN_OUTPUT": {
+                        "typeID": "mainOutput",
+                        "x": 1661.7595432400128,
+                        "y": 330.36125390918346,
+                        "inputConnections": {
+                            "playback": {
+                                "nodeId": "6fda8689-8e9e-4062-bc7a-48f8c954c5e4",
+                                "outputName": "returned-playback"
+                            }
+                        },
+                        "inputValues": {
+                            "volume": "0.23"
+                        }
+                    },
+                    "e709d491-985b-4798-81e8-0a4c192cf4f3": {
+                        "typeID": "basicInstrument",
+                        "x": 589,
+                        "y": 327,
+                        "inputConnections": {
+                            "noteTrack": {
+                                "nodeId": "MAIN_INPUT",
+                                "outputName": "track"
+                            }
+                        },
+                        "inputValues": {
+                            "adsr": {
+                                "attack": 0,
+                                "decay": 0.05,
+                                "sustain": 0,
+                                "release": 0
+                            },
+                            "wave": "Sawtooth"
+                        }
+                    },
+                    "6fda8689-8e9e-4062-bc7a-48f8c954c5e4": {
+                        "typeID": "joiner",
+                        "x": 1135.44660819051,
+                        "y": 180.0241594298396,
+                        "inputConnections": {
+                            "incoming-playback-2": {
+                                "nodeId": "7407e332-f70e-442e-bd46-f9166ef19fa0",
+                                "outputName": "returned-playback"
+                            },
+                            "incoming-playback-1": {
+                                "nodeId": "e709d491-985b-4798-81e8-0a4c192cf4f3",
+                                "outputName": "returned-playback"
+                            }
+                        },
+                        "inputValues": {
+                            "volume-incoming-playback-1": "0.15",
+                            "volume-incoming-playback-2": "0.34"
+                        }
+                    }
+                }
+            }
+        },
+        "98fed7ed-c371-44a4-b5a8-27845d84d117": {
+            "typeID": "noteTrack",
+            "name": "Note Track 2",
+            "id": "98fed7ed-c371-44a4-b5a8-27845d84d117",
+            "clips": {
+                "7c0f0e52-5251-4bc4-991b-56e292de2a80": {
+                    "typeID": "noteClip",
+                    "color": 0,
+                    "name": "Clip 1",
+                    "notes": [
+                        {
+                            "pitch": 60,
+                            "time": 0,
+                            "duration": 1
+                        },
+                        {
+                            "pitch": 64,
+                            "time": 1,
+                            "duration": 0.5
+                        },
+                        {
+                            "pitch": 62,
+                            "time": 1.5,
+                            "duration": 0.5
+                        },
+                        {
+                            "pitch": 59,
+                            "time": 2,
+                            "duration": 2
+                        }
+                    ]
+                },
+                "094ab931-25b6-4674-8593-d68b14e0e49a": {
+                    "typeID": "noteClip",
+                    "color": 1,
+                    "name": "Clip 2",
+                    "notes": [
+                        {
+                            "pitch": 60,
+                            "time": 0,
+                            "duration": 1
+                        },
+                        {
+                            "pitch": 64,
+                            "time": 1,
+                            "duration": 0.5
+                        },
+                        {
+                            "pitch": 67,
+                            "time": 2,
+                            "duration": 1
+                        },
+                        {
+                            "pitch": 65,
+                            "time": 1.5,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 64,
+                            "time": 1.75,
+                            "duration": 0.25
+                        }
+                    ]
+                }
+            },
+            "clipPlacement": [
+                {
+                    "clipID": "7c0f0e52-5251-4bc4-991b-56e292de2a80",
+                    "placementID": "3c27d882-dd19-4d98-a0bd-af60563eeaf4",
+                    "time": 4,
+                    "duration": 3.9999999999999996,
+                    "loopCount": 0
+                },
+                {
+                    "clipID": "094ab931-25b6-4674-8593-d68b14e0e49a",
+                    "placementID": "5d4f6037-e8d0-429b-b0c7-84b8c44afd7f",
+                    "time": 8,
+                    "duration": 3.9999999999999996,
+                    "loopCount": 0
+                },
+                {
+                    "clipID": "7c0f0e52-5251-4bc4-991b-56e292de2a80",
+                    "placementID": "a8c13c1a-03d5-42dc-bafa-84cfbab11c8b",
+                    "time": 20,
+                    "duration": 3.9999999999999996,
+                    "loopCount": 0
+                },
+                {
+                    "clipID": "094ab931-25b6-4674-8593-d68b14e0e49a",
+                    "placementID": "610e114b-3882-4fbd-83ca-b521d9c0be7e",
+                    "time": 24,
+                    "duration": 3.9999999999999996,
+                    "loopCount": 0
+                }
+            ],
+            "nodeGraph": {
+                "viewX": -123,
+                "viewY": 148,
+                "viewZoom": 1,
+                "nodes": {
+                    "MAIN_INPUT": {
+                        "typeID": "trackInput",
+                        "x": -45,
+                        "y": 231,
+                        "inputConnections": {},
+                        "inputValues": {}
+                    },
+                    "effb3fcf-f618-4042-a0ad-996f65228c6b": {
+                        "typeID": "basicInstrument",
+                        "x": 454,
+                        "y": -28,
+                        "inputConnections": {
+                            "noteTrack": {
+                                "nodeId": "MAIN_INPUT",
+                                "outputName": "track"
+                            }
+                        },
+                        "inputValues": {
+                            "adsr": {
+                                "attack": 0,
+                                "decay": 0.35,
+                                "sustain": 0.48,
+                                "release": 0.83
+                            },
+                            "wave": "Square"
+                        }
+                    },
+                    "MAIN_OUTPUT": {
+                        "typeID": "mainOutput",
+                        "x": 1597,
+                        "y": 79,
+                        "inputConnections": {
+                            "playback": {
+                                "nodeId": "c1a51b4d-9aa4-4862-afff-0a6cceecd947",
+                                "outputName": "returned-playback"
+                            }
+                        },
+                        "inputValues": {
+                            "volume": "0.1"
+                        }
+                    },
+                    "c1a51b4d-9aa4-4862-afff-0a6cceecd947": {
+                        "typeID": "vibrato",
+                        "x": 1237,
+                        "y": 151,
+                        "inputConnections": {
+                            "playback": {
+                                "nodeId": "bd9948d0-05c9-4a30-9f65-f648374f241e",
+                                "outputName": "returned-playback"
+                            }
+                        },
+                        "inputValues": {
+                            "intensity": "0.00074",
+                            "speed": "0.5"
+                        }
+                    },
+                    "bd9948d0-05c9-4a30-9f65-f648374f241e": {
+                        "typeID": "joiner",
+                        "x": 834,
+                        "y": 123,
+                        "inputConnections": {
+                            "incoming-playback-1": {
+                                "nodeId": "effb3fcf-f618-4042-a0ad-996f65228c6b",
+                                "outputName": "returned-playback"
+                            },
+                            "incoming-playback-2": {
+                                "nodeId": "f6474911-75e1-42a9-bc96-12def5fd483d",
+                                "outputName": "returned-playback"
+                            }
+                        },
+                        "inputValues": {
+                            "volume-incoming-playback-2": "1.55",
+                            "volume-incoming-playback-1": "1"
+                        }
+                    },
+                    "f6474911-75e1-42a9-bc96-12def5fd483d": {
+                        "typeID": "basicInstrument",
+                        "x": 443,
+                        "y": 287,
+                        "inputConnections": {
+                            "noteTrack": {
+                                "nodeId": "MAIN_INPUT",
+                                "outputName": "track"
+                            }
+                        },
+                        "inputValues": {
+                            "adsr": {
+                                "attack": 0,
+                                "decay": 0.02,
+                                "sustain": 0,
+                                "release": 0.01
+                            },
+                            "wave": "Triangle"
+                        }
+                    }
+                }
+            }
+        },
+        "536712f7-6a72-48b7-a7d0-1d2ddb02e9c8": {
+            "typeID": "noteTrack",
+            "name": "Note Track 3",
+            "id": "536712f7-6a72-48b7-a7d0-1d2ddb02e9c8",
+            "clips": {
+                "f45f361b-e97e-4d6e-9489-6c0046df9c04": {
+                    "typeID": "noteClip",
+                    "color": 0,
+                    "name": "Clip 1",
+                    "notes": [
+                        {
+                            "pitch": 60,
+                            "time": 0.25,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 67,
+                            "time": 0.5,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 67,
+                            "time": 0.75,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 60,
+                            "time": 1,
+                            "duration": 0.0625
+                        }
+                    ]
+                },
+                "33ed9a9b-d33a-496f-97fc-75d23f0c4ad8": {
+                    "typeID": "noteClip",
+                    "color": 1,
+                    "name": "Clip 2",
+                    "notes": [
+                        {
+                            "pitch": 65,
+                            "time": 0.5,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 67,
+                            "time": 0.75,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 65,
+                            "time": 1,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 64,
+                            "time": 1.5,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 71,
+                            "time": 1.75,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 67,
+                            "time": 1.5,
+                            "duration": 0.0625
+                        }
+                    ]
+                },
+                "5f6794c0-c0ac-4d01-b375-be6304812974": {
+                    "typeID": "noteClip",
+                    "color": 2,
+                    "name": "Clip 3",
+                    "notes": [
+                        {
+                            "pitch": 59,
+                            "time": 0.25,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 65,
+                            "time": 0.5,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 65,
+                            "time": 0.75,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 62,
+                            "time": 1,
+                            "duration": 0.0625
+                        }
+                    ]
+                },
+                "b414ac2d-2c94-4e15-b036-d421959e9715": {
+                    "typeID": "noteClip",
+                    "color": 3,
+                    "name": "Clip 4",
+                    "notes": [
+                        {
+                            "pitch": 60,
+                            "time": 0.25,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 67,
+                            "time": 0.5,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 67,
+                            "time": 0.75,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 60,
+                            "time": 1,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 64,
+                            "time": 1.75,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 65,
+                            "time": 1.875,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 72,
+                            "time": 1.5,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 60,
+                            "time": 0,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 62,
+                            "time": 2,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 72,
+                            "time": 0,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 76,
+                            "time": 0.25,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 77,
+                            "time": 0.5,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 76,
+                            "time": 0.75,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 77,
+                            "time": 1,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 76,
+                            "time": 1.5,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 71,
+                            "time": 2,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 59,
+                            "time": 2,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 59,
+                            "time": 2.25,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 67,
+                            "time": 2.5,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 67,
+                            "time": 2.75,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 64,
+                            "time": 3,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 71,
+                            "time": 3.75,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 67,
+                            "time": 3.25,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 62,
+                            "time": 3.5,
+                            "duration": 0.0625
+                        }
+                    ]
+                },
+                "b754abdb-4879-4fa0-85df-d48ea603a38d": {
+                    "typeID": "noteClip",
+                    "color": 4,
+                    "name": "Clip 5",
+                    "notes": [
+                        {
+                            "pitch": 59,
+                            "time": 0.25,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 65,
+                            "time": 0.5,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 65,
+                            "time": 0.75,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 62,
+                            "time": 1,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 64,
+                            "time": 1.5,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 59,
+                            "time": 1.75,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 71,
+                            "time": 1.75,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 67,
+                            "time": 1.25,
+                            "duration": 0.0625
+                        }
+                    ]
+                },
+                "27df9c3c-780c-42e6-beee-ca3bc606753f": {
+                    "typeID": "noteClip",
+                    "color": 5,
+                    "name": "Clip 6",
+                    "notes": [
+                        {
+                            "pitch": 60,
+                            "time": 0.25,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 67,
+                            "time": 0.5,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 67,
+                            "time": 0.75,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 60,
+                            "time": 1,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 72,
+                            "time": 0.25,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 77,
+                            "time": 0.5,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 76,
+                            "time": 0.75,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 77,
+                            "time": 1,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 74,
+                            "time": 1.5,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 76,
+                            "time": 1.75,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 71,
+                            "time": 2,
+                            "duration": 0.0625
+                        }
+                    ]
+                },
+                "a4803085-0405-4bd2-8c8d-63850d74a00f": {
+                    "typeID": "noteClip",
+                    "color": 6,
+                    "name": "Clip 7",
+                    "notes": [
+                        {
+                            "pitch": 60,
+                            "time": 0.25,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 67,
+                            "time": 0.5,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 67,
+                            "time": 0.75,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 60,
+                            "time": 1,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 64,
+                            "time": 1.75,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 65,
+                            "time": 1.875,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 60,
+                            "time": 0,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 62,
+                            "time": 2,
+                            "duration": 0.0625
+                        },
+                        {
+                            "pitch": 72,
+                            "time": 1.5,
+                            "duration": 0.0625
+                        }
+                    ]
+                },
+                "73bf7ec5-47ed-4a76-9a9a-ae98c2878c5e": {
+                    "typeID": "noteClip",
+                    "color": 7,
+                    "name": "Clip 8",
+                    "notes": [
+                        {
+                            "pitch": 72,
+                            "time": 0,
+                            "duration": 0.0625
+                        }
+                    ]
+                }
+            },
+            "clipPlacement": [
+                {
+                    "clipID": "f45f361b-e97e-4d6e-9489-6c0046df9c04",
+                    "placementID": "233735b3-372f-4a4f-af77-aaefb36ec21c",
+                    "time": 12,
+                    "duration": 2,
+                    "loopCount": 0
+                },
+                {
+                    "clipID": "5f6794c0-c0ac-4d01-b375-be6304812974",
+                    "placementID": "e6994b66-b86b-4c1b-8f06-f99c4771f551",
+                    "time": 14,
+                    "duration": 2,
+                    "loopCount": 0
+                },
+                {
+                    "clipID": "a4803085-0405-4bd2-8c8d-63850d74a00f",
+                    "placementID": "da1de8b7-b555-4ee9-a3df-78a05f1412c1",
+                    "time": 16,
+                    "duration": 2,
+                    "loopCount": 0
+                },
+                {
+                    "clipID": "33ed9a9b-d33a-496f-97fc-75d23f0c4ad8",
+                    "placementID": "e4ece80a-49bb-4c1b-a6b4-6d50bbff54eb",
+                    "time": 18,
+                    "duration": 2,
+                    "loopCount": 0
+                },
+                {
+                    "clipID": "27df9c3c-780c-42e6-beee-ca3bc606753f",
+                    "placementID": "d822f0a0-bc28-4671-acb1-662f956a5f7a",
+                    "time": 20,
+                    "duration": 2,
+                    "loopCount": 0
+                },
+                {
+                    "clipID": "b754abdb-4879-4fa0-85df-d48ea603a38d",
+                    "placementID": "b3d96286-db73-468c-9fa0-6ebeff475042",
+                    "time": 22,
+                    "duration": 2,
+                    "loopCount": 0
+                },
+                {
+                    "clipID": "b414ac2d-2c94-4e15-b036-d421959e9715",
+                    "placementID": "4a45f99c-8e13-4bce-9f28-c2e7ab455439",
+                    "time": 24,
+                    "duration": 4,
+                    "loopCount": 0
+                },
+                {
+                    "clipID": "73bf7ec5-47ed-4a76-9a9a-ae98c2878c5e",
+                    "placementID": "713e175b-2909-4dc4-b8b9-b58e89c10aa6",
+                    "time": 28,
+                    "duration": 1,
+                    "loopCount": 0
+                }
+            ],
+            "nodeGraph": {
+                "viewX": -1250,
+                "viewY": 106,
+                "viewZoom": 1,
+                "nodes": {
+                    "MAIN_INPUT": {
+                        "typeID": "trackInput",
+                        "x": 0,
+                        "y": 0,
+                        "inputConnections": {},
+                        "inputValues": {}
+                    },
+                    "bd786c4f-361c-496a-a6c1-f9dafbc5960d": {
+                        "typeID": "basicInstrument",
+                        "x": 499,
+                        "y": -77,
+                        "inputConnections": {
+                            "noteTrack": {
+                                "nodeId": "MAIN_INPUT",
+                                "outputName": "track"
+                            }
+                        },
+                        "inputValues": {
+                            "adsr": {
+                                "attack": 0,
+                                "decay": 0.02,
+                                "sustain": 0.75,
+                                "release": 0.14
+                            },
+                            "wave": "Sawtooth"
+                        }
+                    },
+                    "MAIN_OUTPUT": {
+                        "typeID": "mainOutput",
+                        "x": 2631,
+                        "y": 420,
+                        "inputConnections": {
+                            "playback": {
+                                "nodeId": "47b6d8ad-6102-424e-a9eb-fea159ae32b8",
+                                "outputName": "returned-playback"
+                            }
+                        },
+                        "inputValues": {
+                            "volume": "0.08"
+                        }
+                    },
+                    "36f85daf-5b01-4b5c-aa44-bbef2f10df8f": {
+                        "typeID": "echo",
+                        "x": 1327,
+                        "y": -264,
+                        "inputConnections": {
+                            "incoming-playback": {
+                                "nodeId": "e84c350f-18f7-42e6-aaf2-cc331b8582c8",
+                                "outputName": "returned-playback-left"
+                            }
+                        },
+                        "inputValues": {
+                            "delay": "0.1875",
+                            "repetitions": "3"
+                        }
+                    },
+                    "47b6d8ad-6102-424e-a9eb-fea159ae32b8": {
+                        "typeID": "joiner",
+                        "x": 1778,
+                        "y": 181,
+                        "inputConnections": {
+                            "incoming-playback-1": {
+                                "nodeId": "36f85daf-5b01-4b5c-aa44-bbef2f10df8f",
+                                "outputName": "returned-playback"
+                            },
+                            "incoming-playback-2": {
+                                "nodeId": "d4a16867-2f17-4a4b-9576-b4974c9129b4",
+                                "outputName": "returned-playback"
+                            },
+                            "incoming-playback-3": {
+                                "nodeId": "bd786c4f-361c-496a-a6c1-f9dafbc5960d",
+                                "outputName": "returned-playback"
+                            }
+                        },
+                        "inputValues": {
+                            "volume-incoming-playback-2": "0.73",
+                            "volume-incoming-playback-1": "0.71",
+                            "volume-incoming-playback-3": "0.72"
+                        }
+                    },
+                    "d4a16867-2f17-4a4b-9576-b4974c9129b4": {
+                        "typeID": "echo",
+                        "x": 1320,
+                        "y": -14,
+                        "inputConnections": {
+                            "incoming-playback": {
+                                "nodeId": "e84c350f-18f7-42e6-aaf2-cc331b8582c8",
+                                "outputName": "returned-playback-right"
+                            }
+                        },
+                        "inputValues": {
+                            "delay": "0.125",
+                            "repetitions": "4"
+                        }
+                    },
+                    "e84c350f-18f7-42e6-aaf2-cc331b8582c8": {
+                        "typeID": "stereoVolume",
+                        "x": 948,
+                        "y": 2,
+                        "inputConnections": {
+                            "incoming-playback": {
+                                "nodeId": "bd786c4f-361c-496a-a6c1-f9dafbc5960d",
+                                "outputName": "returned-playback"
+                            }
+                        },
+                        "inputValues": {}
+                    },
+                    "ccd13fbd-12c0-40ff-99cc-3b35aa414667": {
+                        "typeID": "basicInstrument",
+                        "x": 510,
+                        "y": 242,
+                        "inputConnections": {
+                            "noteTrack": {
+                                "nodeId": "MAIN_INPUT",
+                                "outputName": "track"
+                            }
+                        },
+                        "inputValues": {
+                            "adsr": {
+                                "attack": 0,
+                                "decay": 0,
+                                "sustain": 1,
+                                "release": 0.01
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "75fa9cb4-be6b-408b-811d-da4392e9f1a9": {
+            "typeID": "sampleTrack",
+            "name": "Sample Track 1",
+            "id": "75fa9cb4-be6b-408b-811d-da4392e9f1a9",
+            "clips": {},
+            "clipPlacement": [],
+            "nodeGraph": {
+                "viewX": 100,
+                "viewY": 100,
+                "viewZoom": 1,
+                "nodes": {
+                    "MAIN_INPUT": {
+                        "typeID": "playbackInput",
+                        "x": 0,
+                        "y": 0,
+                        "inputConnections": {},
+                        "inputValues": {}
+                    },
+                    "MAIN_OUTPUT": {
+                        "typeID": "mainOutput",
+                        "x": 600,
+                        "y": 0,
+                        "inputConnections": {
+                            "playback": {
+                                "nodeId": "MAIN_INPUT",
+                                "outputName": "playback"
+                            }
+                        },
+                        "inputValues": {}
+                    }
+                }
+            }
+        },
+        "f2f9f59c-e8b2-4712-883c-283beb6a39a6": {
+            "typeID": "noteTrack",
+            "name": "Note Track 4",
+            "id": "f2f9f59c-e8b2-4712-883c-283beb6a39a6",
+            "clips": {
+                "c6ab6952-c687-4a5a-b976-e18b918f89d5": {
+                    "typeID": "noteClip",
+                    "color": 0,
+                    "name": "Clip 1",
+                    "notes": [
+                        {
+                            "pitch": 48,
+                            "time": 0,
+                            "duration": 1
+                        },
+                        {
+                            "pitch": 52,
+                            "time": 1,
+                            "duration": 0.5
+                        },
+                        {
+                            "pitch": 59,
+                            "time": 2,
+                            "duration": 1
+                        },
+                        {
+                            "pitch": 57,
+                            "time": 1.5,
+                            "duration": 0.5
+                        }
+                    ]
+                },
+                "c375a2fd-84ce-4093-b3c9-ba40fb394e54": {
+                    "typeID": "noteClip",
+                    "color": 1,
+                    "name": "Clip 2",
+                    "notes": [
+                        {
+                            "pitch": 52,
+                            "time": 0.5,
+                            "duration": 0.25
+                        },
+                        {
+                            "pitch": 50,
+                            "time": 0.75,
+                            "duration": 0.25
+                        }
+                    ]
+                }
+            },
+            "clipPlacement": [
+                {
+                    "clipID": "c6ab6952-c687-4a5a-b976-e18b918f89d5",
+                    "placementID": "d2dca073-edcd-462a-b0a9-b9e5733330a1",
+                    "time": 8,
+                    "duration": 4,
+                    "loopCount": 0
+                },
+                {
+                    "clipID": "c6ab6952-c687-4a5a-b976-e18b918f89d5",
+                    "placementID": "229a1273-3c39-4878-9207-9727b94c1b21",
+                    "time": 24,
+                    "duration": 4,
+                    "loopCount": 0
+                },
+                {
+                    "clipID": "c375a2fd-84ce-4093-b3c9-ba40fb394e54",
+                    "placementID": "e4570cdf-0392-4cf0-9bac-18a6813f9d91",
+                    "time": 23,
+                    "duration": 1,
+                    "loopCount": 0
+                }
+            ],
+            "nodeGraph": {
+                "viewX": 22,
+                "viewY": 210,
+                "viewZoom": 1,
+                "nodes": {
+                    "MAIN_INPUT": {
+                        "typeID": "trackInput",
+                        "x": 0,
+                        "y": 0,
+                        "inputConnections": {},
+                        "inputValues": {}
+                    },
+                    "729127b7-19f3-4662-997d-2e17f2dc47e8": {
+                        "typeID": "basicInstrument",
+                        "x": 600,
+                        "y": -30,
+                        "inputConnections": {
+                            "noteTrack": {
+                                "nodeId": "MAIN_INPUT",
+                                "outputName": "track"
+                            }
+                        },
+                        "inputValues": {
+                            "adsr": {
+                                "attack": 0.11,
+                                "decay": 0.76,
+                                "sustain": 0.24,
+                                "release": 1
+                            },
+                            "wave": "Sawtooth"
+                        }
+                    },
+                    "MAIN_OUTPUT": {
+                        "typeID": "mainOutput",
+                        "x": 1200,
+                        "y": 0,
+                        "inputConnections": {
+                            "playback": {
+                                "nodeId": "729127b7-19f3-4662-997d-2e17f2dc47e8",
+                                "outputName": "returned-playback"
+                            }
+                        },
+                        "inputValues": {}
+                    }
+                }
+            }
+        },
+        "4dee403b-2750-4b76-af33-609684dcb581": {
+            "typeID": "noteTrack",
+            "name": "Note Track 5",
+            "id": "4dee403b-2750-4b76-af33-609684dcb581",
+            "clips": {},
+            "clipPlacement": [],
+            "nodeGraph": {
+                "viewX": 100,
+                "viewY": 100,
+                "viewZoom": 1,
+                "nodes": {
+                    "MAIN_INPUT": {
+                        "typeID": "trackInput",
+                        "x": 0,
+                        "y": 0,
+                        "inputConnections": {},
+                        "inputValues": {}
+                    },
+                    "4d80cb31-d2fd-4c3b-b41e-8f01343fb255": {
+                        "typeID": "basicInstrument",
+                        "x": 600,
+                        "y": -30,
+                        "inputConnections": {
+                            "noteTrack": {
+                                "nodeId": "MAIN_INPUT",
+                                "outputName": "track"
+                            }
+                        },
+                        "inputValues": {}
+                    },
+                    "MAIN_OUTPUT": {
+                        "typeID": "mainOutput",
+                        "x": 1200,
+                        "y": 0,
+                        "inputConnections": {
+                            "playback": {
+                                "nodeId": "4d80cb31-d2fd-4c3b-b41e-8f01343fb255",
+                                "outputName": "returned-playback"
+                            }
+                        },
+                        "inputValues": {}
+                    }
+                }
+            }
+        }
+    },
+    "trackAssortment": [
+        "8afd6449-8749-4a58-ab89-8cd74ef50f1c",
+        "98fed7ed-c371-44a4-b5a8-27845d84d117",
+        "536712f7-6a72-48b7-a7d0-1d2ddb02e9c8",
+        "f2f9f59c-e8b2-4712-883c-283beb6a39a6",
+        "4dee403b-2750-4b76-af33-609684dcb581",
+        "75fa9cb4-be6b-408b-811d-da4392e9f1a9"
+    ]
+}

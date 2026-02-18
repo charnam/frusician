@@ -8,6 +8,8 @@ import SongPlaybackInstance from "./playback/SongPlaybackInstance.js";
 import Draggable from "./ui/Draggable.js";
 import ArrayMath from "./lib/ArrayMath/ArrayMath.js";
 import FileUploads from "./lib/FileUploads.js";
+import BoxAnimation from "./ui/BoxAnimation.js";
+import Overlay from "./ui/Overlay.js";
 
 class Song {
 	static FILE_HEADER = "FRUSICIAN%";
@@ -211,7 +213,7 @@ class Song {
 			timelineHeaderPlayButton,
 			cpuUsage,
 			timelineHeaderTicks,
-			timelineHeaderExtendButton,
+			timelineHeaderSettingsButton,
 			tracks,
 			userTracks;
 		
@@ -227,7 +229,7 @@ class Song {
 					),
 					new HTML.div({class: "timeline-header-playhead"}),
 					timelineHeaderTicks = new SVG.svg({class: "timeline-header-ticks"}),
-					timelineHeaderExtendButton = new SVG.svg({class: "timeline-header-extend-button"}),
+					timelineHeaderSettingsButton = new HTML.button({class: "timeline-header-button timeline-header-settings-button"}),
 				),
 				tracks = new HTML.div({class: "tracks"},
 					userTracks = new HTML.div({class: "user-tracks"})
@@ -236,23 +238,81 @@ class Song {
 			),
 		);
 		
+		const openSettingsMenu = () => {
+			const overlay = new Overlay();
+			overlay.onclick = event => {
+				if(event.target == overlay) {
+					overlay.remove();
+				}
+			}
+			let beatsPerMeasureInput,
+				tempoInput,
+				songDurationWrapper,
+				songDurationInput,
+				songDurationSubtractButton,
+				songDurationAddButton;
+			
+			const settingsMenu = new HTML.div({class: "song-settings-menu"},
+				new HTML.div({class: "song-setting-columns"},
+					new HTML.div({class: "song-setting"},
+						new HTML.div({class: "song-setting-text"}, "Song Duration"),
+						songDurationWrapper = new HTML.div({class: "song-duration-wrapper"},
+							songDurationSubtractButton = new HTML.button({class: "song-duration-part song-duration-subtract-button"}),
+							songDurationInput = new HTML.input({class: "song-duration-part song-duration-input", type: "number", value: this.durationMeasures}),
+							songDurationAddButton = new HTML.button({class: "song-duration-part song-duration-add-button"}),
+						),
+					)
+				),
+				new HTML.div({class: "song-setting-columns"},
+					new HTML.div({class: "song-setting"}, 
+						new HTML.div({class: "song-setting-text"}, "Beats per measure"),
+						beatsPerMeasureInput = new HTML.input({type: "number", value: this.beatsPerMeasure})
+					),
+					new HTML.div({class: "song-setting"}, 
+						new HTML.div({class: "song-setting-text"}, "Tempo (BPM)"),
+						tempoInput = new HTML.input({type: "number", value: this.tempo})
+					)
+				)
+			);
+			
+			songDurationInput.oninput = () => {
+				this.durationMeasures = songDurationInput.value;
+				this.updateRendered();
+			}
+			
+			beatsPerMeasureInput.oninput = () => {
+				this.beatsPerMeasure = beatsPerMeasureInput.value;
+				this.updateRendered();
+			}
+			tempoInput.oninput = () => {
+				this.tempo = tempoInput.value;
+				this.updateRendered();
+			}
+			
+			overlay.appendChild(settingsMenu);
+			targetNode.appendChild(overlay);
+			BoxAnimation.fromElements(timelineHeaderSettingsButton, settingsMenu);
+		}
+		
+		timelineHeaderSettingsButton.onclick = () => {
+			openSettingsMenu();
+		}
+		
 		setInterval(() => {
 			cpuUsage.setAttribute("style", `--cpu: ${this.playback.testedOverhead}`);
 		});
 		
 		timelineHeaderPlayButton.onclick = async () => {
 			await this.playback.playpause();
-			setTimeout(() => {
-				if(this.playback.playing) {
-					timeline.setAttribute("playing", "");
-					timelineHeaderPlayButton.classList.remove("timeline-header-button-play");
-					timelineHeaderPlayButton.classList.add("timeline-header-button-pause");
-				} else {
-					timeline.removeAttribute("playing");
-					timelineHeaderPlayButton.classList.remove("timeline-header-button-pause");
-					timelineHeaderPlayButton.classList.add("timeline-header-button-play");
-				}
-			}, 100)
+			if(this.playback.playing) {
+				timeline.setAttribute("playing", "");
+				timelineHeaderPlayButton.classList.remove("timeline-header-button-play");
+				timelineHeaderPlayButton.classList.add("timeline-header-button-pause");
+			} else {
+				timeline.removeAttribute("playing");
+				timelineHeaderPlayButton.classList.remove("timeline-header-button-pause");
+				timelineHeaderPlayButton.classList.add("timeline-header-button-play");
+			}
 		}
 		const updatePlayhead = position => {
 			timeline.removeAttribute("playing");
@@ -320,14 +380,18 @@ class Song {
 			}
 		})
 		
+		let lastPlaybackTime = 0;
 		const updatePlayheadVisual = (loop = false, animate = true) => {
 			if(timeline) {
-				if(this.playback.playing && animate) {
+				if(this.playback.currentTime < lastPlaybackTime) {
+					timeline.removeAttribute("playing");
+				} else if(this.playback.playing && animate) {
 					timeline.setAttribute("playing", "");
 				} else {
 					timeline.removeAttribute("playing");
 				}
 				timeline.setAttribute("style", `--playbackTime: ${this.secondsToBeats(this.playback.currentTime)};`);
+				lastPlaybackTime = this.playback.currentTime;
 				if(loop) {
 					setTimeout(() => {
 						updatePlayheadVisual(true);
@@ -393,7 +457,7 @@ class Song {
 		for(let target of this.boundTo) {
 			const timeline = target.querySelector(".timeline")
 			timeline.removeAttribute("playing");
-			target.setAttribute("style", `--pixelsPerMeasure: ${this.pixelsPerMeasure}px; --beatsPerMeasure: ${this.beatsPerMeasure}; --track-count: ${Object.values(this.tracks).length}`);
+			target.setAttribute("style", `--pixelsPerMeasure: ${this.pixelsPerMeasure}px; --beatsPerMeasure: ${this.beatsPerMeasure}; --track-count: ${Object.values(this.tracks).length}; --durationMeasures: ${this.durationMeasures}`);
 			
 			if(isChangingZoom) {
 				continue;

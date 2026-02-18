@@ -145,6 +145,9 @@ svg.input-connection {
 }
 .input-node .slider-wrapper input[type="range"] {
 	width: 100%;
+	accent-color: currentcolor;
+	color: inherit;
+	zoom: calc(1 / var(--zoom));
 }
 .input-node .slider-wrapper input[type="number"] {
 	width: 20%;

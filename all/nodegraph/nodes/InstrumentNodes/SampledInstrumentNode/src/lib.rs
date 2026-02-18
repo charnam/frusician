@@ -1,10 +1,9 @@
 use wasm_bindgen::prelude::*;
 use frusician_wasm_instrumentnode_lib::get_adsr_multiplier;
-use std::f32::consts::PI;
 
 #[wasm_bindgen]
 pub fn generate_sampled_instrument_samples(
-	wave: &str,
+	sample: &[f32],
 	
 	start_time: f32,
 	sample_count: usize,
@@ -23,16 +22,14 @@ pub fn generate_sampled_instrument_samples(
 		for note in 0..note_start_times.len() {
 			let note_start_time = note_start_times[note];
 			let note_end_time = note_end_times[note];
+			let note_duration = note_end_time - note_start_time;
 			let note_frequency = note_frequencies[note];
 			
-			if note_start_time <= time && note_end_time + release > time {
+			if note_start_time <= time && note_end_time + adsr[3] > time {
 				let note_time = time - note_start_time;
-				let period = note_time * note_frequency;
-				
 				let mut note_value = 0.0;
-				adsr
 				
-				sample *= get_adsr_multiplier(adsr, note_time, );
+				note_value *= get_adsr_multiplier(adsr, note_time, note_duration);
 				
 				sample += note_value;
 			}
