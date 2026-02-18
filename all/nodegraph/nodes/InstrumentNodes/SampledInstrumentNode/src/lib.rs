@@ -1,18 +1,16 @@
 use wasm_bindgen::prelude::*;
+use frusician_wasm_instrumentnode_lib::get_adsr_multiplier;
 use std::f32::consts::PI;
 
 #[wasm_bindgen]
-pub fn generate_chip_instrument_samples(
+pub fn generate_sampled_instrument_samples(
 	wave: &str,
 	
 	start_time: f32,
 	sample_count: usize,
 	seconds_per_sample: f32,
 	
-	attack: f32,
-	decay: f32,
-	sustain: f32,
-	release: f32,
+	adsr: &[f32],
 	
 	note_start_times: &[f32], note_end_times: &[f32], note_frequencies: &[f32]
 ) -> Vec<f32> {
@@ -32,28 +30,9 @@ pub fn generate_chip_instrument_samples(
 				let period = note_time * note_frequency;
 				
 				let mut note_value = 0.0;
+				adsr
 				
-				if wave == "Sine" {
-					note_value = f32::sin(period * PI * 2.0);
-				} else if wave == "Square" {
-					note_value = if period % 1.0 < 0.5 { 1.0 } else { -1.0 };
-				} else if wave == "Sawtooth" {
-					note_value = ((period % 1.0) - 0.5) * 2.0;
-				} else if wave == "Triangle" {
-					note_value = f32::asin(f32::sin(period * PI * 2.0)) * 2.0 / PI;
-				}
-				
-				if note_time < attack {
-					note_value *= note_time / attack;
-				} else if note_time < attack + decay {
-					note_value *= ((attack - note_time) / decay + 1.0) * (1.0 - sustain) + sustain;
-				} else {
-					note_value *= sustain;
-				}
-				
-				if note_end_time < time {
-					note_value *= 1.0 - (time - note_end_time) / release;
-				}
+				sample *= get_adsr_multiplier(adsr, note_time, );
 				
 				sample += note_value;
 			}

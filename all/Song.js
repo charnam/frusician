@@ -7,7 +7,7 @@ import trackCatalog from "./tracks/trackCatalog.js";
 import SongPlaybackInstance from "./playback/SongPlaybackInstance.js";
 import Draggable from "./ui/Draggable.js";
 import ArrayMath from "./lib/ArrayMath/ArrayMath.js";
-
+import FileUploads from "./lib/FileUploads.js";
 
 class Song {
 	static FILE_HEADER = "FRUSICIAN%";
@@ -24,6 +24,7 @@ class Song {
 	tempo = 120;
 	durationMeasures = 16;
 	beatsPerMeasure = 4;
+	perfectLoop = true;
 	boundTo = [];
 	
 	get durationSeconds() {
@@ -124,38 +125,17 @@ class Song {
 		return new Blob([ArrayMath.arrayToWav(buffers, sampleRate)], {type: "audio/wav"});
 	}
 	
-	static load() {
-		return new Promise((res, rej) => {
-			const fileInput = new HTML.input({
-				type: "file",
-				style: "display: none;",
-				accept: ".fru, .frudbg, application/frusician"
-			});
-			fileInput.onchange = () => {
-				const reader = new FileReader();
-				reader.readAsText(fileInput.files[0]);
-				reader.onload = () => {
-					let content = reader.result;
-					try {
-						res(Song.fromFile(content));
-					} catch(err) {
-						alert("This is not a valid or loadable song file.");
-						rej("Invalid or unloadable song file uploaded");
-					}
-				}
-				fileInput.remove();
-			}
-			fileInput.oncancel = () => {
-				fileInput.remove();
-				rej("Song load cancelled.");
-			}
-			document.documentElement.appendChild(fileInput);
-			fileInput.click();
-		});
+	static async load() {
+		const jsonData = await FileUploads.uploadText(".fru, .frudbg, application/frusician");
+		try {
+			return Song.fromFile(jsonData);
+		} catch(err) {
+			alert("This is not a valid or loadable song file.");
+			throw err;
+		}
 	}
 	
 	static fromFile(content) {
-		
 		if(content.startsWith(Song.FILE_HEADER)) {
 			content = content.replace(Song.FILE_HEADER, "");
 		}
@@ -177,16 +157,17 @@ class Song {
 	serialize() {
 		return {
 			title: this.title,
+			tempo: this.tempo,
+			durationMeasures: this.durationMeasures,
+			beatsPerMeasure: this.beatsPerMeasure,
+			pixelsPerMeasure: this.pixelsPerMeasure,
+			savedAt: Date.now(),
+			timeSpent: this.timeSpent,
 			tracks: Object.fromEntries(
 				Object.entries(this.tracks)
 					.map(([id, track]) => [id, track.serialize()])
 			),
 			trackAssortment: this.trackAssortment.slice(),
-			durationMeasures: this.durationMeasures,
-			beatsPerMeasure: this.beatsPerMeasure,
-			pixelsPerMeasure: this.pixelsPerMeasure,
-			savedAt: Date.now(),
-			timeSpent: this.timeSpent
 		}
 	}
 	
@@ -196,6 +177,9 @@ class Song {
 		
 		if(typeof serialized.timeSpent == "number") {
 			song.timeWorkingAtSongLoad = serialized.timeSpent;
+		}
+		if(typeof serialized.tempo == "number") {
+			song.tempo = serialized.tempo;
 		}
 		const tracks = Object.fromEntries(
 			Object.values(serialized.tracks)
@@ -225,9 +209,9 @@ class Song {
 			timelineHeader,
 			timelineHeaderButtons,
 			timelineHeaderPlayButton,
-			timelineHeaderPauseButton,
 			cpuUsage,
 			timelineHeaderTicks,
+			timelineHeaderExtendButton,
 			tracks,
 			userTracks;
 		
@@ -236,14 +220,14 @@ class Song {
 				timelineHeader = new HTML.div({class: "timeline-header"},
 					timelineHeaderButtons = new HTML.div({class: "timeline-header-buttons"},
 						timelineHeaderPlayButton = new HTML.button({class: "timeline-header-button timeline-header-button-play", tabindex: "-1"}),
-						timelineHeaderPauseButton = new HTML.button({class: "timeline-header-button timeline-header-button-pause", tabindex: "-1"}),
 						cpuUsage = new HTML.div({class: "song-cpu-usage"},
 							new HTML.div({class: "song-cpu-usage-bar"}),
 							new HTML.div({class: "song-cpu-usage-text"}, "CPU%")
 						)
 					),
 					new HTML.div({class: "timeline-header-playhead"}),
-					timelineHeaderTicks = new SVG.svg({class: "timeline-header-ticks"})
+					timelineHeaderTicks = new SVG.svg({class: "timeline-header-ticks"}),
+					timelineHeaderExtendButton = new SVG.svg({class: "timeline-header-extend-button"}),
 				),
 				tracks = new HTML.div({class: "tracks"},
 					userTracks = new HTML.div({class: "user-tracks"})
@@ -256,13 +240,19 @@ class Song {
 			cpuUsage.setAttribute("style", `--cpu: ${this.playback.testedOverhead}`);
 		});
 		
-		timelineHeaderPlayButton.onclick = () => {
-			this.playback.play();
-			timeline.setAttribute("playing", "");
-		}
-		timelineHeaderPauseButton.onclick = () => {
-			this.playback.pause();
-			timeline.removeAttribute("playing");
+		timelineHeaderPlayButton.onclick = async () => {
+			await this.playback.playpause();
+			setTimeout(() => {
+				if(this.playback.playing) {
+					timeline.setAttribute("playing", "");
+					timelineHeaderPlayButton.classList.remove("timeline-header-button-play");
+					timelineHeaderPlayButton.classList.add("timeline-header-button-pause");
+				} else {
+					timeline.removeAttribute("playing");
+					timelineHeaderPlayButton.classList.remove("timeline-header-button-pause");
+					timelineHeaderPlayButton.classList.add("timeline-header-button-play");
+				}
+			}, 100)
 		}
 		const updatePlayhead = position => {
 			timeline.removeAttribute("playing");
@@ -370,7 +360,8 @@ class Song {
 					this.pixelsPerMeasure = 
 						Math.max(
 							this.pixelsPerMeasure / (1 + Math.min(40, Math.max(event.deltaY, -40)) / 200),
-							(window.innerWidth - zoomDataCache.infoWidth) / this.durationMeasures
+							timeline.scrollWidth / (window.innerWidth - zoomDataCache.infoWidth)
+							//(window.innerWidth - zoomDataCache.infoWidth) / this.durationMeasures
 						);
 					
 					this.updateRendered(true);

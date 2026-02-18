@@ -1,5 +1,5 @@
 [package]
-name = "frusician-wasm-vibratonode"
+name = "frusician-wasm-instrumentnode-lib"
 version.workspace = true
 edition.workspace = true
 description.workspace = true

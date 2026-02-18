@@ -1,5 +1,5 @@
 [package]
-name = "frusician-wasm-vibratonode"
+name = "frusician-wasm-sampledinstrumentnode"
 version.workspace = true
 edition.workspace = true
 description.workspace = true
@@ -11,3 +11,4 @@ crate-type = ["cdylib"]
 
 [dependencies]
 wasm-bindgen.workspace = true
+frusician-wasm-instrumentnode-lib = { path = "../InstrumentNodeLib" }

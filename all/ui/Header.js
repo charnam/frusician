@@ -1,5 +1,4 @@
 import { HTML } from "imperative-html";
-import UI from "../UI.js";
 
 class Header {
 	constructor(contextMenu) {

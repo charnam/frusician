@@ -21,7 +21,8 @@
         <div id="app"></div>
         
         <script type="module">
-            import editor from "./all/globalEditor.js";
+            import FrusicianEditor from "./all/FrusicianEditor.js";
+            const editor = new FrusicianEditor(document.querySelector("#app"));
             window.editor = editor;
             
             const loadingStartedAt = Date.now();
