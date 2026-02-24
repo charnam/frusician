@@ -24,6 +24,12 @@ body {
 	font-size: 18px;
 }
 
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
 /* page styles */
 #header {
 	background: var(--background-color-level2);
@@ -69,12 +75,22 @@ button:active {
 	box-shadow: 0 5px 10px #0009;
 	border-radius: 5px;
 }
+
 button.song-duration-part.song-duration-subtract-button {
 	border-radius: 5px 0 0 5px;
+}
+button.song-duration-part.song-duration-subtract-button:after {
+	content: "\F2EA";
+	font-family: 'bootstrap-icons';
 }
 button.song-duration-part.song-duration-add-button {
 	border-radius: 0 5px 5px 0;
 }
+button.song-duration-part.song-duration-add-button:after {
+	content: "\F4FE";
+	font-family: 'bootstrap-icons';
+}
+
 .song-duration-part {
 	background: var(--background-color-level0);
 }

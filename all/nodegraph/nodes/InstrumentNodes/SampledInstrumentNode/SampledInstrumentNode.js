@@ -2,12 +2,12 @@ import Math2 from "../../../../lib/Math2.js";
 import RangedNodePlaybackInstance from "../../../../playback/RangedNodePlaybackInstance.js";
 import ADSRInputNodeValue from "../../../values/inputs/ADSRInputNodeValue.js";
 import AudioFileInputNodeValue from "../../../values/inputs/AudioFileInputNodeValue.js";
-import DropdownInputNodeValue from "../../../values/inputs/DropdownInputNodeValue.js";
+import SliderInputNodeValue from "../../../values/inputs/SliderInputNodeValue.js";
 import TrackDataInputNodeValue from "../../../values/inputs/TrackDataInputNodeValue.js";
 import PlaybackInstanceOutputNodeValue from "../../../values/outputs/PlaybackInstanceOutputNodeValue.js";
 import BaseNode from "../../BaseNode.js";
 
-import initSync, { generate_chip_instrument_samples } from "./pkg/frusician_wasm_chipinstrumentnode.js";
+import initSync, { generate_sampled_instrument_samples } from "./pkg/frusician_wasm_sampledinstrumentnode.js";
 initSync();
 
 class SampledInstrumentNode extends BaseNode {
@@ -22,9 +22,7 @@ class SampledInstrumentNode extends BaseNode {
 			label: "Track Data"
 		}),
 		new AudioFileInputNodeValue({name: "sample", label: "Sampled Audio"}),
-		//new PitchInputNodeValue({name: "originalPitch", label: "Original Pitch"}),
-		//new DropdownInputNodeValue({name: "targetNotePitch", label: "Original Pitch", items: this.constructor.pitches, default: "C"}),
-		//new DropdownInputNodeValue({name: "targetNoteOctave", label: "Original Octave", items: this.constructor.octaves, default: "4"}),
+		new SliderInputNodeValue({name: "sample-frequency", label: "Original Pitch", min: 1, default: 440, max: 5000, step: 0.001}),
 		new ADSRInputNodeValue({name: "adsr"}),
 	];
 	outputs = [
@@ -32,12 +30,17 @@ class SampledInstrumentNode extends BaseNode {
 	];
 	
 	playbackInstance = new RangedNodePlaybackInstance((startTime, sampleCount, secondsPerSample, channel) => {
+		const sample = this.getInputValue("sample");
+		if(sample == null) {
+			return new Float32Array(sampleCount);
+		}
+		
 		const duration = sampleCount * secondsPerSample;
 		const noteTrack = this.getInputValue("noteTrack");
-		const wave = this.getInputValue("wave");
+		
+		const sampleFrequency = this.getInputValue("sample-frequency");
 		
 		const adsr = this.getInputValue("adsr");
-		const sample = this.getInputValue("sample");
 		
 		const attack = this.graph.track.song.beatsToSeconds(adsr.attack);
 		const decay = this.graph.track.song.beatsToSeconds(adsr.decay);
@@ -55,10 +58,8 @@ class SampledInstrumentNode extends BaseNode {
 			noteFrequencies[index] = Math2.midiToFreq(note.pitch);
 		}
 		
-		const sampleStartTimes = new Float32Array(sample.channels.map(channel => channel.length));
-		
-		const output = generate_chip_instrument_samples(
-			wave,
+		const output = generate_sampled_instrument_samples(
+			new Float32Array(sample.channels[channel % sample.channels.length]), sample.sampleRate, sampleFrequency,
 			startTime, sampleCount, secondsPerSample,
 			new Float32Array([attack, decay, sustain, release]),
 			noteStartTimes, noteEndTimes, noteFrequencies

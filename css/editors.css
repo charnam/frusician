@@ -55,6 +55,12 @@
 	fill: white;
 }
 
+
+rect.note-editor-user-note, .note-editor-other-note {
+	ry: 0.5px;
+	rx: 0.01px;
+}
+
 .note-editor-beat-guide {
 	vector-effect: non-scaling-stroke;
 	stroke: black;

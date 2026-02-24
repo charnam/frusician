@@ -174,7 +174,18 @@ class NoteClip extends Clip {
 						1
 					);
 				
+				const containerRect = noteEditorContainer.getBoundingClientRect();
+				const origRect = noteEditor.getBoundingClientRect();
+				const pianoRect = pianoKeys.getBoundingClientRect();
+				
+				const mouseOffset = (event.clientX - containerRect.x);
+				
+				const mxPos = (noteEditorContainer.scrollLeft + mouseOffset - pianoRect.width) / origRect.width;
+				
 				update();
+				
+				const newRect = noteEditor.getBoundingClientRect();
+				noteEditorContainer.scrollLeft = mxPos * newRect.width - mouseOffset + pianoRect.width;
 				
 				event.preventDefault();
 			}

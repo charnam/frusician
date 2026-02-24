@@ -26,6 +26,9 @@ class FrusicianEditor {
 					this.setSong(await Song.load());
 				}),
 				new ContextMenu.ClickableItem("Save", () => {
+					this.song.save(false);
+				}),
+				new ContextMenu.ClickableItem("Save (debug)", () => {
 					this.song.save(true);
 				}),
 				new ContextMenu.ClickableItem("Export as WAV", () => {

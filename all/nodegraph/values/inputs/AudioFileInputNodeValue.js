@@ -1,5 +1,6 @@
 import { HTML } from "imperative-html";
 import InputNodeValue from "./InputNodeValue.js";
+import FileUploads from "../../../lib/FileUploads.js";
 
 class AudioFileInputNodeValue extends InputNodeValue {
 	type = "audioFile";
@@ -7,9 +8,6 @@ class AudioFileInputNodeValue extends InputNodeValue {
 	
 	constructor(info) {
 		super(info);
-		
-		this.items = info.items;
-		this.default = info.default ?? info.items[0];
 	}
 	
 	render(parentNode) {
@@ -25,10 +23,29 @@ class AudioFileInputNodeValue extends InputNodeValue {
 		
 		let value = this.node.inputValues[this.name];
 		if(value) {
-			uploadedFileName.innerText = value.filename;
+			uploadedFileName.innerText = "1 file selected";
 		}
 		
-		container.appendChild(dropdownWrapper);
+		uploadFileButton.onclick = async () => {
+			const ac = new AudioContext();
+			const buffer = await FileUploads.uploadArrayBuffer("audio/*");
+			
+			const audioBuffer = await ac.decodeAudioData(buffer);
+			
+			const channels = [];
+			for(let i = 0; i < audioBuffer.numberOfChannels; i++) {
+				channels[i] = Array.from(audioBuffer.getChannelData(i));
+			}
+			
+			this.node.inputValues[this.name] = {
+				channels,
+				sampleRate: audioBuffer.sampleRate
+			};
+			
+			ac.close();
+		}
+		
+		container.appendChild(wrapper);
 		return container;
 	}
 }

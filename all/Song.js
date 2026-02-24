@@ -106,7 +106,7 @@ class Song {
 			console.error("Save error:", err);
 			return alert("Sorry, seems like an error occurred during saving. Make sure you don't have any special symbols (e.g: no Japanese, accented, or other odd characters) in any of your project's text inputs (e.g track names, song name, editor inputs). This slight saving issue will be fixed in a future version.");
 		}
-		link.download = this.title.replace(/[^0-9a-zA-Z\- ]/g, "_")+".fru";
+		link.download = this.title.replace(/[^0-9a-zA-Z\- ]/g, "_")+(debug ? ".frudbg" : ".fru");
 		document.body.appendChild(link);
 		link.click();
 		link.remove();
@@ -180,7 +180,7 @@ class Song {
 		if(typeof serialized.timeSpent == "number") {
 			song.timeWorkingAtSongLoad = serialized.timeSpent;
 		}
-		if(typeof serialized.tempo == "number") {
+		if(typeof serialized.tempo !== "undefined") {
 			song.tempo = serialized.tempo;
 		}
 		const tracks = Object.fromEntries(
@@ -258,7 +258,7 @@ class Song {
 						new HTML.div({class: "song-setting-text"}, "Song Duration"),
 						songDurationWrapper = new HTML.div({class: "song-duration-wrapper"},
 							songDurationSubtractButton = new HTML.button({class: "song-duration-part song-duration-subtract-button"}),
-							songDurationInput = new HTML.input({class: "song-duration-part song-duration-input", type: "number", value: this.durationMeasures}),
+							songDurationInput = new HTML.input({class: "song-duration-part song-duration-input", type: "number", min: 1, step: 1, value: this.durationMeasures}),
 							songDurationAddButton = new HTML.button({class: "song-duration-part song-duration-add-button"}),
 						),
 					)
@@ -266,28 +266,66 @@ class Song {
 				new HTML.div({class: "song-setting-columns"},
 					new HTML.div({class: "song-setting"}, 
 						new HTML.div({class: "song-setting-text"}, "Beats per measure"),
-						beatsPerMeasureInput = new HTML.input({type: "number", value: this.beatsPerMeasure})
+						beatsPerMeasureInput = new HTML.input({type: "number", value: this.beatsPerMeasure, min: 1, step: 1})
 					),
 					new HTML.div({class: "song-setting"}, 
-						new HTML.div({class: "song-setting-text"}, "Tempo (BPM)"),
-						tempoInput = new HTML.input({type: "number", value: this.tempo})
+						new HTML.div({class: "song-setting-text"}, "Tempo"),
+						tempoInput = new HTML.input({type: "number", value: this.tempo, min: 1})
 					)
 				)
 			);
 			
-			songDurationInput.oninput = () => {
-				this.durationMeasures = songDurationInput.value;
+			let currentTimeInBeatsBeforeChange = 0;
+			const beforeChange = () => {
+				currentTimeInBeatsBeforeChange = this.secondsToBeats(this.playback.currentTime);
+			}
+			const afterChange = () => {
+				if(this.durationMeasures < 1) songDurationInput.value = this.durationMeasures = 1;
+				if(this.tempo < 1) tempoInput.value = this.tempo = 1;
+				if(this.beatsPerMeasure < 1) beatsPerMeasureInput.value = this.beatsPerMeasure = 1;
+				
+				this.playback.currentTime = this.beatsToSeconds(currentTimeInBeatsBeforeChange);
 				this.updateRendered();
 			}
 			
+			songDurationInput.oninput = () => {
+				beforeChange();
+				this.durationMeasures = songDurationInput.value;
+				afterChange();
+			}
+			const checkDurationButtonInterval = (repeat = 0) => {
+				if(typeof repeat !== "number") repeat = 0;
+				if(!settingsMenu) return;
+				
+				const activeButtons = [...songDurationWrapper.querySelectorAll("*:active")];
+				if(activeButtons.includes(songDurationAddButton)) {
+					songDurationInput.value++;
+					songDurationInput.oninput();
+				}
+				if(activeButtons.includes(songDurationSubtractButton)) {
+					songDurationInput.value--;
+					songDurationInput.oninput();
+				}
+				if(activeButtons.length !== 0) {
+					setTimeout(() => checkDurationButtonInterval(repeat + 1), Math.max(250 / (repeat + 1), 80));
+				}
+			}
+			songDurationAddButton.onmousedown = checkDurationButtonInterval;
+			songDurationSubtractButton.onmousedown = checkDurationButtonInterval;
+			
+			
 			beatsPerMeasureInput.oninput = () => {
+				beforeChange();
 				this.beatsPerMeasure = beatsPerMeasureInput.value;
-				this.updateRendered();
+				afterChange();
 			}
 			tempoInput.oninput = () => {
+				beforeChange();
 				this.tempo = tempoInput.value;
-				this.updateRendered();
+				afterChange();
 			}
+			
+			
 			
 			overlay.appendChild(settingsMenu);
 			targetNode.appendChild(overlay);
